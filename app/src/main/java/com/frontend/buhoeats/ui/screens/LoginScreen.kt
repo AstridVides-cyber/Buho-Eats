@@ -195,6 +195,21 @@ fun Login(navControl: NavHostController) {
                 )
             )
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = { /*crear cuenta*/},
+                modifier = Modifier.width(200.dp).height(56.dp).shadow(elevation= 8.dp, shape= RoundedCornerShape(8.dp)),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C))
+            ) {
+                Text(
+                    text = "Crear cuenta",
+                    style = TextStyle(fontFamily = montserratFontFamily, fontSize = 20.sp, color = Color.White)
+                )
+            }
         }
+
+
 
     }}
