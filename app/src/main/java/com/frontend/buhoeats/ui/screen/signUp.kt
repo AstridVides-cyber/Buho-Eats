@@ -39,6 +39,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 
@@ -319,7 +320,56 @@ fun SignUp(navController: NavController) {
                 )
             }
 
+            Spacer(modifier = Modifier.height(24.dp))
 
+            Button(
+                onClick = { /*sesión con Google */ },
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(56.dp)
+                    .shadow(8.dp, RoundedCornerShape(16.dp)),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4285F4)
+                )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.google_image),
+                        contentDescription = "Google logo",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .size(32.dp)
+                    )
+                    Text(
+                        text = "Inicia Sesión con Google",
+                        color = Color.White,
+                        fontSize = 16.sp
+                    )
+                }
+
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+
+
+            Row {
+                Text(text = "¿Ya tienes una cuenta? ",color = Color.White,
+                    fontSize = 16.sp,fontFamily = montserratFontFamily)
+                Text(
+                    text = "Iniciar Sesión",
+                    color = Color(0xFF0084FF),
+                    fontSize = 16.sp,
+                    fontFamily = montserratFontFamily,
+                    modifier = Modifier.clickable {
+                        navController.navigate("login")
+                    },
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
 
         }
