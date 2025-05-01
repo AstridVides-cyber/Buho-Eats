@@ -29,9 +29,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 
+fun isValidEmail(email: String): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
 
 val montserratFontFamily = FontFamily(
     Font(R.font.montserrat_bold)
@@ -39,6 +50,15 @@ val montserratFontFamily = FontFamily(
 
 @Composable
 fun SignUp(navController: NavController) {
+
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    var triedToSubmit by remember { mutableStateOf(false) }
+    val isEmailValid = isValidEmail(email)
+    val isEmailNotEmpty = email.isNotBlank()
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFF3D405B)
@@ -90,7 +110,41 @@ fun SignUp(navController: NavController) {
                 )
 
                 }
+            Spacer( modifier = Modifier.height(24.dp))
 
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                Text(
+                    text = "Nombre:",
+                    style = TextStyle(
+                        fontFamily = montserratFontFamily,
+                        color = Color.White,
+                        fontSize = 24.sp
+                    )
+                )
             }
+            Spacer( modifier = Modifier.height(12.dp))
+
+            TextField(
+                value = name,
+                onValueChange = { name = it },
+                placeholder = { Text("Ingrese su nombre", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                )
+            )
+            if (triedToSubmit && !isEmailNotEmpty) {
+                Text(
+                    text = "El campo no debe estar vacío",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    style = TextStyle(fontFamily = montserratFontFamily)
+                )
+            }
+
+
+        }
         }
     }
