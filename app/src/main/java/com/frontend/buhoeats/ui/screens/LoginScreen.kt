@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -147,6 +148,40 @@ fun Login(navControl: NavHostController) {
                     text = "Iniciar sesion ",
                     style = TextStyle(fontFamily = montserratFontFamily, fontSize = 20.sp, color = Color.White)
                 )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = { /*sesión con Google */ },
+                modifier = Modifier
+                    .width(300.dp)
+                    .height(56.dp)
+                    .shadow(8.dp, RoundedCornerShape(16.dp)),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4285F4)
+                )
+            ){
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.google_image),
+                        contentDescription = "Google logo",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .size(32.dp)
+                    )
+                    Text(
+                        text = "Inicia Sesión con Google",
+                        color = Color.White,
+                        fontSize = 16.sp
+                    )
+                }
+
             }
         }
 
