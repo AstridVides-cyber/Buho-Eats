@@ -57,6 +57,8 @@ fun Login(navControl: NavHostController) {
 
     var triedToSubmit by remember { mutableStateOf(false) }
     val isEmailValid = isValidEmail(email)
+    val isEmailNotEmpty = email.isNotBlank()
+
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -108,7 +110,7 @@ fun Login(navControl: NavHostController) {
             TextField(
                 value = email,
                 onValueChange = { email = it },
-                isError = triedToSubmit && !isEmailValid,
+                isError = triedToSubmit && (!isEmailNotEmpty || !isEmailValid),
                 placeholder = { Text("ingrese su correo", color = Color.Gray, fontSize = 16.sp ,style = TextStyle(fontFamily = montserratFontFamily)) },
 
                 modifier = Modifier.fillMaxWidth(),
@@ -118,7 +120,15 @@ fun Login(navControl: NavHostController) {
                     unfocusedContainerColor = Color.White,
                 )
             )
-            if (triedToSubmit && !isEmailValid) {
+            if (triedToSubmit && !isEmailNotEmpty) {
+                Text(
+                    text = "El campo no debe estar vacío",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    style = TextStyle(fontFamily = montserratFontFamily)
+                )
+            }
+          else if (triedToSubmit && !isEmailValid) {
                 Text(
                     text = "Correo inválido, no es una direccion de correo",
                     color = Color.Red,
@@ -153,6 +163,14 @@ fun Login(navControl: NavHostController) {
                     unfocusedContainerColor = Color.White,
                 )
             )
+            if (triedToSubmit && !isEmailNotEmpty) {
+                Text(
+                    text = "El campo no debe estar vacío",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    style = TextStyle(fontFamily = montserratFontFamily)
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
