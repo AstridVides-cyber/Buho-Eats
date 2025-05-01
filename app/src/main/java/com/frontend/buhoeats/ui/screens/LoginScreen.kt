@@ -45,10 +45,18 @@ val montserratFontFamily = FontFamily(
     Font(R.font.montserrat_bold)
 )
 
+fun isValidEmail(email: String): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
+
+
 @Composable
 fun Login(navControl: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    var triedToSubmit by remember { mutableStateOf(false) }
+    val isEmailValid = isValidEmail(email)
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -100,6 +108,7 @@ fun Login(navControl: NavHostController) {
             TextField(
                 value = email,
                 onValueChange = { email = it },
+                isError = triedToSubmit && !isEmailValid,
                 placeholder = { Text("ingrese su correo", color = Color.Gray, fontSize = 16.sp ,style = TextStyle(fontFamily = montserratFontFamily)) },
 
                 modifier = Modifier.fillMaxWidth(),
@@ -109,6 +118,14 @@ fun Login(navControl: NavHostController) {
                     unfocusedContainerColor = Color.White,
                 )
             )
+            if (triedToSubmit && !isEmailValid) {
+                Text(
+                    text = "Correo inválido, no es una direccion de correo",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    style = TextStyle(fontFamily = montserratFontFamily)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -139,7 +156,10 @@ fun Login(navControl: NavHostController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { /*menu*/},
+                onClick =  {
+                    triedToSubmit = true
+                    if (isEmailValid) { }
+                },
                 modifier = Modifier.width(300.dp).height(56.dp).shadow(elevation= 8.dp, shape= RoundedCornerShape(8.dp)),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C))
