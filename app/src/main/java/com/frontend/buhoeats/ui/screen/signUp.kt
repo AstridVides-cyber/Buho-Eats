@@ -178,6 +178,19 @@ fun SignUp(navController: NavController) {
                     style = TextStyle(fontFamily = montserratFontFamily)
                 )
             }
+            Spacer( modifier = Modifier.height(12.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                Text(
+                    text = "Correo:",
+                    style = TextStyle(
+                        fontFamily = montserratFontFamily,
+                        color = Color.White,
+                        fontSize = 24.sp
+                    )
+                )
+            }
+
 
 
         }
