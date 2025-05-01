@@ -183,6 +183,18 @@ fun Login(navControl: NavHostController) {
                 }
 
             }
+
+            Spacer(modifier = Modifier.height(50.dp))
+
+            Text(
+                text = "¿Todavia no tienes cuenta?",
+                style = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    color = Color.White,
+                    fontSize = 20.sp
+                )
+            )
+
         }
 
     }}
