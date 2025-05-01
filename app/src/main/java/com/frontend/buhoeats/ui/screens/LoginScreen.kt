@@ -30,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -96,6 +97,33 @@ fun Login(navControl: NavHostController) {
                 onValueChange = { email = it },
                 placeholder = { Text("ingrese su correo", color = Color.Gray, fontSize = 16.sp ,style = TextStyle(fontFamily = montserratFontFamily)) },
 
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                Text(
+                    text = "Contraseña:",
+                    style = TextStyle(
+                        fontFamily = montserratFontFamily,
+                        color = Color.White,
+                        fontSize = 24.sp
+                    )
+                )
+      }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                placeholder = { Text("Ingrese su contraseña", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
+                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
