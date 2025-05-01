@@ -52,6 +52,8 @@ val montserratFontFamily = FontFamily(
 fun SignUp(navController: NavController) {
 
     var name by remember { mutableStateOf("") }
+    var lastname by remember { mutableStateOf("") }
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -128,6 +130,39 @@ fun SignUp(navController: NavController) {
                 value = name,
                 onValueChange = { name = it },
                 placeholder = { Text("Ingrese su nombre", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                )
+            )
+            if (triedToSubmit && !isEmailNotEmpty) {
+                Text(
+                    text = "El campo no debe estar vacío",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    style = TextStyle(fontFamily = montserratFontFamily)
+                )
+            }
+            Spacer( modifier = Modifier.height(12.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                Text(
+                    text = "Apellido:",
+                    style = TextStyle(
+                        fontFamily = montserratFontFamily,
+                        color = Color.White,
+                        fontSize = 24.sp
+                    )
+                )
+            }
+            Spacer( modifier = Modifier.height(12.dp))
+
+            TextField(
+                value = lastname,
+                onValueChange = { lastname = it },
+                placeholder = { Text("Ingrese su apellido", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
