@@ -25,40 +25,72 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.painterResource
+
+
 val montserratFontFamily = FontFamily(
     Font(R.font.montserrat_bold)
 )
 
 @Composable
-fun SignUp(navController: NavController){
+fun SignUp(navController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFF3D405B)
-    ){
-
+    ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(32.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = "BÚHO EATS",
-                style = TextStyle(
-                    fontFamily = montserratFontFamily,
-                    color = Color.White,
-                    fontSize = 48.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    shadow = Shadow(
-                        color = Color.White,
-                        offset = Offset(4f,4f),
-                        blurRadius = 12f
-                    )
+        ) {
+            Spacer(modifier = Modifier.height(14.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = R.drawable.arrow),
+                    contentDescription = "Regresar",
+                    modifier = Modifier
+                        .shadow(14.dp)
+                        .size(32.dp)
+                        .padding(end = 8.dp)
+                        .clickable {
+                            navController.navigate("login")
+                        }
 
                 )
-            )
 
+            Spacer(modifier = Modifier.width(24.dp))
 
+                Text(
+                        text = "Crear cuenta",
+                        style = TextStyle(
+                            fontFamily = montserratFontFamily,
+                            color = Color.White,
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            shadow = Shadow(
+                                color = Color.White,
+                                offset = Offset(4f, 4f),
+                                blurRadius = 12f
+                            )
+
+                        )
+                    )
+                Spacer(modifier = Modifier.width(14.dp))
+
+                Image(
+                    painter = painterResource(id = R.drawable.buho),
+                    contentDescription = "Logo Búho Eats",
+                    modifier = Modifier.size(64.dp)
+                )
+
+                }
+
+            }
         }
     }
-}
