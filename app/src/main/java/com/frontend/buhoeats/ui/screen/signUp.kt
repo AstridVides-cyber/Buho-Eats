@@ -190,6 +190,37 @@ fun SignUp(navController: NavController) {
                     )
                 )
             }
+            Spacer(modifier = Modifier.height(12.dp))
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                isError = triedToSubmit && (!isEmailNotEmpty || !isEmailValid),
+                placeholder = { Text("ingrese su correo", color = Color.Gray, fontSize = 16.sp ,style = TextStyle(fontFamily = montserratFontFamily)) },
+
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                )
+            )
+            if (triedToSubmit && !isEmailNotEmpty) {
+                Text(
+                    text = "El campo no debe estar vacío",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    style = TextStyle(fontFamily = montserratFontFamily)
+                )
+            }
+            else if (triedToSubmit && !isEmailValid) {
+                Text(
+                    text = "Correo inválido, no es una direccion de correo",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    style = TextStyle(fontFamily = montserratFontFamily)
+                )
+            }
+
 
 
 
