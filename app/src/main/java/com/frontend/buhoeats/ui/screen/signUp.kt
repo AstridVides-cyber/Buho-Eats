@@ -58,6 +58,7 @@ fun SignUp(navController: NavController) {
     var password by remember { mutableStateOf("") }
 
     var triedToSubmit by remember { mutableStateOf(false) }
+    var confirmPassword by remember { mutableStateOf("") }
     val isEmailValid = isValidEmail(email)
     val isEmailNotEmpty = email.isNotBlank()
 
@@ -254,6 +255,50 @@ fun SignUp(navController: NavController) {
                     style = TextStyle(fontFamily = montserratFontFamily)
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                Text(
+                    text = "Confirme su contraseña:",
+                    style = TextStyle(
+                        fontFamily = montserratFontFamily,
+                        color = Color.White,
+                        fontSize = 24.sp
+                    )
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                placeholder = { Text("Confirme su contraseña", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                )
+            )
+            if (triedToSubmit && !isEmailNotEmpty) {
+                Text(
+                    text = "El campo no debe estar vacío",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    style = TextStyle(fontFamily = montserratFontFamily)
+                )
+            }
+            if (triedToSubmit && password != confirmPassword) {
+                Text(
+                    text = "Las contraseñas no coinciden",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    style = TextStyle(fontFamily = montserratFontFamily)
+                )
+            }
+
 
 
 
