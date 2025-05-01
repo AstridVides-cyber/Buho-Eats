@@ -30,6 +30,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.getValue
@@ -56,9 +58,10 @@ fun SignUp(navController: NavController) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+
 
     var triedToSubmit by remember { mutableStateOf(false) }
-    var confirmPassword by remember { mutableStateOf("") }
     val isEmailValid = isValidEmail(email)
     val isEmailNotEmpty = email.isNotBlank()
 
@@ -271,8 +274,8 @@ fun SignUp(navController: NavController) {
             Spacer(modifier = Modifier.height(12.dp))
 
             TextField(
-                value = password,
-                onValueChange = { password = it },
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
                 placeholder = { Text("Confirme su contraseña", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
@@ -299,6 +302,22 @@ fun SignUp(navController: NavController) {
                 )
             }
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick =  {
+                    triedToSubmit = true
+                    if (isEmailValid) { }
+                },
+                modifier = Modifier.width(300.dp).height(56.dp).shadow(elevation= 8.dp, shape= RoundedCornerShape(8.dp)),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C))
+            ) {
+                Text(
+                    text = "Registrarte",
+                    style = TextStyle(fontFamily = montserratFontFamily, fontSize = 20.sp, color = Color.White)
+                )
+            }
 
 
 
