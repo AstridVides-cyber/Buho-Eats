@@ -1,21 +1,13 @@
 package com.frontend.buhoeats.ui.screens
 
-import android.graphics.Color.rgb
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.foundation.clickable
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.GTranslate
-import androidx.compose.material.icons.filled.NightsStay
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.outlined.DarkMode
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.GTranslate
-import androidx.compose.material.icons.outlined.NightsStay
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.*
