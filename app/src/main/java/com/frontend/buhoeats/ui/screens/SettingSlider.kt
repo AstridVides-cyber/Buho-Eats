@@ -11,6 +11,13 @@ import androidx.compose.material.icons.filled.GTranslate
 import androidx.compose.material.icons.filled.NightsStay
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.GTranslate
+import androidx.compose.material.icons.outlined.NightsStay
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,70 +43,27 @@ fun SettingSlider(onBack: () -> Unit = {}) {
             contentScale = ContentScale.Crop
         )
 
+        //componente top bar app
+
         Column {
-            TopAppBar(
-                title = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.logoletra),
-                                contentDescription = null,
-                                modifier = Modifier.size(120.dp), // más grande
-                                contentScale = ContentScale.Fit
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.logo),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .height(130.dp) // ¡búho grande!
-                                    .width(40.dp)
-                            )
-                        }
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack,
-                        modifier = Modifier.height(80.dp)) {
-                        Icon(
-                            Icons.Default.ArrowBackIosNew,
-                            contentDescription = "Volver",
-                            modifier = Modifier.size(35.dp)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(rgb(61, 64, 91)),
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                ),
-                modifier = Modifier.height(80.dp)
-            )
-
-
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(15.dp)
             ) {
-                Icon(Icons.Default.Person, contentDescription = "Mi cuenta", tint = Color.Black)
+                Icon(imageVector = Icons.Outlined.Person, contentDescription = "Mi cuenta", tint = Color.Black,
+                    modifier = Modifier.size(45.dp))
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Mi cuenta", fontSize = 18.sp, color = Color.Black)
-                    Icon(
+                Text("Mi cuenta", fontSize = 25.sp, color = Color.Black)
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = "Cuenta",
                         modifier = Modifier.graphicsLayer {
                             rotationY = 180f
                         }
                             .padding(10.dp)
+                            .size(30.dp)
                     )
 
 
@@ -112,15 +76,17 @@ fun SettingSlider(onBack: () -> Unit = {}) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(15.dp)
                         .fillMaxWidth()
                         .clickable { expandedTheme = !expandedTheme }
                 ) {
-                    val themeIcon = if (selectedTheme == "Claro") Icons.Default.WbSunny else Icons.Default.NightsStay
+                    val themeIcon = if (selectedTheme == "Claro") Icons.Outlined.WbSunny else Icons.Outlined.DarkMode
 
-                    Icon(themeIcon, contentDescription = "Modo", tint = Color.Black)
+                    Icon(imageVector = themeIcon, contentDescription = "Modo", tint = Color.Black,
+                        modifier = Modifier.size(45.dp))
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Modo $selectedTheme", fontSize = 16.sp, color = Color.Black)
+                    Text("Modo $selectedTheme", fontSize = 25.sp, color = Color.Black)
+                    Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = "Expandir tema",
@@ -128,22 +94,25 @@ fun SettingSlider(onBack: () -> Unit = {}) {
                         modifier = Modifier
                             .graphicsLayer { rotationZ = -90f }
                             .padding(10.dp)
+                            .size(30.dp)
                     )
                 }
 
                 DropdownMenu(
                     expanded = expandedTheme,
                     onDismissRequest = { expandedTheme = false },
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = Modifier.fillMaxWidth(1f)
+                        .padding(horizontal = 15.dp)
                 ) {
                     DropdownMenuItem(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(imageVector = Icons.Default.WbSunny, contentDescription = "sol")
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Claro")
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Icon(imageVector = Icons.Outlined.WbSunny, contentDescription = "sol" , modifier = Modifier.size(30.dp))
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text("Claro" , fontSize = 22.sp)
+                                Spacer(modifier = Modifier.weight(1f))
                                 RadioButton(selected = selectedTheme == "Claro", onClick = null)
+
 
 
                             }
@@ -156,10 +125,10 @@ fun SettingSlider(onBack: () -> Unit = {}) {
                     DropdownMenuItem(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(imageVector = Icons.Default.NightsStay, contentDescription = "luna")
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Oscuro")
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Icon(imageVector = Icons.Outlined.DarkMode, contentDescription = "luna", modifier = Modifier.size(30.dp))
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text("Oscuro" , fontSize = 22.sp)
+                                Spacer(modifier = Modifier.weight(1f))
                                 RadioButton(selected = selectedTheme == "Oscuro", onClick = null)
 
 
@@ -180,13 +149,15 @@ fun SettingSlider(onBack: () -> Unit = {}) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(15.dp)
                         .fillMaxWidth()
                         .clickable { expandedLang = true }
                 ) {
-                    Icon(Icons.Default.GTranslate, contentDescription = "Idioma", tint = Color.Black)
+                    Icon( imageVector = Icons.Outlined.GTranslate, contentDescription = "Idioma", tint = Color.Black,
+                        modifier = Modifier.size(45.dp))
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Idioma", fontSize = 16.sp, color = Color.Black)
+                    Text("Idioma", fontSize = 25.sp, color = Color.Black)
+                    Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = "Expandir tema",
@@ -194,6 +165,7 @@ fun SettingSlider(onBack: () -> Unit = {}) {
                         modifier = Modifier
                             .graphicsLayer { rotationZ = -90f }
                             .padding(10.dp)
+                            .size(30.dp)
                     )
 
                 }
@@ -201,16 +173,18 @@ fun SettingSlider(onBack: () -> Unit = {}) {
                 DropdownMenu(
                     expanded = expandedLang,
                     onDismissRequest = { expandedLang = false },
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = Modifier.fillMaxWidth(1f)
+                        .padding(horizontal = 15.dp)
                 ) {
                     DropdownMenuItem(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("Español")
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.size(45.dp))
+                                Text("Español" , fontSize = 22.sp)
+                                Spacer(modifier = Modifier.weight(1f))
                                 RadioButton(
                                     selected = selectedLang == "Español",
-                                    onClick = null // deshabilitado aquí, manejado por onClick del item
+                                    onClick = null
                                 )
 
                             }
@@ -223,8 +197,9 @@ fun SettingSlider(onBack: () -> Unit = {}) {
                     DropdownMenuItem(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("Inglés")
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.size(45.dp))
+                                Text("Inglés" , fontSize = 22.sp)
+                                Spacer(modifier = Modifier.weight(1f))
                                 RadioButton(
                                     selected = selectedLang == "Inglés",
                                     onClick = null
@@ -242,11 +217,13 @@ fun SettingSlider(onBack: () -> Unit = {}) {
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(15.dp)
             ) {
-                Icon(Icons.Default.Favorite, contentDescription = "Favoritos", tint = Color.Black)
+                Icon( imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Favoritos", tint = Color.Black,
+                    modifier = Modifier.size(45.dp))
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Favoritos", fontSize = 18.sp, color = Color.Black)
+                Text("Favoritos", fontSize = 25.sp, color = Color.Black)
+                Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = Icons.Default.ArrowBackIosNew,
                     contentDescription = "Cuenta",
@@ -254,9 +231,12 @@ fun SettingSlider(onBack: () -> Unit = {}) {
                         rotationY = 180f
                     }
                         .padding(10.dp)
+                        .size(30.dp)
                 )
             }
         }
+
+        //componente bottom bar app 
     }
 }
 
