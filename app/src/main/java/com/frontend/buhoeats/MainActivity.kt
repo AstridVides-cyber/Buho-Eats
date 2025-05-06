@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.rememberNavController
+import com.frontend.buhoeats.navigation.AppNavHost
 import com.frontend.buhoeats.ui.screens.SettingSlider
 
 import com.frontend.buhoeats.ui.theme.BuhoEatsTheme
@@ -14,7 +16,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BuhoEatsTheme {
-                SettingSlider()
+                setContent {
+                    val navController = rememberNavController()
+                    AppNavHost(navController = navController)
+                }
                 }
             }
         }

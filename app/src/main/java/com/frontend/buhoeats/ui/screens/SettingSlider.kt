@@ -25,7 +25,8 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingSlider(onBack: () -> Unit = {}) {
+fun SettingSlider(    onNavigateToProfile: () -> Unit = {}
+) {
 
     Scaffold(
         topBar = {
@@ -53,6 +54,7 @@ fun SettingSlider(onBack: () -> Unit = {}) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(15.dp)
+                        .clickable { onNavigateToProfile()}
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Person,
