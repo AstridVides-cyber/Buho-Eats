@@ -17,16 +17,16 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
 @Composable
 fun ProfileTextField(
     label: String,
     value: TextFieldValue,
     onChange: (TextFieldValue) -> Unit,
-    backgroundColor: Color,
-    shape: RoundedCornerShape,
     isEmail: Boolean = false
 ) {
+    val shape = RoundedCornerShape(12.dp)
+    val backgroundColor = Color(0xFFE0E0E0)
+
     Text(
         text = label,
         modifier = Modifier
@@ -36,22 +36,28 @@ fun ProfileTextField(
         fontWeight = FontWeight.SemiBold,
         fontSize = 17.sp
     )
+
     OutlinedTextField(
         value = value,
         onValueChange = onChange,
-        label = { Text(label.removeSuffix(":")) },
+        placeholder = { Text(label.removeSuffix(":")) },
         singleLine = true,
         shape = shape,
         keyboardOptions = if (isEmail) KeyboardOptions(keyboardType = KeyboardType.Email) else KeyboardOptions.Default,
         colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color.Black,
+            unfocusedBorderColor = Color.Black,
             focusedContainerColor = backgroundColor,
             unfocusedContainerColor = backgroundColor,
-            focusedBorderColor = Color.Black,
-            unfocusedBorderColor = Color.Black
+            cursorColor = Color.Black,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            focusedPlaceholderColor = Color.DarkGray,
+            unfocusedPlaceholderColor = Color.DarkGray
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
+            .height(60.dp)
             .padding(bottom = 5.dp)
     )
 }

@@ -1,5 +1,8 @@
 package com.frontend.buhoeats.ui.screens
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,11 +25,19 @@ import androidx.compose.ui.unit.sp
 import com.frontend.buhoeats.R
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.graphicsLayer
+import coil.compose.rememberAsyncImagePainter
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.ProfileTextField
 
 @Composable
 fun ProfileScreen() {
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        selectedImageUri = uri
+    }
+
     Scaffold(
         topBar = {
             //top bar
@@ -70,26 +81,31 @@ fun ProfileScreen() {
                     )
 
                     Image(
-                        painter = painterResource(id = R.drawable.defaulticon),
+                        painter = if (selectedImageUri != null)
+                            rememberAsyncImagePainter(model = selectedImageUri)
+                        else
+                            painterResource(id = R.drawable.defaulticon),
                         contentDescription = "Foto de perfil",
                         modifier = Modifier
                             .size(200.dp)
-                            .clickable { },
-                        contentScale = ContentScale.Crop,
+                            .clickable {
+                                launcher.launch("image/*")
+                            },
+                        contentScale = ContentScale.Crop
                     )
 
-                    Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    val textFieldShape = RoundedCornerShape(12.dp)
-                    val backgroundColor = Color(0xFFE0E0E0)
+                    ProfileTextField("Nombre:", nombre, onChange = { nombre = it })
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    ProfileTextField("Nombre:", nombre, onChange = { nombre = it }, backgroundColor, textFieldShape)
-                    Spacer(modifier = Modifier.height(15.dp))
-                    ProfileTextField("Apellido:", apellido, onChange = { apellido = it }, backgroundColor, textFieldShape)
-                    Spacer(modifier = Modifier.height(15.dp))
-                    ProfileTextField("Correo:", correo, onChange = { correo = it }, backgroundColor, textFieldShape, isEmail = true)
+                    ProfileTextField("Apellido:", apellido, onChange = { apellido = it })
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    Spacer(modifier = Modifier.height(25.dp))
+                    ProfileTextField("Correo:", correo, onChange = { correo = it }, isEmail = true)
+
+
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     Button(
                         onClick = { /* editar */ },

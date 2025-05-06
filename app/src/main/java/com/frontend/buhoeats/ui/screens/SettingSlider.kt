@@ -234,6 +234,7 @@ fun SettingSlider(    onNavigateToProfile: () -> Unit = {}
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(15.dp)
+                        .clickable {  }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.FavoriteBorder,
