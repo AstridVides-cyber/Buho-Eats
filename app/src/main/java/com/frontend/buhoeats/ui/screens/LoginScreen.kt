@@ -43,6 +43,20 @@ fun Login(navControl: NavHostController) {
     val isEmailValid = isValidEmail(email)
     val isEmailNotEmpty = email.isNotBlank()
 
+    val isInErrorState = triedToSubmit && (!isEmailNotEmpty || !isEmailValid)
+    val containerColor = if (isInErrorState) Color(0xFF999aa9) else Color.White
+    val textColor = if (containerColor == Color.White) Color.Black else Color.White
+
+    val isPasswordValid = password.isNotBlank()
+    val isPasswordError = triedToSubmit && !isPasswordValid
+
+    val passwordContainerColor = if (isPasswordError) Color(0xFF999aa9) else Color.White
+    val passwordTextColor = if (passwordContainerColor == Color.White) Color.Black else Color.White
+
+
+
+
+
     val context = LocalContext.current
 
     Surface(
@@ -57,7 +71,7 @@ fun Login(navControl: NavHostController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = "BÚHO EATS",
@@ -74,11 +88,11 @@ fun Login(navControl: NavHostController) {
                 )
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Image(
                 painter = painterResource(id = R.drawable.buho),
                 contentDescription = "Logo Búho Eats",
-                modifier = Modifier.size(200.dp)
+                modifier = Modifier.size(190.dp)
             )
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -96,7 +110,7 @@ fun Login(navControl: NavHostController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(0.dp))
             TextField(
                 value = email,
                 onValueChange = { email = it },
@@ -109,11 +123,18 @@ fun Login(navControl: NavHostController) {
                         style = TextStyle(fontFamily = montserratFontFamily)
                     )
                 },
+                textStyle = TextStyle(
+                    color = textColor,
+                    fontSize = 16.sp,
+                    fontFamily = montserratFontFamily
+                ),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = containerColor,
+                    unfocusedContainerColor = containerColor,
+                    disabledContainerColor = containerColor,
+                    errorContainerColor = containerColor,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
@@ -141,6 +162,7 @@ fun Login(navControl: NavHostController) {
             TextField(
                 value = password,
                 onValueChange = { password = it },
+                isError = triedToSubmit && !isPasswordValid,
                 placeholder = {
                     Text(
                         "Ingrese su contraseña",
@@ -149,12 +171,19 @@ fun Login(navControl: NavHostController) {
                         style = TextStyle(fontFamily = montserratFontFamily)
                     )
                 },
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontFamily = montserratFontFamily
+                ),
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = passwordContainerColor,
+                    unfocusedContainerColor = passwordContainerColor,
+                    disabledContainerColor = passwordContainerColor,
+                    errorContainerColor = passwordContainerColor,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
@@ -169,13 +198,17 @@ fun Login(navControl: NavHostController) {
                     triedToSubmit = true
                     when {
                         !isEmailNotEmpty -> {
-                            Toast.makeText(context, "El campo no debe estar vacío", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "El campo de correo no debe estar vacío", Toast.LENGTH_SHORT).show()
                         }
                         !isEmailValid -> {
                             Toast.makeText(context, "Correo inválido, no es una dirección de correo", Toast.LENGTH_SHORT).show()
                         }
+                        password.isBlank() -> {
+                            Toast.makeText(context, "La contraseña no debe estar vacía", Toast.LENGTH_SHORT).show()
+                        }
                         else -> {
                             Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                            // Aquí puedes navegar o hacer login real
                         }
                     }
                 },
@@ -195,7 +228,6 @@ fun Login(navControl: NavHostController) {
                     )
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
@@ -229,7 +261,7 @@ fun Login(navControl: NavHostController) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = "¿Todavía no tienes cuenta?",
