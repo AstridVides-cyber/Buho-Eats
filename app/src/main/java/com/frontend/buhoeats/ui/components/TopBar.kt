@@ -41,7 +41,7 @@ fun TopBar(){
                 Text(
                     text = "BÚHO EATS",
                     color = Color.White,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(modifier = Modifier.width(1.dp))
                 Image(
