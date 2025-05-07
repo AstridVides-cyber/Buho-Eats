@@ -12,7 +12,7 @@ import com.frontend.buhoeats.ui.screen.SignUp
 fun AppNavigator() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = "signUp") {
         composable("signUp") {
             SignUp(navController)
         }
