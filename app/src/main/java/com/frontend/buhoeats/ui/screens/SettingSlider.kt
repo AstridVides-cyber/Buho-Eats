@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
+import com.frontend.buhoeats.ui.components.TopBar
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingSlider(    onNavigateToProfile: () -> Unit = {}
@@ -30,8 +32,8 @@ fun SettingSlider(    onNavigateToProfile: () -> Unit = {}
 
     Scaffold(
         topBar = {
-                //top bar
-        },
+            TopBar()
+                 },
         bottomBar = {
             BottomNavigationBar()
         }

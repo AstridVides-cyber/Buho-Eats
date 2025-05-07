@@ -33,6 +33,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.components.ProfileTextField
+import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -65,7 +66,7 @@ fun ProfileScreen() {
 
     Scaffold(
         topBar = {
-            // top bar
+            TopBar()
         },
         bottomBar = {
             Column {
@@ -111,7 +112,7 @@ fun ProfileScreen() {
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .padding(horizontal = 40.dp, vertical = 16.dp)
+                    .padding(horizontal = 40.dp, vertical = 20.dp)
                     .padding(bottom = 160.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -131,7 +132,7 @@ fun ProfileScreen() {
                         painterResource(id = R.drawable.defaulticon),
                     contentDescription = "Foto de perfil",
                     modifier = Modifier
-                        .size(200.dp)
+                        .size(175.dp)
                         .clickable { launcher.launch("image/*") },
                     contentScale = ContentScale.Crop
                 )
