@@ -208,7 +208,6 @@ fun Login(navControl: NavHostController) {
                         }
                         else -> {
                             Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                            // Aquí puedes navegar o hacer login real
                         }
                     }
                 },
