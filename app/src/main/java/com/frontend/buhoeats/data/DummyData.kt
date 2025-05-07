@@ -13,7 +13,7 @@ object DummyData {
                 id = 1,
                 name = "Restaurante El Buen Sabor",
                 description = "Comida típica salvadoreña con un toque moderno.",
-                imageUrl = "https://images.unsplash.com/photo-1600891964599-f61ba0e24092",
+                imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0woIaQBSFzyP0C8wOHVoWIHPfEFls8y1U_w&s",
                 categories = listOf("Salvadoreña", "Típica", "Familiar"),
                 contactInfo = ContactInfo(
                     email = "contacto@elbuen.sv",
