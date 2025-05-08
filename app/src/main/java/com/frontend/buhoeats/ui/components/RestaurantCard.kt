@@ -16,26 +16,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.frontend.buhoeats.data.Restaurant
 
 @Composable
-fun RestaurantCard(name: String) {
+fun RestaurantCard(restaurant: Restaurant) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            //Aquí se debe ingresar las imagenes
-            /*Image(
-                painter = painterResource(id = R.drawable.example_image),
+        Box(modifier = Modifier.fillMaxSize()) {
+            AsyncImage(
+                model = restaurant.imageUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
-            )*/
+            )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -44,7 +44,7 @@ fun RestaurantCard(name: String) {
                     .padding(12.dp)
             ) {
                 Text(
-                    text = name,
+                    text = restaurant.name,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White,
                     fontSize = 24.sp

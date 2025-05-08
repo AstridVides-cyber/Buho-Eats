@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
@@ -19,7 +20,7 @@ import com.frontend.buhoeats.ui.components.TopBar
 
 @Composable
 fun MenuScreen() {
-    val restaurantList = listOf("Delicias Sosa", "Delicias Sosa", "Delicias Sosa")
+    val restaurantList = DummyData.getRestaurants()
     var selectedFilter by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
@@ -40,7 +41,8 @@ fun MenuScreen() {
                 Spacer(modifier = Modifier.height(16.dp))
                 FilterSection(
                     onFilterSelected = { selectedFilter = it },
-                    onReset = { selectedFilter = null }
+                    onReset = { selectedFilter = null },
+                    resultCount = restaurantList.size
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -51,12 +53,13 @@ fun MenuScreen() {
                 Spacer(modifier = Modifier.height(8.dp))
             }
             items(restaurantList) { restaurant ->
-                RestaurantCard(name = restaurant)
+                RestaurantCard(restaurant = restaurant)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
 }
+
 
 @Composable
 fun GreetingSection() {
@@ -85,7 +88,8 @@ fun GreetingSection() {
 @Composable
 fun FilterSection(
     onFilterSelected: (String) -> Unit,
-    onReset: () -> Unit
+    onReset: () -> Unit,
+    resultCount: Int
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Row(
@@ -96,31 +100,20 @@ fun FilterSection(
                 containerColor = Color(0xFF588B8B)
             )
 
-            Button(
-                onClick = { onFilterSelected("Desayuno") },
-                colors = buttonColors
-            ) {
+            Button(onClick = { onFilterSelected("Desayuno") }, colors = buttonColors) {
                 Text("Desayuno", color = Color.White)
             }
-            Button(
-                onClick = { onFilterSelected("Almuerzo") },
-                colors = buttonColors
-            ) {
+            Button(onClick = { onFilterSelected("Almuerzo") }, colors = buttonColors) {
                 Text("Almuerzo", color = Color.White)
             }
-            Button(
-                onClick = { onFilterSelected("Cena") },
-                colors = buttonColors
-            ) {
+            Button(onClick = { onFilterSelected("Cena") }, colors = buttonColors) {
                 Text("Cena", color = Color.White)
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Resultados: 3", fontSize = 16.sp)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(text = "Resultados: $resultCount", fontSize = 16.sp)
             Spacer(modifier = Modifier.width(8.dp))
             OutlinedButton(onClick = { onReset() }) {
                 Text("Restablecer")
@@ -128,5 +121,6 @@ fun FilterSection(
         }
     }
 }
+
 
 
