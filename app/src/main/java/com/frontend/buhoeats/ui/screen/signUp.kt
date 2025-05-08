@@ -1,5 +1,7 @@
 package com.frontend.buhoeats.ui.screen
 
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,7 +58,7 @@ val montserratFontFamily = FontFamily(
 @Composable
 fun SignUp(navController: NavController) {
 
-
+    val context = LocalContext.current
 
     var lastname by remember { mutableStateOf("") }
 
@@ -238,7 +240,6 @@ fun SignUp(navController: NavController) {
             TextField(
                 value = email,
                 onValueChange = { email = it },
-                isError = triedToSubmit && (!isEmailNotEmpty || !isEmailValid),
                 placeholder = {
                     Text(
                         "Ingrese su correo",
@@ -338,14 +339,40 @@ fun SignUp(navController: NavController) {
             Button(
                 onClick = {
                     triedToSubmit = true
-                    if (isNameNotEmpty && isLastnameNotEmpty   && isPasswordNotEmpty && isConfirmPasswordNotEmpty && isConfirmPasswordMatch) {
-
-                        //navController.navigate("home")
+                    when {
+                        !isNameNotEmpty -> {
+                            Toast.makeText(context, "El nombre no debe estar vacío", Toast.LENGTH_SHORT).show()
+                        }
+                        !isLastnameNotEmpty -> {
+                            Toast.makeText(context, "El apellido no debe estar vacío", Toast.LENGTH_SHORT).show()
+                        }
+                        !isEmailNotEmpty -> {
+                            Toast.makeText(context, "El correo no debe estar vacío", Toast.LENGTH_SHORT).show()
+                        }
+                        !isEmailValid -> {
+                            Toast.makeText(context, "Correo inválido, no es una dirección de correo válida", Toast.LENGTH_SHORT).show()
+                        }
+                        !isPasswordNotEmpty -> {
+                            Toast.makeText(context, "La contraseña no debe estar vacía", Toast.LENGTH_SHORT).show()
+                        }
+                        !isConfirmPasswordNotEmpty -> {
+                            Toast.makeText(context, "Debe confirmar su contraseña", Toast.LENGTH_SHORT).show()
+                        }
+                        !isConfirmPasswordMatch -> {
+                            Toast.makeText(context, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {
+                            Toast.makeText(context, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                },
-                modifier = Modifier.width(300.dp).height(56.dp).shadow(elevation= 8.dp, shape= RoundedCornerShape(8.dp)),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C))
+
+        },
+            modifier = Modifier
+                .width(300.dp)
+                .height(56.dp)
+                .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp)),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C)),
             ) {
                 Text(
                     text = "Registrarte",
