@@ -1,4 +1,4 @@
-package com.frontend.buhoeats.ui.screen
+package com.frontend.buhoeats.ui.screens
 
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import com.frontend.buhoeats.ui.components.CustomTextField
 
 
 fun isValidEmail(email: String): Boolean {
@@ -156,210 +157,64 @@ fun SignUp(navController: NavController) {
                 }
             Spacer( modifier = Modifier.height(24.dp))
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                Text(
-                    text = "Nombre:",
-                    style = TextStyle(
-                        fontFamily = montserratFontFamily,
-                        color = Color.White,
-                        fontSize = 24.sp
-
-                    )
-                )
-
-            }
-
-            Spacer( modifier = Modifier.height(12.dp))
-
-            TextField(
-
+            CustomTextField(
+                label = "Nombre",
                 value = name,
-                onValueChange = { newValue ->
-                    if (newValue.any { it.isDigit() }) {
-                        Toast.makeText(context, "El nombre no puede contener números", Toast.LENGTH_SHORT).show()
-                    }
-                    name = newValue.filter { !it.isDigit() }
-                },
-
-                placeholder = { Text("Ingrese su nombre", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
-                textStyle = TextStyle(
-                    color = nameTextColor,
-                    fontSize = 16.sp,
-                    fontFamily = montserratFontFamily
-                ),                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = nameContainerColor,
-                    unfocusedContainerColor = nameContainerColor,
-                    focusedTextColor = nameTextColor,
-                    unfocusedTextColor = nameTextColor,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-
-                )
+                onValueChange = { name = it },
+                placeholder = "Ingrese su nombre",
+                textColor = nameTextColor,
+                containerColor = nameContainerColor,
+                validateDigits = true,
+                contextMessage = "El nombre no puede contener números"
             )
-
-            Spacer( modifier = Modifier.height(12.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                Text(
-                    text = "Apellido:",
-                    style = TextStyle(
-                        fontFamily = montserratFontFamily,
-                        color = Color.White,
-                        fontSize = 24.sp
-                    )
-                )
-            }
-            Spacer( modifier = Modifier.height(12.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                TextField(
-                    value = lastname,
-                    onValueChange = { newValue ->
-                        if (newValue.any { it.isDigit() }) {
-                            Toast.makeText(context, "El apellido no puede contener números", Toast.LENGTH_SHORT).show()
-                        }
-                        lastname = newValue.filter { !it.isDigit() }
-                    },
-                    placeholder = { Text("Ingrese su apellido", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
-                    textStyle = TextStyle(
-                        color = lastnameTextColor,
-                        fontSize = 16.sp,
-                        fontFamily = montserratFontFamily
-                    ),
-
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = lastnameContainerColor,
-                        unfocusedContainerColor =lastnameContainerColor,
-                        focusedTextColor = lastnameTextColor,
-                        unfocusedTextColor = lastnameTextColor,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    )
-                )}
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    text = "Correo:",
-                    style = TextStyle(
-                        fontFamily = montserratFontFamily,
-                        color = Color.White,
-                        fontSize = 24.sp
-                    )
-                )
-            }
+            CustomTextField(
+                label = "Apellido",
+                value = lastname,
+                onValueChange = { lastname = it },
+                placeholder = "Ingrese su apellido",
+                textColor = lastnameTextColor,
+                containerColor = lastnameContainerColor,
+                validateDigits = true,
+                contextMessage = "El apellido no puede contener números"
+            )
 
-            Spacer( modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            TextField(
+            CustomTextField(
+                label = "Correo",
                 value = email,
                 onValueChange = { email = it },
-                placeholder = {
-                    Text(
-                        "Ingrese su correo",
-                        color = Color.Gray,
-                        fontSize = 16.sp,
-                        style = TextStyle(fontFamily = montserratFontFamily)
-                    )
-                },
-                textStyle = TextStyle(
-                    color = textColor,
-                    fontSize = 16.sp,
-                    fontFamily = montserratFontFamily
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = containerColor,
-                    unfocusedContainerColor = containerColor,
-                    disabledContainerColor = containerColor,
-                    errorContainerColor = containerColor,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                )
+                placeholder = "Ingrese su correo",
+                textColor = textColor,
+                containerColor = containerColor
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                Text(
-                    text = "Contraseña:",
-                    style = TextStyle(
-                        fontFamily = montserratFontFamily,
-                        color = Color.White,
-                        fontSize = 24.sp
-                    )
-                )
-            }
             Spacer(modifier = Modifier.height(12.dp))
 
-            TextField(
+            CustomTextField(
+                label = "Contraseña",
                 value = password,
                 onValueChange = { password = it },
-                placeholder = { Text("Ingrese su contraseña", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = passwordContainerColor,
-                    unfocusedContainerColor = passwordContainerColor,
-                    focusedTextColor = passwordTextColor,
-                    unfocusedTextColor = passwordTextColor,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                )
+                placeholder = "Ingrese su contraseña",
+                textColor = passwordTextColor,
+                containerColor = passwordContainerColor,
+                isPassword = true
             )
 
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                Text(
-                    text = "Confirme su contraseña:",
-                    style = TextStyle(
-                        fontFamily = montserratFontFamily,
-                        color = Color.White,
-                        fontSize = 24.sp
-                    )
-                )
-            }
             Spacer(modifier = Modifier.height(12.dp))
 
-            TextField(
+            CustomTextField(
+                label = "Confirmar contraseña",
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                placeholder = { Text("Confirme su contraseña", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = confirmPasswordContainerColor,
-                    unfocusedContainerColor = confirmPasswordContainerColor,
-                    focusedTextColor = confirmPasswordTextColor,
-                    unfocusedTextColor = confirmPasswordTextColor,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                )
+                placeholder = "Repita su contraseña",
+                textColor = confirmPasswordTextColor,
+                containerColor = confirmPasswordContainerColor,
+                isPassword = true
             )
-
 
             Spacer(modifier = Modifier.height(24.dp))
             Button(

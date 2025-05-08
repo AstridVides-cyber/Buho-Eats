@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.frontend.buhoeats.ui.screen.SignUp
+import com.frontend.buhoeats.ui.screens.SignUp
 //import com.frontend.buhoeats.ui.screen.Login
 
 @Composable
@@ -17,8 +17,8 @@ fun AppNavigator() {
             SignUp(navController)
         }
         /*composable("login") {
-            Login(navController)
-        }*/
+            Login(navController)*/
+
     }
 
 
