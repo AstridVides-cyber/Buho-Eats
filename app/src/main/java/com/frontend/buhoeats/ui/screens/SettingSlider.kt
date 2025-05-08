@@ -27,12 +27,16 @@ import com.frontend.buhoeats.ui.components.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingSlider(    onNavigateToProfile: () -> Unit = {}
+fun SettingSlider( onNavigateToProfile: () -> Unit = {},
+                   onBack: () -> Unit = {}
 ) {
 
     Scaffold(
         topBar = {
-            TopBar()
+            TopBar(
+                showBackIcon = true,
+                onNavClick = onBack
+            )
                  },
         bottomBar = {
             BottomNavigationBar()

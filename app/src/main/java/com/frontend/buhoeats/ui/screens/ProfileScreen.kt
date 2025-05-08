@@ -29,15 +29,21 @@ import androidx.compose.ui.unit.sp
 import com.frontend.buhoeats.R
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import coil.compose.rememberAsyncImagePainter
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.components.ProfileTextField
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.utils.ValidatorUtils
+
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(onBack: () -> Unit = {}
+) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -66,7 +72,10 @@ fun ProfileScreen() {
 
     Scaffold(
         topBar = {
-            TopBar()
+            TopBar(
+                showBackIcon = true,
+                onNavClick = onBack
+            )
         },
         bottomBar = {
             Column {
@@ -172,18 +181,31 @@ fun ProfileScreen() {
                 Button(
                     onClick = {
                         var hasError = false
+
                         if (nombre.text.isBlank()) {
                             nombreError = "El nombre no puede estar vacío"
                             hasError = true
+                        } else if (!ValidatorUtils.isOnlyLetters(nombre.text)) {
+                            nombreError = "Solo se permiten letras"
+                            hasError = true
                         }
+
                         if (apellido.text.isBlank()) {
                             apellidoError = "El apellido no puede estar vacío"
                             hasError = true
+                        } else if (!ValidatorUtils.isOnlyLetters(apellido.text)) {
+                            apellidoError = "Solo se permiten letras"
+                            hasError = true
                         }
+
                         if (correo.text.isBlank()) {
                             correoError = "El correo no puede estar vacío"
                             hasError = true
+                        } else if (!ValidatorUtils.isValidEmail(correo.text)) {
+                            correoError = "Formato de correo inválido"
+                            hasError = true
                         }
+
                         if (!hasError) {
                             // Guardar perfil
                         }
