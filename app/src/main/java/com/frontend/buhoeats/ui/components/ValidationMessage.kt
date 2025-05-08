@@ -1,4 +1,5 @@
-package com.frontend.buhoeats.ui
+package com.frontend.buhoeats.ui.components
+
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -17,8 +18,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.frontend.buhoeats.ui.screens.montserratFontFamily
-import java.time.format.TextStyle
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -32,7 +31,7 @@ fun ValidationMessage(
             .padding(top = 4.dp)
             .shadow(2.dp, RoundedCornerShape(8.dp)),
         shape = RoundedCornerShape(8.dp),
-        color = Color(0xFFFFE5E5) // Rojo clarito de fondo
+        color = Color(0xFFFFE5E5)
     ) {
         Row(
             modifier = Modifier.padding(8.dp),
@@ -42,7 +41,7 @@ fun ValidationMessage(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = message,
-                color = Color(0xFFD32F2F), // Rojo oscuro
+                color = Color(0xFFD32F2F),
                 fontSize = 14.sp,
 
                 )

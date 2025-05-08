@@ -10,10 +10,11 @@ import com.frontend.buhoeats.ui.screens.Login
 fun AppNavigator() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "login"){
-        composable("login"){
+    NavHost(navController = navController, startDestination = Screens.Login.route) {
+        composable(Screens.Login.route) {
             Login(navController)
         }
     }
+
 
 }

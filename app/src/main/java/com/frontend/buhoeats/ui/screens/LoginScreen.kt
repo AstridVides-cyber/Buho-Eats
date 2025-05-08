@@ -1,6 +1,7 @@
 package com.frontend.buhoeats.ui.screens
 
-import android.widget.Toast
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -22,41 +23,27 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
+import com.frontend.buhoeats.navigation.AppNavigator
+import com.frontend.buhoeats.utils.ValidatorUtils.isValidEmail
+import com.frontend.buhoeats.ui.components.ValidationMessage
 
 val montserratFontFamily = FontFamily(
     Font(R.font.montserrat_bold)
 )
-
-fun isValidEmail(email: String): Boolean {
-    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-}
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Login(navControl: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var triedToSubmit by remember { mutableStateOf(false) }
-    val isEmailValid = isValidEmail(email)
-    val isEmailNotEmpty = email.isNotBlank()
+    var emailError by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf("") }
 
-    val isInErrorState = triedToSubmit && (!isEmailNotEmpty || !isEmailValid)
-    val containerColor = if (isInErrorState) Color(0xFF999aa9) else Color.White
-    val textColor = if (containerColor == Color.White) Color.Black else Color.White
-
-    val isPasswordValid = password.isNotBlank()
-    val isPasswordError = triedToSubmit && !isPasswordValid
-
-    val passwordContainerColor = if (isPasswordError) Color(0xFF999aa9) else Color.White
-    val passwordTextColor = if (passwordContainerColor == Color.White) Color.Black else Color.White
-
-
-
-
-
+    val containerColor = Color.White
     val context = LocalContext.current
 
     Surface(
@@ -67,6 +54,7 @@ fun Login(navControl: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(32.dp)
+                .padding(top = 40.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -110,11 +98,12 @@ fun Login(navControl: NavHostController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(0.dp))
             TextField(
                 value = email,
-                onValueChange = { email = it },
-                isError = triedToSubmit && (!isEmailNotEmpty || !isEmailValid),
+                onValueChange = {
+                    email = it
+                    if (emailError.isNotEmpty()) emailError = ""
+                },
                 placeholder = {
                     Text(
                         "Ingrese su correo",
@@ -124,10 +113,11 @@ fun Login(navControl: NavHostController) {
                     )
                 },
                 textStyle = TextStyle(
-                    color = textColor,
+                    color = Color.Black,
                     fontSize = 16.sp,
                     fontFamily = montserratFontFamily
                 ),
+                isError = emailError.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
@@ -141,6 +131,10 @@ fun Login(navControl: NavHostController) {
                     errorIndicatorColor = Color.Transparent
                 )
             )
+
+            if (emailError.isNotEmpty()) {
+                ValidationMessage(message = emailError)
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -157,12 +151,13 @@ fun Login(navControl: NavHostController) {
                     )
                 )
             }
-            Spacer(modifier = Modifier.height(12.dp))
 
             TextField(
                 value = password,
-                onValueChange = { password = it },
-                isError = triedToSubmit && !isPasswordValid,
+                onValueChange = {
+                    password = it
+                    if (passwordError.isNotEmpty()) passwordError = ""
+                },
                 placeholder = {
                     Text(
                         "Ingrese su contraseña",
@@ -177,13 +172,14 @@ fun Login(navControl: NavHostController) {
                     fontFamily = montserratFontFamily
                 ),
                 visualTransformation = PasswordVisualTransformation(),
+                isError = passwordError.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = passwordContainerColor,
-                    unfocusedContainerColor = passwordContainerColor,
-                    disabledContainerColor = passwordContainerColor,
-                    errorContainerColor = passwordContainerColor,
+                    focusedContainerColor = containerColor,
+                    unfocusedContainerColor = containerColor,
+                    disabledContainerColor = containerColor,
+                    errorContainerColor = containerColor,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
@@ -191,24 +187,31 @@ fun Login(navControl: NavHostController) {
                 )
             )
 
+            if (passwordError.isNotEmpty()) {
+                ValidationMessage(message = passwordError)
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
-                    triedToSubmit = true
-                    when {
-                        !isEmailNotEmpty -> {
-                            Toast.makeText(context, "El campo de correo no debe estar vacío", Toast.LENGTH_SHORT).show()
-                        }
-                        !isEmailValid -> {
-                            Toast.makeText(context, "Correo inválido, no es una dirección de correo", Toast.LENGTH_SHORT).show()
-                        }
-                        password.isBlank() -> {
-                            Toast.makeText(context, "La contraseña no debe estar vacía", Toast.LENGTH_SHORT).show()
-                        }
-                        else -> {
-                            Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                        }
+                    var hasError = false
+
+                    if (email.isBlank()) {
+                        emailError = "El correo no puede estar vacío"
+                        hasError = true
+                    } else if (!isValidEmail(email)) {
+                        emailError = "Correo inválido"
+                        hasError = true
+                    }
+
+                    if (password.isBlank()) {
+                        passwordError = "La contraseña no puede estar vacía"
+                        hasError = true
+                    }
+
+                    if (!hasError) {
+                        // Lógica de login (por ahora no hace nada)
                     }
                 },
                 modifier = Modifier
@@ -227,8 +230,8 @@ fun Login(navControl: NavHostController) {
                     )
                 )
             }
-            Spacer(modifier = Modifier.height(24.dp))
 
+            Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = { /* Sesión con Google */ },
                 modifier = Modifier
@@ -236,9 +239,7 @@ fun Login(navControl: NavHostController) {
                     .height(56.dp)
                     .shadow(8.dp, RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4285F4)
-                )
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4285F4))
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -293,4 +294,10 @@ fun Login(navControl: NavHostController) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun Loginprev(){
+    AppNavigator()
 }
