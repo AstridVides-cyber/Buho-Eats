@@ -63,7 +63,7 @@ fun TopBar(
         navigationIcon = {
             if (showMenuIcon || showBackIcon) {
                 IconButton(onClick = { onNavClick?.invoke() } ,
-                    modifier = Modifier.padding(top = 8.dp)) {
+                    modifier = Modifier.padding(top = 4.dp)) {
                     Icon(
                         imageVector = if (showBackIcon) Icons.Default.ArrowBackIosNew else Icons.Default.Menu,
                         contentDescription = if (showBackIcon) "Atras" else "Menu",
