@@ -1,5 +1,6 @@
 package com.frontend.buhoeats.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,10 +9,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
@@ -31,34 +35,48 @@ fun MenuScreen() {
             BottomNavigationBar()
         }
     ) { innerPadding ->
-        LazyColumn(
+        Box(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
         ) {
-            item {
-                GreetingSection()
-                Spacer(modifier = Modifier.height(16.dp))
-                FilterSection(
-                    onFilterSelected = { selectedFilter = it },
-                    onReset = { selectedFilter = null },
-                    resultCount = restaurantList.size
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Restaurantes",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            items(restaurantList) { restaurant ->
-                RestaurantCard(restaurant = restaurant)
-                Spacer(modifier = Modifier.height(8.dp))
+            Image(
+                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                item {
+                    GreetingSection()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    FilterSection(
+                        onFilterSelected = { selectedFilter = it },
+                        onReset = { selectedFilter = null },
+                        resultCount = restaurantList.size
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Restaurantes",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+                items(restaurantList) { restaurant ->
+                    RestaurantCard(restaurant = restaurant)
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
         }
     }
 }
+
 
 
 @Composable
