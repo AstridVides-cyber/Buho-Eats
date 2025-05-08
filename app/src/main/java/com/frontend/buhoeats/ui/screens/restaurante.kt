@@ -1,5 +1,6 @@
 package com.frontend.buhoeats.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
@@ -17,8 +18,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import com.frontend.buhoeats.ui.components.RatingBar
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.ui.res.painterResource
 import com.frontend.buhoeats.data.DummyData
 import coil.compose.AsyncImage
+import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.Restaurant
 import com.frontend.buhoeats.ui.components.ContactCard
 import com.frontend.buhoeats.ui.components.DishCard
@@ -26,7 +29,6 @@ import com.frontend.buhoeats.ui.components.Opinion
 
 @Composable
 fun RestauranteScreen() {
-
     val restaurant = DummyData.getRestaurants()[0]
 
     Scaffold(
@@ -37,10 +39,22 @@ fun RestauranteScreen() {
             BottomNavigationBar()
         }
     ) { paddingValues ->
-        RestauranteContent(
-            modifier = Modifier.padding(paddingValues),
-            restaurant = restaurant
-        )
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)) {
+
+            Image(
+                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            RestauranteContent(
+                modifier = Modifier.fillMaxSize(),
+                restaurant = restaurant
+            )
+        }
     }
 }
 
