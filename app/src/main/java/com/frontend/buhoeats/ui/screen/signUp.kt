@@ -45,10 +45,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 
+
 fun isValidEmail(email: String): Boolean {
     return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
-
 val montserratFontFamily = FontFamily(
     Font(R.font.montserrat_bold)
 )
@@ -56,7 +56,8 @@ val montserratFontFamily = FontFamily(
 @Composable
 fun SignUp(navController: NavController) {
 
-    var name by remember { mutableStateOf("") }
+
+
     var lastname by remember { mutableStateOf("") }
 
     var email by remember { mutableStateOf("") }
@@ -65,8 +66,40 @@ fun SignUp(navController: NavController) {
 
 
     var triedToSubmit by remember { mutableStateOf(false) }
+
+    //name
+    var name by remember { mutableStateOf("") }
+    val isNameNotEmpty = name.isNotBlank()
+    val isNameError = triedToSubmit && !isNameNotEmpty
+    val nameContainerColor = if (isNameError) Color(0xFF999aa9) else Color.White
+    val nameTextColor = if (nameContainerColor == Color.White) Color.Black else Color.White
+
+    //last name
+    val isLastnameNotEmpty = lastname.isNotBlank()
+    val isLastnameError = triedToSubmit && !isLastnameNotEmpty
+    val lastnameContainerColor = if (isLastnameError) Color(0xFF999aa9) else Color.White
+    val lastnameTextColor = if (lastnameContainerColor == Color.White) Color.Black else Color.White
+
+    //password
+    val isPasswordNotEmpty = password.isNotBlank()
+    val isPasswordError = triedToSubmit && !isPasswordNotEmpty
+    val passwordContainerColor = if (isPasswordError) Color(0xFF999aa9) else Color.White
+    val passwordTextColor = if (passwordContainerColor == Color.White) Color.Black else Color.White
+
+    //confirmpassword
+    val isConfirmPasswordNotEmpty = confirmPassword.isNotBlank()
+    val isConfirmPasswordMatch = password == confirmPassword
+    val isConfirmPasswordError = triedToSubmit && (!isConfirmPasswordNotEmpty || !isConfirmPasswordMatch)
+    val confirmPasswordContainerColor = if (isConfirmPasswordError) Color(0xFF999aa9) else Color.White
+    val confirmPasswordTextColor = if (confirmPasswordContainerColor == Color.White) Color.Black else Color.White
+
+    //gmail
     val isEmailValid = isValidEmail(email)
     val isEmailNotEmpty = email.isNotBlank()
+    val isInErrorState = triedToSubmit && (!isEmailNotEmpty || !isEmailValid)
+    val containerColor = if (isInErrorState) Color(0xFF999aa9) else Color.White
+    val textColor = if (containerColor == Color.White) Color.Black else Color.White
+
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -115,7 +148,7 @@ fun SignUp(navController: NavController) {
                 Image(
                     painter = painterResource(id = R.drawable.buho),
                     contentDescription = "Logo Búho Eats",
-                    modifier = Modifier.size(64.dp)
+                    modifier = Modifier.size(50.dp)
                 )
 
                 }
@@ -140,22 +173,18 @@ fun SignUp(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = nameContainerColor,
+                    unfocusedContainerColor = nameContainerColor,
+                    focusedTextColor = nameTextColor,
+                    unfocusedTextColor = nameTextColor,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     errorIndicatorColor = Color.Transparent
+
                 )
             )
-            if (triedToSubmit && !isEmailNotEmpty) {
-                Text(
-                    text = "El campo no debe estar vacío",
-                    color = Color.Red,
-                    fontSize = 14.sp,
-                    style = TextStyle(fontFamily = montserratFontFamily)
-                )
-            }
+
             Spacer( modifier = Modifier.height(12.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
@@ -177,25 +206,23 @@ fun SignUp(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = lastnameContainerColor,
+                    unfocusedContainerColor =lastnameContainerColor,
+                    focusedTextColor = lastnameTextColor,
+                    unfocusedTextColor = lastnameTextColor,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     errorIndicatorColor = Color.Transparent
                 )
             )
-            if (triedToSubmit && !isEmailNotEmpty) {
-                Text(
-                    text = "El campo no debe estar vacío",
-                    color = Color.Red,
-                    fontSize = 14.sp,
-                    style = TextStyle(fontFamily = montserratFontFamily)
-                )
-            }
-            Spacer( modifier = Modifier.height(12.dp))
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
                 Text(
                     text = "Correo:",
                     style = TextStyle(
@@ -205,40 +232,40 @@ fun SignUp(navController: NavController) {
                     )
                 )
             }
-            Spacer(modifier = Modifier.height(12.dp))
+
+            Spacer( modifier = Modifier.height(12.dp))
+
             TextField(
                 value = email,
                 onValueChange = { email = it },
                 isError = triedToSubmit && (!isEmailNotEmpty || !isEmailValid),
-                placeholder = { Text("ingrese su correo", color = Color.Gray, fontSize = 16.sp ,style = TextStyle(fontFamily = montserratFontFamily)) },
-
+                placeholder = {
+                    Text(
+                        "Ingrese su correo",
+                        color = Color.Gray,
+                        fontSize = 16.sp,
+                        style = TextStyle(fontFamily = montserratFontFamily)
+                    )
+                },
+                textStyle = TextStyle(
+                    color = textColor,
+                    fontSize = 16.sp,
+                    fontFamily = montserratFontFamily
+                ),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = containerColor,
+                    unfocusedContainerColor = containerColor,
+                    disabledContainerColor = containerColor,
+                    errorContainerColor = containerColor,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     errorIndicatorColor = Color.Transparent
                 )
             )
-            if (triedToSubmit && !isEmailNotEmpty) {
-                Text(
-                    text = "El campo no debe estar vacío",
-                    color = Color.Red,
-                    fontSize = 14.sp,
-                    style = TextStyle(fontFamily = montserratFontFamily)
-                )
-            }
-            else if (triedToSubmit && !isEmailValid) {
-                Text(
-                    text = "Correo inválido, no es una direccion de correo",
-                    color = Color.Red,
-                    fontSize = 14.sp,
-                    style = TextStyle(fontFamily = montserratFontFamily)
-                )
-            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
@@ -261,22 +288,17 @@ fun SignUp(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = passwordContainerColor,
+                    unfocusedContainerColor = passwordContainerColor,
+                    focusedTextColor = passwordTextColor,
+                    unfocusedTextColor = passwordTextColor,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     errorIndicatorColor = Color.Transparent
                 )
             )
-            if (triedToSubmit && !isEmailNotEmpty) {
-                Text(
-                    text = "El campo no debe estar vacío",
-                    color = Color.Red,
-                    fontSize = 14.sp,
-                    style = TextStyle(fontFamily = montserratFontFamily)
-                )
-            }
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -300,37 +322,26 @@ fun SignUp(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = confirmPasswordContainerColor,
+                    unfocusedContainerColor = confirmPasswordContainerColor,
+                    focusedTextColor = confirmPasswordTextColor,
+                    unfocusedTextColor = confirmPasswordTextColor,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     errorIndicatorColor = Color.Transparent
                 )
             )
-            if (triedToSubmit && !isEmailNotEmpty) {
-                Text(
-                    text = "El campo no debe estar vacío",
-                    color = Color.Red,
-                    fontSize = 14.sp,
-                    style = TextStyle(fontFamily = montserratFontFamily)
-                )
-            }
-            if (triedToSubmit && password != confirmPassword) {
-                Text(
-                    text = "Las contraseñas no coinciden",
-                    color = Color.Red,
-                    fontSize = 14.sp,
-                    style = TextStyle(fontFamily = montserratFontFamily)
-                )
-            }
+
 
             Spacer(modifier = Modifier.height(24.dp))
-
             Button(
-                onClick =  {
+                onClick = {
                     triedToSubmit = true
-                    if (isEmailValid) { }
+                    if (isNameNotEmpty && isLastnameNotEmpty   && isPasswordNotEmpty && isConfirmPasswordNotEmpty && isConfirmPasswordMatch) {
+
+                        //navController.navigate("home")
+                    }
                 },
                 modifier = Modifier.width(300.dp).height(56.dp).shadow(elevation= 8.dp, shape= RoundedCornerShape(8.dp)),
                 shape = RoundedCornerShape(8.dp),
