@@ -163,16 +163,30 @@ fun SignUp(navController: NavController) {
                         fontFamily = montserratFontFamily,
                         color = Color.White,
                         fontSize = 24.sp
+
                     )
                 )
+
             }
+
             Spacer( modifier = Modifier.height(12.dp))
 
             TextField(
+
                 value = name,
-                onValueChange = { name = it },
+                onValueChange = { newValue ->
+                    if (newValue.any { it.isDigit() }) {
+                        Toast.makeText(context, "El nombre no puede contener números", Toast.LENGTH_SHORT).show()
+                    }
+                    name = newValue.filter { !it.isDigit() }
+                },
+
                 placeholder = { Text("Ingrese su nombre", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
-                modifier = Modifier.fillMaxWidth(),
+                textStyle = TextStyle(
+                    color = nameTextColor,
+                    fontSize = 16.sp,
+                    fontFamily = montserratFontFamily
+                ),                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = nameContainerColor,
@@ -201,23 +215,35 @@ fun SignUp(navController: NavController) {
             }
             Spacer( modifier = Modifier.height(12.dp))
 
-            TextField(
-                value = lastname,
-                onValueChange = { lastname = it },
-                placeholder = { Text("Ingrese su apellido", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = lastnameContainerColor,
-                    unfocusedContainerColor =lastnameContainerColor,
-                    focusedTextColor = lastnameTextColor,
-                    unfocusedTextColor = lastnameTextColor,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                )
-            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
+                TextField(
+                    value = lastname,
+                    onValueChange = { newValue ->
+                        if (newValue.any { it.isDigit() }) {
+                            Toast.makeText(context, "El apellido no puede contener números", Toast.LENGTH_SHORT).show()
+                        }
+                        lastname = newValue.filter { !it.isDigit() }
+                    },
+                    placeholder = { Text("Ingrese su apellido", color = Color.Gray, fontSize = 16.sp, style = TextStyle(fontFamily = montserratFontFamily)) },
+                    textStyle = TextStyle(
+                        color = lastnameTextColor,
+                        fontSize = 16.sp,
+                        fontFamily = montserratFontFamily
+                    ),
+
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = lastnameContainerColor,
+                        unfocusedContainerColor =lastnameContainerColor,
+                        focusedTextColor = lastnameTextColor,
+                        unfocusedTextColor = lastnameTextColor,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    )
+                )}
 
             Spacer(modifier = Modifier.height(12.dp))
 
