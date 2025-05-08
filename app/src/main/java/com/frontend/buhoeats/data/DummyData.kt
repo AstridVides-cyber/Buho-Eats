@@ -1,10 +1,5 @@
 package com.frontend.buhoeats.data
 
-import com.frontend.buhoeats.models.ContactInfo
-import com.frontend.buhoeats.models.Dish
-import com.frontend.buhoeats.models.Restaurant
-import com.frontend.buhoeats.models.Review
-
 object DummyData {
 
     fun getRestaurants(): List<Restaurant> {

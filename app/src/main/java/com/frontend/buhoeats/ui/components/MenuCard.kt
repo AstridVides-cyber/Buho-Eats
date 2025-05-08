@@ -27,9 +27,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.frontend.buhoeats.models.ContactInfo
-import com.frontend.buhoeats.models.Dish
-import com.frontend.buhoeats.models.Review
+import com.frontend.buhoeats.data.ContactInfo
+import com.frontend.buhoeats.data.Dish
+import com.frontend.buhoeats.data.Review
 
 @Composable
 fun ContactCard(contactInfo: ContactInfo) {

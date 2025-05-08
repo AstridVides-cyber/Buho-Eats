@@ -17,10 +17,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import com.frontend.buhoeats.ui.components.RatingBar
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.ui.tooling.preview.Preview
 import com.frontend.buhoeats.data.DummyData
 import coil.compose.AsyncImage
-import com.frontend.buhoeats.models.Restaurant
+import com.frontend.buhoeats.data.Restaurant
 import com.frontend.buhoeats.ui.components.ContactCard
 import com.frontend.buhoeats.ui.components.DishCard
 import com.frontend.buhoeats.ui.components.Opinion
