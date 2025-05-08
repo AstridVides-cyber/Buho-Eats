@@ -1,4 +1,4 @@
-package com.frontend.buhoeats.data
+package com.frontend.buhoeats.models
 
 import java.io.Serializable
 

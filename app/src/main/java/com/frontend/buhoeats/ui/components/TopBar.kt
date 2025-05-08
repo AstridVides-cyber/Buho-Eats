@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,27 +23,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.frontend.buhoeats.R
-
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun TopBar(){
-
+fun TopBar(
+    showMenuIcon: Boolean = false,
+    showBackIcon: Boolean = false,
+    onNavClick: (() -> Unit)? = null
+) {
     TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFF3D405B)
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF3D405B)
         ),
         title = {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(top = 5.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "BÚHO EATS",
                     color = Color.White,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.ExtraBold
                 )
                 Spacer(modifier = Modifier.width(1.dp))
                 Image(
@@ -52,13 +59,24 @@ fun TopBar(){
             }
         },
         navigationIcon = {
-            IconButton(onClick = { /* TODO: abrir drawer */ }) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "Menu",
-                    tint = Color.White
-                )
+            if (showMenuIcon || showBackIcon) {
+                IconButton(onClick = { onNavClick?.invoke() } ,
+                    modifier = Modifier.padding(top = 4.dp)) {
+                    Icon(
+                        imageVector = if (showBackIcon) Icons.Default.ArrowBackIosNew else Icons.Default.Menu,
+                        contentDescription = if (showBackIcon) "Atras" else "Menu",
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
+
+
+                    )
+                }
             }
         }
     )
+}
+@Preview
+@Composable
+fun Topprev(){
+    TopBar(showBackIcon = true )
 }
