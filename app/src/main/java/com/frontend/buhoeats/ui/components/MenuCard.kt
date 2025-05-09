@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -25,11 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.data.ContactInfo
 import com.frontend.buhoeats.data.Dish
 import com.frontend.buhoeats.data.Review
+import com.frontend.buhoeats.ui.screens.RestauranteScreen
 
 @Composable
 fun ContactCard(contactInfo: ContactInfo) {
@@ -39,7 +42,7 @@ fun ContactCard(contactInfo: ContactInfo) {
             contentColor = Color.White
         ),
         modifier = Modifier
-            .padding(vertical = 8.dp)
+            .padding(vertical = 10.dp)
             .fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
@@ -107,7 +110,7 @@ fun DishCard(dish: Dish) {
 fun Opinion(review: Review) {
     Row(modifier = Modifier.padding(vertical = 4.dp)) {
         Icon(Icons.Filled.Person, contentDescription = "Persona")
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(10.dp))
         Column {
             Text(review.username, fontWeight = FontWeight.Bold)
             Text(review.comment)
@@ -123,8 +126,17 @@ fun RatingBar(rating: Int) {
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = "Estrella",
-                tint = if (index < rating) Color(0xFFFFD700) else Color.LightGray
+                tint = if (index < rating) Color(0xFFFFD700) else Color.LightGray,
+                modifier = Modifier.size(30.dp)
             )
         }
     }
 }
+
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewMenu(){
+    RestauranteScreen()
+}
+

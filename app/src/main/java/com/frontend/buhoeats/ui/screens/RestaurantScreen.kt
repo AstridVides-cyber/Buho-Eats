@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import com.frontend.buhoeats.ui.components.RatingBar
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.frontend.buhoeats.data.DummyData
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.R
@@ -28,12 +29,15 @@ import com.frontend.buhoeats.ui.components.DishCard
 import com.frontend.buhoeats.ui.components.Opinion
 
 @Composable
+
 fun RestauranteScreen() {
     val restaurant = DummyData.getRestaurants()[0]
 
     Scaffold(
         topBar = {
-            TopBar()
+            TopBar(
+                showBackIcon = true
+            )
         },
         bottomBar = {
             BottomNavigationBar()
@@ -57,8 +61,6 @@ fun RestauranteScreen() {
         }
     }
 }
-
-
 @Composable
 fun RestauranteContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
     Column(
@@ -67,7 +69,7 @@ fun RestauranteContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Text(restaurant.name, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Text(restaurant.name, fontSize = 22.sp, fontWeight = FontWeight.Bold , modifier = Modifier.padding(bottom = 10.dp))
 
         AsyncImage(
             model = restaurant.imageUrl,
@@ -91,8 +93,21 @@ fun RestauranteContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
         }
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
-        Text("Califica la app", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-        RatingBar(rating = 4)
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Califica la app",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            RatingBar(rating = 4)
+        }
+
 
         OutlinedTextField(
             value = "",
@@ -106,12 +121,24 @@ fun RestauranteContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
         }
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
-        Text("Calificaciones y opiniones", fontWeight = FontWeight.Medium)
+        Column (
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Calificaciones y opiniones", fontWeight = FontWeight.Medium)
 
-        restaurant.reviews.forEach { review ->
-            Opinion(review)
+            restaurant.reviews.forEach { review ->
+                Opinion(review)
+            }
         }
+
     }
 }
 
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewMenu(){
+    RestauranteScreen()
+}
 

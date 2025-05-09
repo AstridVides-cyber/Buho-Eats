@@ -17,10 +17,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewMenu(){
-    RestauranteScreen()
-}
-
