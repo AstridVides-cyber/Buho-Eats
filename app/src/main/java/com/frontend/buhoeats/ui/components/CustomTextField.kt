@@ -25,7 +25,6 @@ import com.frontend.buhoeats.R
 val montserratFontFamily = FontFamily(
     Font(R.font.montserrat_bold)
 )
-
 @Composable
 fun CustomTextField(
     label: String,
@@ -81,8 +80,9 @@ fun CustomTextField(
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = containerColor,
                 unfocusedContainerColor = containerColor,
-                focusedTextColor = textColor,
-                unfocusedTextColor = textColor,
+                disabledContainerColor = containerColor,
+                errorContainerColor = containerColor,
+                cursorColor = textColor,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
