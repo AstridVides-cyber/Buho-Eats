@@ -1,0 +1,35 @@
+package com.frontend.buhoeats.data
+
+import java.io.Serializable
+
+data class Dish(
+    val id: Int,
+    val name: String,
+    val description: String,
+    val imageUrl: String,
+    val price: String
+) : Serializable
+
+data class Restaurant(
+    val id: Int,
+    val name: String,
+    val description: String,
+    val imageUrl: String,
+    val categories: List<String>,
+    val contactInfo: ContactInfo,
+    val reviews: List<Review>,
+    val menu: List<Dish>
+) : Serializable
+
+data class ContactInfo(
+    val email: String,
+    val phone: String,
+    val hours: String,
+    val address: String
+) : Serializable
+
+data class Review(
+    val username: String,
+    val comment: String,
+    val rating: Int
+) : Serializable
