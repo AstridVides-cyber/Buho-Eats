@@ -49,11 +49,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.frontend.buhoeats.ui.components.CustomTextField
 import com.frontend.buhoeats.ui.theme.montserratFontFamily
 
-
-
-
-
-
 @Composable
 fun SignUp(navController: NavController) {
 

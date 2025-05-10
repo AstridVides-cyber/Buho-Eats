@@ -206,6 +206,8 @@ fun Login(navControl: NavHostController) {
                         }
                         else -> {
                             Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                            navControl.navigate("")
+
                         }
                     }
                 },
@@ -272,7 +274,7 @@ fun Login(navControl: NavHostController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { /* Crear cuenta */ },
+                onClick = {navControl.navigate("signUp") },
                 modifier = Modifier
                     .width(200.dp)
                     .height(56.dp)
