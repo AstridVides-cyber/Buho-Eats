@@ -47,14 +47,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.frontend.buhoeats.ui.components.CustomTextField
+import com.frontend.buhoeats.ui.theme.montserratFontFamily
 
 
-fun isValidEmail(email: String): Boolean {
-    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-}
-val montserratFontFamily = FontFamily(
-    Font(R.font.montserrat_bold)
-)
+
+
+
 
 @Composable
 fun SignUp(navController: NavController) {

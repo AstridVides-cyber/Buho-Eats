@@ -4,10 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 
-<<<<<<< HEAD
-=======
 
->>>>>>> feature/signUp
 }
 
 android {
@@ -48,11 +45,10 @@ android {
 dependencies {
 
     implementation(libs.androidx.navigation.compose)
-<<<<<<< HEAD
+
     implementation(libs.kotlinx.serialization.json)
-=======
+
     implementation(libs.androidx.navigation.compose)
->>>>>>> feature/signUp
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -70,10 +66,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-<<<<<<< HEAD
-=======
+
     implementation("androidx.compose.material:material-icons-extended:1.6.0")
     implementation("androidx.compose.material:material:1.6.0")
 
->>>>>>> feature/signUp
+
 }

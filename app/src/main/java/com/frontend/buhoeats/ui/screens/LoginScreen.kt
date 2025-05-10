@@ -26,10 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
+import com.frontend.buhoeats.ui.theme.montserratFontFamily
 
-val montserratFontFamily = FontFamily(
-    Font(R.font.montserrat_bold)
-)
 
 fun isValidEmail(email: String): Boolean {
     return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
@@ -172,7 +170,7 @@ fun Login(navControl: NavHostController) {
                     )
                 },
                 textStyle = TextStyle(
-                    color = Color.Black,
+                    color = passwordTextColor,
                     fontSize = 16.sp,
                     fontFamily = montserratFontFamily
                 ),
