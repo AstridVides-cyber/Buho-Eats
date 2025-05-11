@@ -1,5 +1,7 @@
 package com.frontend.buhoeats.ui.screens
 
+import android.R.attr.onClick
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -94,20 +96,20 @@ fun Profile(navController: NavController, user: User) {
                         style = TextStyle(
                             fontFamily = montserratFontFamily,
                             color = Color.Black,
-                            fontSize = 34.sp,
+                            fontSize = 27.sp,
                             fontWeight = FontWeight.ExtraBold
                         )
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(1.dp))
 
                 ProfileImage(
                     userImageUrl = user.imageProfile,
                     onImageSelected = { newUri -> }
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(1.dp))
 
                 ProfileField("Nombre:", name, isEditing) { name = it }
                 Spacer(modifier = Modifier.height(12.dp))
@@ -139,7 +141,61 @@ fun Profile(navController: NavController, user: User) {
                         )
                     )
                 }
+
+
             }
-        }
-    }
+
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .background(Color(0xFF588B8B))
+                    .padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    onClick = {
+                        navController.navigate("login") {
+                            popUpTo("profile") { inclusive = true }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.White
+                    ),
+                    elevation = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.salir),
+                            contentDescription = "Icono de salir",
+                            modifier = Modifier.size(36.dp)
+                        )
+
+                        Text(
+                            text = "Cerrar Sesión",
+                            fontSize = 20.sp,
+                            fontFamily = montserratFontFamily,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        Image(
+                            painter = painterResource(id = R.drawable.arrow),
+                            contentDescription = "Flecha",
+                            modifier = Modifier.size(36.dp)
+                        )
+                    }
+                }
+            }
+
+        }}
 }
