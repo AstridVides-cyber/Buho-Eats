@@ -21,6 +21,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,10 +41,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
+import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 
 import com.frontend.buhoeats.models.User
+import com.frontend.buhoeats.ui.components.ProfileField
 import com.frontend.buhoeats.ui.components.ProfileImage
 
 
@@ -49,6 +55,11 @@ val montserratFontFamily = FontFamily(
 )
 @Composable
 fun Profile(navController: NavController, user: User) {
+    var isEditing by remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf(user.name) }
+    var lastName by remember { mutableStateOf(user.lastName) }
+    var email by remember { mutableStateOf(user.email) }
+
     Scaffold(
         topBar = { TopBar(showBackIcon = true) },
         bottomBar = { BottomNavigationBar() }
@@ -68,7 +79,7 @@ fun Profile(navController: NavController, user: User) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(32.dp),
+                    .padding(12.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -76,8 +87,7 @@ fun Profile(navController: NavController, user: User) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 6.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
                         text = "Mi cuenta",
@@ -99,133 +109,36 @@ fun Profile(navController: NavController, user: User) {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Column(   modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                ProfileField("Nombre:", name, isEditing) { name = it }
+                Spacer(modifier = Modifier.height(12.dp))
+                ProfileField("Apellido:", lastName, isEditing) { lastName = it }
+                Spacer(modifier = Modifier.height(12.dp))
+                ProfileField("Correo:", email, isEditing) { email = it }
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Button(
+                    onClick = {
+                        if (isEditing) {
+                            DummyData.updateUser(User(1, name, lastName, "", email))
+                        }
+                        isEditing = !isEditing
+                    },
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(56.dp)
+                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp)),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC11D0C))
+                ) {
                     Text(
-                        text = "Nombre:",
-                        modifier = Modifier.align(Alignment.Start),
+                        text = if (isEditing) "Guardar Cambios" else "Editar Perfil",
                         style = TextStyle(
                             fontFamily = montserratFontFamily,
-                            color = Color.Black,
                             fontSize = 16.sp,
-
-                            )
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp)
-                            .clip(shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
-                            .background(Color(0xFFF3EDED))
-                            .border(
-                                1.dp,
-                                Color.Black,
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
-                            ),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        Text(
-                            text = user.name,
-                            modifier = Modifier.padding(start = 16.dp),
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 16.sp,
-                                fontFamily = montserratFontFamily
-                            )
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Text(
-                        text = "Apellido:",
-                        modifier = Modifier.align(Alignment.Start),
-                        style = TextStyle(
-                            fontFamily = montserratFontFamily,
-                            color = Color.Black,
-                            fontSize = 16.sp
+                            color = Color.White
                         )
                     )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp)
-                            .clip(shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
-                            .background(Color(0xFFF3EDED))
-                            .border(
-                                1.dp,
-                                Color.Black,
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
-                            ),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        Text(
-                            text = user.lastName,
-                            modifier = Modifier.padding(start = 16.dp),
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 16.sp,
-                                fontFamily = montserratFontFamily
-                            )
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-
-                    Text(
-                        text = "Correo:",
-                        modifier = Modifier.align(Alignment.Start),
-                        style = TextStyle(
-                            fontFamily = montserratFontFamily,
-                            color = Color.Black,
-                            fontSize = 16.sp
-                        )
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp)
-                            .clip(shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
-                            .background(Color(0xFFF3EDED))
-                            .border(
-                                1.dp,
-                                Color.Black,
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
-                            ),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        Text(
-                            text = user.email,
-                            modifier = Modifier.padding(start = 16.dp),
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 16.sp,
-                                fontFamily = montserratFontFamily
-                            )
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Button(
-                        onClick = { /* editar perfil*/ },
-                        modifier = Modifier
-                            .width(200.dp)
-                            .height(56.dp)
-                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp)),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC11D0C))
-                    ) {
-                        Text(
-                            text = "Editar Perfil",
-                            style = TextStyle(
-                                fontFamily = montserratFontFamily,
-                                fontSize = 16.sp,
-                                color = Color.White
-                            )
-                        )
-                    } }
+                }
             }
         }
     }
