@@ -12,7 +12,7 @@ import com.frontend.buhoeats.ui.screens.Profile
 @Composable
 fun AppNavigator() {
     val navController = rememberNavController()
-    val user = DummyData.getUser().first()
+    val user = DummyData.getUser()
 
     NavHost(navController = navController, startDestination = "profile") {
         composable("profile") {
