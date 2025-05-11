@@ -8,7 +8,9 @@ object DummyData {
         name = "Astrid",
         lastName = "Vides",
         imageProfile = "",
-        email = "vides67@gmail.com"
+        email = "vides67@gmail.com",
+        password = "astrid",
+        confirmpassword = "astrid"
     )
 
     fun getUser(): User {

@@ -59,19 +59,22 @@ val montserratFontFamily = FontFamily(
 fun myAccount(navController: NavController, user: User) {
     val context = LocalContext.current
 
-    var name by remember { mutableStateOf("") }
-    var lastname by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var triedToSubmit by remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf(user.name) }
+    var lastname by remember { mutableStateOf(user.lastName) }
+    var email by remember { mutableStateOf(user.email) }
+    var password by remember { mutableStateOf(user.password) }
+    var confirmPassword by remember { mutableStateOf(user.confirmpassword) }
 
+    var triedToSubmit by remember { mutableStateOf(false) }
 
     var nameError by remember { mutableStateOf("") }
     var lastnameError by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
     var confirmPasswordError by remember { mutableStateOf("") }
+
+    var isEditing by remember { mutableStateOf(false) }
+
 
     Scaffold(
         topBar = { TopBar(showBackIcon = true) },
@@ -124,7 +127,7 @@ fun myAccount(navController: NavController, user: User) {
                 },
                 placeholder = "Ingrese su nombre",
                 textColor = Color.Black,
-                containerColor = Color.White
+                containerColor = Color.White,
             )
             if (nameError.isNotEmpty()) ValidationMessage(message = nameError)
 
