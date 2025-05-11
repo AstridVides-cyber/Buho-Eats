@@ -24,13 +24,14 @@ import androidx.compose.ui.unit.sp
 import com.frontend.buhoeats.R
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.navigation.NavController
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.components.DisabledProfileField
 import com.frontend.buhoeats.ui.components.TopBar
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ProfileScreen(onBack: () -> Unit = {}) {
+fun ProfileScreen(navController: NavController,onBack: () -> Unit = {}) {
     val scrollState = rememberScrollState()
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -121,7 +122,8 @@ fun ProfileScreen(onBack: () -> Unit = {}) {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Button(
-                    onClick = { /* Navegar a pantalla de editar */ },
+                    onClick = {navController.navigate("editarPerfil")
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC11D0C)),
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
@@ -136,9 +138,3 @@ fun ProfileScreen(onBack: () -> Unit = {}) {
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun ProfilePreview() {
-    ProfileScreen()
-}

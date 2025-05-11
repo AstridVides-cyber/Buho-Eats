@@ -19,15 +19,17 @@ fun AppNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screens.Settings.route) {
         composable(Screens.Settings.route) {
             SettingSlider(
-                onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
+                onNavigateToProfile = { navController.navigate("profileScreen") },
                 onBack = { navController.popBackStack() }
             )
+
         }
-        composable(Screens.Profile.route) {
-            ProfileScreen(onBack = { navController.popBackStack() })
+        composable("profileScreen") {
+            ProfileScreen(navController = navController, onBack = { navController.popBackStack() })
         }
-        composable("profile") {
-            myAccount(navController, user)
+
+        composable("editarPerfil") {
+            myAccount(navController = navController, user = user)
         }
     }
 }

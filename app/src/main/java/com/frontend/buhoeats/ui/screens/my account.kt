@@ -73,9 +73,6 @@ fun myAccount(navController: NavController, user: User) {
     var passwordError by remember { mutableStateOf("") }
     var confirmPasswordError by remember { mutableStateOf("") }
 
-    var isEditing by remember { mutableStateOf(false) }
-
-
     Scaffold(
         topBar = { TopBar(showBackIcon = true) },
         bottomBar = { BottomNavigationBar() },
@@ -258,7 +255,7 @@ fun myAccount(navController: NavController, user: User) {
                         hasError = true
                     }
 
-                    if (!hasError) {
+                    if (!hasError) { navController.navigate("profileScreen")
                     }
                     },
                     modifier = Modifier
