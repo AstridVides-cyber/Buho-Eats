@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.models.User
-import com.frontend.buhoeats.ui.screens.Profile
+import com.frontend.buhoeats.ui.screens.myAccount
 
 @Composable
 fun AppNavigator() {
@@ -16,7 +16,7 @@ fun AppNavigator() {
 
     NavHost(navController = navController, startDestination = "profile") {
         composable("profile") {
-            Profile(navController, user)
+            myAccount(navController, user)
         }
         }
 
