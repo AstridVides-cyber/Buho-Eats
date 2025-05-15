@@ -40,7 +40,7 @@ fun ProfileImage(
     }
 
     Box(
-        modifier = Modifier.size(170.dp),
+        modifier = Modifier.size(180.dp),
         contentAlignment = Alignment.BottomEnd
     ) {
         when {
@@ -49,9 +49,9 @@ fun ProfileImage(
                     model = selectedImageUri,
                     contentDescription = "Imagen seleccionada",
                     modifier = Modifier
-                        .size(170.dp)
+                        .size(180.dp)
                         .clip(CircleShape)
-                        .border(4.dp, Color.White, CircleShape),
+                        .border(1.dp, Color.White, CircleShape),
                     contentScale = ContentScale.Crop
                 )
             }
@@ -61,21 +61,21 @@ fun ProfileImage(
                     model = userImageUrl,
                     contentDescription = "Imagen de perfil del usuario",
                     modifier = Modifier
-                        .size(170.dp)
+                        .size(180.dp)
                         .clip(CircleShape)
-                        .border(4.dp, Color.White, CircleShape),
+                        .border(1.dp, Color.White, CircleShape),
                     contentScale = ContentScale.Crop
                 )
             }
 
             else -> {
                 Image(
-                    painter = painterResource(id = R.drawable.perfil),
+                    painter = painterResource(id = R.drawable.defaulticon),
                     contentDescription = "Imagen por defecto",
                     modifier = Modifier
-                        .size(170.dp)
+                        .size(180.dp)
                         .clip(CircleShape)
-                        .border(4.dp, Color.White, CircleShape),
+                        .border(1.dp, Color.White, CircleShape),
                     contentScale = ContentScale.Fit
                 )
             }

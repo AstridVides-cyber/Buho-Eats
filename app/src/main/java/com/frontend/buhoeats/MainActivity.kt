@@ -18,7 +18,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BuhoEatsTheme {
-
                 setContent {
                     val navController = rememberNavController()
                     AppNavHost(navController = navController)

@@ -30,7 +30,6 @@ import com.frontend.buhoeats.ui.components.TopBar
 fun SettingSlider( onNavigateToProfile: () -> Unit = {},
                    onBack: () -> Unit = {}
 ) {
-
     Scaffold(
         topBar = {
             TopBar(

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,9 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,16 +35,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.models.User
+import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.CustomTextField
 import com.frontend.buhoeats.ui.components.ProfileImage
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.ui.components.ValidationMessage
-import java.time.format.TextStyle
 
 
 val montserratFontFamily = FontFamily(
@@ -56,8 +52,7 @@ val montserratFontFamily = FontFamily(
 )
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun myAccount(navController: NavController, user: User) {
-    val context = LocalContext.current
+fun myAccount(navController: NavController, user: User, onBack: () -> Unit = {}) {
 
     var name by remember { mutableStateOf(user.name) }
     var lastname by remember { mutableStateOf(user.lastName) }
@@ -74,7 +69,8 @@ fun myAccount(navController: NavController, user: User) {
     var confirmPasswordError by remember { mutableStateOf("") }
 
     Scaffold(
-        topBar = { TopBar(showBackIcon = true) },
+        topBar = { TopBar(showBackIcon = true , onNavClick = onBack
+        ) },
         bottomBar = { BottomNavigationBar() },
         containerColor = Color(0xFF3D405B)
     ) { padding ->
@@ -82,7 +78,7 @@ fun myAccount(navController: NavController, user: User) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(12.dp)
+                .padding(horizontal = 40.dp, vertical = 20.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -109,7 +105,7 @@ fun myAccount(navController: NavController, user: User) {
 
                 ProfileImage(
                     userImageUrl = user.imageProfile,
-                    onImageSelected = { newUri -> }
+                    onImageSelected = { }
                 )
 
 
@@ -212,7 +208,6 @@ fun myAccount(navController: NavController, user: User) {
                 }
                 Spacer(modifier = Modifier.width(12.dp))
 
-
                 Button(
                     onClick = {
                     triedToSubmit = true
@@ -255,7 +250,7 @@ fun myAccount(navController: NavController, user: User) {
                         hasError = true
                     }
 
-                    if (!hasError) { navController.navigate("profileScreen")
+                    if (!hasError) { navController.navigate(Screens.Profile.route)
                     }
                     },
                     modifier = Modifier
@@ -273,4 +268,19 @@ fun myAccount(navController: NavController, user: User) {
             }
         }
     }
+}
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview()
+@Composable
+fun MyAccountPreview() {
+    val fakeUser = User(
+        id = 1,
+        name = "Michelle",
+        lastName = "Maltez",
+        email = "michelle@correo.com",
+        password = "lol",
+        confirmpassword = "lol",
+        imageProfile = "foto"
+    )
+    myAccount(navController = rememberNavController(), user = fakeUser)
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -16,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -31,8 +33,8 @@ fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    textColor: Color,
-    containerColor: Color,
+    textColor: Color = Color.Black,
+    containerColor: Color = Color(0xFFE0E0E0),
     isPassword: Boolean = false,
     modifier: Modifier = Modifier,
     validateDigits: Boolean = false,
@@ -46,10 +48,13 @@ fun CustomTextField(
             style = TextStyle(
                 fontFamily = montserratFontFamily,
                 color = Color.White,
-                fontSize = 16.sp
-            )
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 4.dp)
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
         TextField(
             value = value,
@@ -75,18 +80,20 @@ fun CustomTextField(
                 fontFamily = montserratFontFamily
             ),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp), // altura igual a la del disabled
+            shape = RoundedCornerShape(12.dp), // igual que el disabled
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = containerColor,
                 unfocusedContainerColor = containerColor,
                 disabledContainerColor = containerColor,
                 errorContainerColor = containerColor,
-                cursorColor = textColor,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent
+                focusedIndicatorColor = Color.Black,
+                unfocusedIndicatorColor = Color.Black,
+                disabledIndicatorColor = Color.Black,
+                errorIndicatorColor = Color.Black,
+                cursorColor = textColor
             )
         )
     }

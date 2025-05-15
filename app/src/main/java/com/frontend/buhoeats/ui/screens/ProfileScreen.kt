@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -23,15 +24,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.frontend.buhoeats.R
 import androidx.compose.material3.Text
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.components.DisabledProfileField
 import com.frontend.buhoeats.ui.components.TopBar
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ProfileScreen(navController: NavController,onBack: () -> Unit = {}) {
+fun ProfileScreen(
+    onNavigateToAccount: () -> Unit = {},
+    onBack: () -> Unit = {})
+{
     val scrollState = rememberScrollState()
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -103,11 +109,12 @@ fun ProfileScreen(navController: NavController,onBack: () -> Unit = {}) {
                         .padding(bottom = 10.dp)
                 )
 
-                Image(
+            Image(
                     painter = painterResource(id = R.drawable.defaulticon),
                     contentDescription = "Foto de perfil",
                     modifier = Modifier
-                        .size(180.dp),
+                            .size(180.dp)
+                            .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
 
@@ -122,7 +129,7 @@ fun ProfileScreen(navController: NavController,onBack: () -> Unit = {}) {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Button(
-                    onClick = {navController.navigate("editarPerfil")
+                    onClick = { onNavigateToAccount()
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC11D0C)),
                     modifier = Modifier
@@ -136,5 +143,14 @@ fun ProfileScreen(navController: NavController,onBack: () -> Unit = {}) {
         }
     }
 }
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun ProfileScreenPreview() {
 
+    ProfileScreen(
+        onNavigateToAccount = {},
+        onBack = {  }
+    )
+}
 
