@@ -18,12 +18,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             BuhoEatsTheme {
                 AppNavigator()
-
-                }
-
-                    }
             }
         }
+
+    }
+
+}
 
 
 

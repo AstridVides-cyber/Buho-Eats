@@ -1,4 +1,4 @@
-package com.frontend.buhoeats.ui
+package com.frontend.buhoeats.ui.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -17,7 +17,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.time.format.TextStyle
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -41,7 +40,7 @@ fun ValidationMessage(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = message,
-                color = Color(0xFFD32F2F), // Rojo oscuro
+                color = Color(0xFFD32F2F),
                 fontSize = 14.sp,
 
                 )
