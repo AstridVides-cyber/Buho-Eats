@@ -272,7 +272,7 @@ fun Login(navControl: NavHostController) {
                 )
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Button(
                 onClick = {navControl.navigate("signUp") },
