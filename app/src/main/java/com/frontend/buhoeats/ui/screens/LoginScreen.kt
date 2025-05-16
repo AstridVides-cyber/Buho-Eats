@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.AppNavigator
+import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidEmail
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.ui.theme.montserratFontFamily
@@ -275,7 +276,7 @@ fun Login(navControl: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = {navControl.navigate("signUp") },
+                onClick = { navControl.navigate(Screens.SignUp.route) },
                 modifier = Modifier
                     .width(200.dp)
                     .height(56.dp)
