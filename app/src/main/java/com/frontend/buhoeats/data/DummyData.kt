@@ -1,6 +1,25 @@
 package com.frontend.buhoeats.data
 
+import com.frontend.buhoeats.models.Restaurant
+import com.frontend.buhoeats.models.User
+import com.frontend.buhoeats.models.ContactInfo
+import com.frontend.buhoeats.models.Dish
+import com.frontend.buhoeats.models.Review
 object DummyData {
+
+    private var user = User(
+        id = 1,
+        name = "Astrid",
+        lastName = "Vides",
+        imageProfile = "",
+        email = "vides67@gmail.com",
+        password = "astrid",
+        confirmpassword = "astrid"
+    )
+
+    fun getUser(): User {
+        return user
+    }
 
     fun getRestaurants(): List<Restaurant> {
         return listOf(
@@ -8,7 +27,7 @@ object DummyData {
                 id = 1,
                 name = "Restaurante El Buen Sabor",
                 description = "Comida típica salvadoreña con un toque moderno.",
-                imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0woIaQBSFzyP0C8wOHVoWIHPfEFls8y1U_w&s",
+                imageUrl = "https://images.unsplash.com/photo-1600891964599-f61ba0e24092",
                 categories = listOf("Salvadoreña", "Típica", "Familiar"),
                 contactInfo = ContactInfo(
                     email = "contacto@elbuen.sv",
@@ -61,12 +80,12 @@ object DummyData {
                     Review(
                         username = "Carlos Mendoza",
                         comment = "El mejor ceviche que he probado.",
-                        rating = 5
+                        rating = 4
                     ),
                     Review(
                         username = "Lucía Herrera",
                         comment = "Un poco caro, pero vale la pena.",
-                        rating = 4
+                        rating = 3
                     )
                 ),
                 menu = listOf(
@@ -88,4 +107,8 @@ object DummyData {
             )
         )
     }
+
+
+
+
 }
