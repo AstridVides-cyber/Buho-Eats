@@ -52,7 +52,7 @@ val montserratFontFamily = FontFamily(
 )
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun myAccount(navController: NavController, user: User, onBack: () -> Unit = {}) {
+fun MyAccount(navController: NavController, user: User, onBack: () -> Unit = {}) {
 
     var name by remember { mutableStateOf(user.name) }
     var lastname by remember { mutableStateOf(user.lastName) }
@@ -250,7 +250,7 @@ fun myAccount(navController: NavController, user: User, onBack: () -> Unit = {})
                         hasError = true
                     }
 
-                    if (!hasError) { navController.navigate(Screens.Profile.route)
+                    if (!hasError) { navController.popBackStack()
                     }
                     },
                     modifier = Modifier
@@ -282,5 +282,5 @@ fun MyAccountPreview() {
         confirmpassword = "lol",
         imageProfile = "foto"
     )
-    myAccount(navController = rememberNavController(), user = fakeUser)
+    MyAccount(navController = rememberNavController(), user = fakeUser)
 }

@@ -227,6 +227,7 @@ fun SignUp(navController: NavController) {
 
                     if (!hasError) {
                         // Registrar usuario
+                        navController.navigate(Screens.Login.route)
                     }
                 },
                 modifier = Modifier
@@ -284,7 +285,7 @@ fun SignUp(navController: NavController) {
                     fontSize = 16.sp,
                     fontFamily = montserratFontFamily,
                     modifier = Modifier.clickable {
-                        navController.navigate("login")
+                        navController.navigate(Screens.Login.route)
                     },
                     fontWeight = FontWeight.Bold
                 )
