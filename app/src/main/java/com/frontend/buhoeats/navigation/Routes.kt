@@ -4,4 +4,6 @@ sealed class Screens(val route: String) {
     object Profile : Screens("profile")
     object Settings : Screens("settings")
     object MyAccount : Screens ("myaccount")
+    object Login : Screens("login")
+    object SignUp : Screens("signup")
 }

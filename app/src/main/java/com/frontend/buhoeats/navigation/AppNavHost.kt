@@ -7,8 +7,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.ui.screens.Login
 import com.frontend.buhoeats.ui.screens.ProfileScreen
 import com.frontend.buhoeats.ui.screens.SettingSlider
+import com.frontend.buhoeats.ui.screens.SignUp
 import com.frontend.buhoeats.ui.screens.myAccount
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -16,7 +18,7 @@ import com.frontend.buhoeats.ui.screens.myAccount
 fun AppNavHost(navController: NavHostController) {
     val user = DummyData.getUser()
 
-    NavHost(navController = navController, startDestination = Screens.Settings.route) {
+    NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Settings.route) {
             SettingSlider(
                 onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
@@ -30,10 +32,15 @@ fun AppNavHost(navController: NavHostController) {
                 onBack = { navController.popBackStack() }
             )
         }
-
         composable(Screens.MyAccount.route) {
             myAccount(navController = navController, user = user , onBack = { navController.popBackStack() }
             )
+        }
+        composable(Screens.Login.route) {
+            Login(navController)
+        }
+        composable(Screens.SignUp.route) {
+            SignUp(navController)
         }
     }
 }
