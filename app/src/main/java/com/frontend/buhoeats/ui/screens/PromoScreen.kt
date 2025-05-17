@@ -1,4 +1,4 @@
-package com.frontend.buhoeats.ui
+package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -12,7 +12,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
-import com.frontend.buhoeats.ui.components.PromoCard
 import com.frontend.buhoeats.ui.components.TopBar
 
 @Composable
