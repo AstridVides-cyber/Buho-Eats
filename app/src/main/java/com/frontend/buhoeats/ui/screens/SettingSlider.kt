@@ -21,6 +21,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
@@ -28,7 +30,8 @@ import com.frontend.buhoeats.ui.components.TopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingSlider( onNavigateToProfile: () -> Unit = {},
-                   onBack: () -> Unit = {}
+                   onBack: () -> Unit = {},
+                   navController: NavController
 ) {
     Scaffold(
         topBar = {
@@ -38,7 +41,7 @@ fun SettingSlider( onNavigateToProfile: () -> Unit = {},
             )
                  },
         bottomBar = {
-            BottomNavigationBar()
+            BottomNavigationBar(navController)
         }
     ) { innerPadding ->
         Box(
@@ -267,5 +270,5 @@ fun SettingSlider( onNavigateToProfile: () -> Unit = {},
 @Preview
 @Composable
 fun SliderPreview () {
-    SettingSlider()
+    SettingSlider(navController = rememberNavController())
 }

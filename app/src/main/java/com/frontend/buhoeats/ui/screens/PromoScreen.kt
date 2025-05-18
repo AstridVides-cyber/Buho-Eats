@@ -18,22 +18,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.PromoCard
 import com.frontend.buhoeats.ui.components.TopBar
 @Composable
-fun PromoScreen() {
+fun PromoScreen(navController: NavController) {
     val restaurants = DummyData.getRestaurants()
     val allPromos = restaurants.flatMap { it.promos }
 
     Scaffold(
         topBar = {
-            TopBar(showBackIcon = true)
+            TopBar(showBackIcon = true,
+                onNavClick = {navController.popBackStack() })
         },
         bottomBar = {
-            BottomNavigationBar()
+            BottomNavigationBar(navController)
         }
     ) { paddingValues ->
         Box(
@@ -73,5 +77,5 @@ fun PromoScreen() {
 @Preview
 @Composable
 fun Promoprev (){
-    PromoScreen()
+    PromoScreen(navController = rememberNavController())
 }

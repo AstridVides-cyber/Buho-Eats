@@ -16,6 +16,7 @@ import com.frontend.buhoeats.ui.screens.RestaurantScreen
 import com.frontend.buhoeats.ui.screens.SettingSlider
 import com.frontend.buhoeats.ui.screens.SignUp
 import com.frontend.buhoeats.ui.screens.MyAccount
+import com.frontend.buhoeats.ui.screens.PromoScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -27,14 +28,16 @@ fun AppNavHost(navController: NavHostController) {
         composable(Screens.Settings.route) {
             SettingSlider(
                 onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack()},
+                navController
             )
 
         }
         composable(Screens.Profile.route) {
             ProfileScreen(
                 onNavigateToAccount = { navController.navigate(Screens.MyAccount.route) },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                navController
             )
         }
         composable(Screens.MyAccount.route) {
@@ -66,6 +69,7 @@ fun AppNavHost(navController: NavHostController) {
             }
         }
         composable(Screens.Promocion.route) {
+            PromoScreen(navController)
         }
     }
 }
