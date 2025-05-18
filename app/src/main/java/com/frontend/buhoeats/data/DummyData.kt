@@ -67,7 +67,7 @@ object DummyData {
                 promos = listOf(
                     Promo(
                         id = 1,
-                        name = "Pupusas revueltas",
+                        name = "Pupusas de loroco",
                         description = "Pupusas con chicharrón, frijoles y queso.",
                         imageUrl = "https://images.unsplash.com/photo-1625948137139-d6672c58db6e",
                         price = "$5.00",

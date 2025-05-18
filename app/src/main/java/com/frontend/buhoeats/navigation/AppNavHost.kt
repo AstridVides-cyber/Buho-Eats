@@ -65,5 +65,7 @@ fun AppNavHost(navController: NavHostController) {
                 RestaurantScreen(navController = navController, restaurant = it)
             }
         }
+        composable(Screens.Promocion.route) {
+        }
     }
 }

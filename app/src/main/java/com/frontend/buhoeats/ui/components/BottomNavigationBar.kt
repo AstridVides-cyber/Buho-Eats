@@ -40,7 +40,7 @@ fun BottomNavigationBar() {
 
         NavigationBarItem(
             selected = false,
-            onClick = { /* TODO */ },
+            onClick = {  },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.promociones),
