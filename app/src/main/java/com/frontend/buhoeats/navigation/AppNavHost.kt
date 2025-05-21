@@ -16,6 +16,7 @@ import com.frontend.buhoeats.ui.screens.RestaurantScreen
 import com.frontend.buhoeats.ui.screens.SettingSlider
 import com.frontend.buhoeats.ui.screens.SignUp
 import com.frontend.buhoeats.ui.screens.MyAccount
+import com.frontend.buhoeats.ui.screens.Map
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -23,7 +24,7 @@ fun AppNavHost(navController: NavHostController) {
     val user = DummyData.getUser()
     val restaurantList = DummyData.getRestaurants()
 
-    NavHost(navController = navController, startDestination = Screens.Login.route) {
+    NavHost(navController = navController, startDestination = Screens.Map.route) {
         composable(Screens.Settings.route) {
             SettingSlider(
                 onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
@@ -64,6 +65,11 @@ fun AppNavHost(navController: NavHostController) {
             selectedRestaurant?.let {
                 RestaurantScreen(navController = navController, restaurant = it)
             }
+        }
+
+        composable(Screens.Map.route) {
+           Map(onBack = { navController.popBackStack() }
+            )
         }
     }
 }
