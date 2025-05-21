@@ -7,7 +7,9 @@ sealed class Screens(val route: String) {
     object Login : Screens("login")
     object SignUp : Screens("signup")
     object Home: Screens("home")
-    object Restaurant : Screens("restaurante/{restaurantId}") {
+    object Restaurant : Screens("restaurante/{restaurantId}")
+    {
         fun createRoute(restaurantId: Int) = "restaurante/$restaurantId"
     }
+    object Map : Screens("Map")
 }
