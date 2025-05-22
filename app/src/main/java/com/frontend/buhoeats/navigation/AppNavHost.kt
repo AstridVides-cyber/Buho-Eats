@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.ui.screens.FavoriteScreen
 import com.frontend.buhoeats.ui.screens.HomeScreen
 import com.frontend.buhoeats.ui.screens.Login
 import com.frontend.buhoeats.ui.screens.ProfileScreen
@@ -26,6 +27,7 @@ fun AppNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Settings.route) {
             SettingSlider(
+                navController = navController,
                 onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
                 onBack = { navController.popBackStack() }
             )
@@ -65,5 +67,18 @@ fun AppNavHost(navController: NavHostController) {
                 RestaurantScreen(navController = navController, restaurant = it)
             }
         }
+
+        composable(Screens.Favorites.route) {
+            FavoriteScreen(
+                onRestaurantClick = { restaurantId ->
+                    navController.navigate(Screens.Restaurant.createRoute(restaurantId))
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+
     }
 }
