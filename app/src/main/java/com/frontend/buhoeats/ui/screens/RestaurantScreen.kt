@@ -1,5 +1,6 @@
 package com.frontend.buhoeats.ui.screens
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.material3.Scaffold
@@ -23,6 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,8 +32,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.ContactCard
@@ -42,6 +47,7 @@ import com.frontend.buhoeats.models.ContactInfo
 import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.Review
+import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 
 @Composable
 fun RestaurantScreen(
@@ -79,9 +85,16 @@ fun RestaurantScreen(
 }
 
 @Composable
-fun RestaurantContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
+fun RestaurantContent(
+    restaurant: Restaurant,
+    modifier: Modifier = Modifier,
+    favoritesViewModel: FavoritesViewModel = viewModel(
+        factory = ViewModelProvider.AndroidViewModelFactory(LocalContext.current.applicationContext as Application)
+    )
+) {
+    val favoriteIds by favoritesViewModel.favoriteRestaurantIds.collectAsState()
+    val isFavorite = favoriteIds.contains(restaurant.id.toString())
 
-    var isFavorite by rememberSaveable { mutableStateOf(false) }
     var rating by rememberSaveable { mutableStateOf(0) }
     var comment by remember { mutableStateOf("") }
     val newReviews = remember { mutableStateListOf<Review>() }
@@ -105,7 +118,9 @@ fun RestaurantContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(bottom = 10.dp)
             )
 
-            IconButton(onClick = { isFavorite = !isFavorite }) {
+            IconButton(onClick = {
+                favoritesViewModel.toggleFavorite(restaurant.id)
+            }) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = if (isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
@@ -129,8 +144,7 @@ fun RestaurantContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
-                    .clip(RoundedCornerShape(12.dp)
-                    )
+                    .clip(RoundedCornerShape(12.dp))
             )
         }
 
@@ -138,7 +152,12 @@ fun RestaurantContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.padding(10.dp))
 
-        Text("Menú del día", fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.align(Alignment.CenterHorizontally))
+        Text(
+            "Menú del día",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
         Spacer(modifier = Modifier.height(8.dp))
 
         restaurant.menu.forEach { dish ->
@@ -146,6 +165,7 @@ fun RestaurantContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
         }
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
+
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -158,11 +178,8 @@ fun RestaurantContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Log.d("Rating", "Valor del rating: $rating")
-
             RatingBar(rating = rating, onRatingChanged = { rating = it })
             Spacer(modifier = Modifier.height(8.dp))
-
         }
 
         OutlinedTextField(
@@ -180,7 +197,8 @@ fun RestaurantContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
                     rating = 0
                 }
             },
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier
+                .align(Alignment.End)
                 .padding(5.dp)
         ) {
             Text("Publicar")
@@ -188,21 +206,25 @@ fun RestaurantContent(restaurant: Restaurant, modifier: Modifier = Modifier) {
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
         Spacer(modifier = Modifier.size(10.dp))
-        Column (
+
+        Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Calificaciones y opiniones", fontWeight = FontWeight.Medium,fontSize = 18.sp
+            Text(
+                "Calificaciones y opiniones",
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp
             )
             Spacer(modifier = Modifier.size(15.dp))
 
             (reviews + newReviews).forEach { review ->
                 Opinion(review)
             }
-
         }
     }
 }
+
 
 
 @Preview(showBackground = true)
