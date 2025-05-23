@@ -1,5 +1,7 @@
 package com.frontend.buhoeats.navigation
 
+import android.R
+
 sealed class Screens(val route: String) {
     object Profile : Screens("profile")
     object Settings : Screens("settings")
@@ -12,4 +14,5 @@ sealed class Screens(val route: String) {
         fun createRoute(restaurantId: Int) = "restaurante/$restaurantId"
     }
     object Map : Screens("Map")
+    object Search : Screens("search")
 }
