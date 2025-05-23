@@ -22,6 +22,7 @@ import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 
 @Composable
+
 fun Search(
     onNavigateToProfile: () -> Unit = {},
     onBack: () -> Unit = {},
@@ -74,56 +75,95 @@ fun Search(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    label = { Text("Buscar restaurante") },
+                    label = { Text("Buscar") },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
+                    shape = RoundedCornerShape(50),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                        focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 )
 
-                if (searchQuery.text.isNotBlank()) {
-                    Text("Resultados:", style = MaterialTheme.typography.titleMedium)
-                    LazyColumn {
-                        items(searchResults) { restaurant ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        if (restaurant.name !in searchHistory) {
-                                            searchHistory = listOf(restaurant.name) + searchHistory
+                when {
+                    searchQuery.text.isNotBlank() && searchResults.isNotEmpty() -> {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(searchResults) { restaurant ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            // Agrega al historial si no está
+                                            if (!searchHistory.contains(restaurant.name)) {
+                                                searchHistory = listOf(restaurant.name) + searchHistory
+                                            }
+                                            onSearchResultClick(restaurant.name)
                                         }
-                                        onSearchResultClick(restaurant.name)
-                                    }
-                                    .padding(vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(text = restaurant.name, modifier = Modifier.weight(1f))
-                                Icon(Icons.Default.ArrowForward, contentDescription = "Ir")
+                                        .padding(vertical = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = "Resultado",
+                                        modifier = Modifier.padding(end = 12.dp)
+                                    )
+                                    Text(
+                                        text = restaurant.name,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowForward,
+                                        contentDescription = "Ir",
+                                        modifier = Modifier.padding(start = 12.dp)
+                                    )
+                                }
                             }
                         }
                     }
-                } else {
-                    LazyColumn {
-                        items(searchHistory) { item ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onSearchResultClick(item) }
-                                    .padding(vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.History,
-                                    contentDescription = "Historial",
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
-                                Text(text = item, modifier = Modifier.weight(1f))
-                                Icon(
-                                    imageVector = Icons.Default.ArrowForward,
-                                    contentDescription = "Ir"
-                                )
+
+                    searchQuery.text.isBlank() && searchHistory.isNotEmpty() -> {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(searchHistory) { item ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { onSearchResultClick(item) }
+                                        .padding(vertical = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.History,
+                                        contentDescription = "Historial",
+                                        modifier = Modifier.padding(end = 12.dp)
+                                    )
+                                    Text(
+                                        text = item,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowForward,
+                                        contentDescription = "Ir",
+                                        modifier = Modifier.padding(start = 12.dp)
+                                    )
+                                }
                             }
                         }
+                    }
+
+                    else -> {
+                        Text(
+                            text = "No hay resultados ni historial aún.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
                     }
                 }
             }
