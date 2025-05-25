@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.frontend.buhoeats.R
+import com.frontend.buhoeats.navigation.Screens
 
 @Composable
 fun BottomNavigationBar() {
@@ -20,7 +21,7 @@ fun BottomNavigationBar() {
     ) {
         NavigationBarItem(
             selected = false,
-            onClick = { /* TODO */ },
+            onClick = { Screens.Home.route },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.hogar),
@@ -60,7 +61,7 @@ fun BottomNavigationBar() {
 
         NavigationBarItem(
             selected = false,
-            onClick = { /* TODO */ },
+            onClick = { Screens.Map.route },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.mapa),
@@ -80,7 +81,7 @@ fun BottomNavigationBar() {
 
         NavigationBarItem(
             selected = false,
-            onClick = { /* TODO */ },
+            onClick = {  },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.lupa),
