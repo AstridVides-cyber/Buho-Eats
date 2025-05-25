@@ -13,23 +13,29 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.SearchHistoryManager
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
+import kotlinx.coroutines.launch
 
 @Composable
-
 fun Search(
     onNavigateToProfile: () -> Unit = {},
     onBack: () -> Unit = {},
     onSearchResultClick: (String) -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val manager = remember { SearchHistoryManager(context) }
+
+    val historyFlow = manager.searchHistoryFlow.collectAsState(initial = emptyList())
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
-    var searchHistory by remember { mutableStateOf(listOf<String>()) }
 
     val allRestaurants = DummyData.getRestaurants()
     val searchResults by remember(searchQuery) {
@@ -97,9 +103,8 @@ fun Search(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable {
-                                            // Agrega al historial si no está
-                                            if (!searchHistory.contains(restaurant.name)) {
-                                                searchHistory = listOf(restaurant.name) + searchHistory
+                                            scope.launch {
+                                                manager.addSearchItem(restaurant.name)
                                             }
                                             onSearchResultClick(restaurant.name)
                                         }
@@ -126,11 +131,20 @@ fun Search(
                         }
                     }
 
-                    searchQuery.text.isBlank() && searchHistory.isNotEmpty() -> {
+                    searchQuery.text.isNotBlank() && searchResults.isEmpty() -> {
+                        Text(
+                            text = "ese restauranteno se encunetra registrado",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(top = 24.dp)
+                        )
+                    }
+
+                    searchQuery.text.isBlank() && historyFlow.value.isNotEmpty() -> {
                         LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            items(searchHistory) { item ->
+                            items(historyFlow.value) { item ->
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -156,14 +170,6 @@ fun Search(
                                 }
                             }
                         }
-                    }
-
-                    else -> {
-                        Text(
-                            text = "No hay resultados ni historial aún.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
                     }
                 }
             }
