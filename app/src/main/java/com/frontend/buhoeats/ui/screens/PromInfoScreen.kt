@@ -183,7 +183,6 @@ fun PromoInfoScreenPreview() {
         hours = "10:00 AM - 10:00 PM",
         address = "Avenida Los Sushi #123"
     )
-
     PromoInfoScreen(
         promo = promo,
         restaurantName = "Sushi Place",
