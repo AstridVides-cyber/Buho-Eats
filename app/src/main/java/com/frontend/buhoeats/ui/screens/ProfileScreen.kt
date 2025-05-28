@@ -36,7 +36,9 @@ import com.frontend.buhoeats.ui.components.TopBar
 @Composable
 fun ProfileScreen(
     onNavigateToAccount: () -> Unit = {},
-    onBack: () -> Unit = {})
+    onBack: () -> Unit = {},
+    navController: NavController
+)
 {
     val scrollState = rememberScrollState()
     var showLogoutDialog by remember { mutableStateOf(false) }
@@ -76,7 +78,7 @@ fun ProfileScreen(
                         modifier = Modifier.graphicsLayer { rotationZ = 180f }.size(32.dp)
                     )
                 }
-                BottomNavigationBar()
+                BottomNavigationBar(navController)
             }
         }
     ) { innerPadding ->
@@ -150,7 +152,8 @@ fun ProfileScreenPreview() {
 
     ProfileScreen(
         onNavigateToAccount = {},
-        onBack = {  }
+        onBack = {  },
+        navController = rememberNavController()
     )
 }
 

@@ -71,7 +71,7 @@ fun MyAccount(navController: NavController, user: User, onBack: () -> Unit = {})
     Scaffold(
         topBar = { TopBar(showBackIcon = true , onNavClick = onBack
         ) },
-        bottomBar = { BottomNavigationBar() },
+        bottomBar = { BottomNavigationBar(navController) },
         containerColor = Color(0xFF3D405B)
     ) { padding ->
         Column(
