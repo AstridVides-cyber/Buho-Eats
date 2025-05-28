@@ -52,5 +52,6 @@ data class Promo (
     val description: String,
     val imageUrl: String,
     val price: String,
-    val promprice :String
+    val promprice :String,
+    val reglas : String
 )

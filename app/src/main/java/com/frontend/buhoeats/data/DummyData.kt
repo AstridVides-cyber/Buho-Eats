@@ -71,7 +71,8 @@ object DummyData {
                         description = "Pupusas con chicharrón, frijoles y queso.",
                         imageUrl = "https://images.unsplash.com/photo-1625948137139-d6672c58db6e",
                         price = "$5.00",
-                        promprice = "$3.00"
+                        promprice = "$3.00",
+                        reglas = "Solo de lunes a viernes desde las 12 pm"
                     ),
                     Promo(
                         id = 2,
@@ -79,7 +80,9 @@ object DummyData {
                         description = "Sopa tradicional con vegetales frescos.",
                         imageUrl = "https://images.unsplash.com/photo-1605478371437-045aa03f2dc1",
                         price = "$5.00",
-                        promprice = "$3.00"
+                        promprice = "$3.00",
+                        reglas = "Solo de lunes a viernes desde las 12 pm"
+
 
                     )
                 )
@@ -131,7 +134,9 @@ object DummyData {
                         description = "Pescado, camarones y calamares en jugo de limón.",
                         imageUrl = "https://images.unsplash.com/photo-1613145998174-17f89e068e2e",
                         price = "$5.00",
-                        promprice = "$3.00"
+                        promprice = "$3.00",
+                        reglas = "Solo de lunes a viernes desde las 12 pm"
+
                     ),
                     Promo(
                         id = 4,
@@ -139,7 +144,9 @@ object DummyData {
                         description = "Tacos con carne de cerdo marinada al estilo mexicano.",
                         imageUrl = "https://images.unsplash.com/photo-1601050690094-0cfb389d7e18",
                         price = "$5.00",
-                        promprice = "$3.00"
+                        promprice = "$3.00",
+                        reglas = "Solo de lunes a viernes desde las 12 pm"
+
                     )
                 )
             )

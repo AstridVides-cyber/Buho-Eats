@@ -1,6 +1,7 @@
 package com.frontend.buhoeats.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,11 +27,12 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.models.Promo
 @Composable
-fun PromoCard(promo: Promo) {
+fun PromoCard(promo: Promo , onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -98,19 +100,4 @@ fun PromoCard(promo: Promo) {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PromoCardPreview() {
-    val promo = Promo(
-        id = 1,
-        name = "Promo 2x1",
-        description = "Solo viernes y sábados",
-        imageUrl = "https://images.unsplash.com/photo-1600891964599-f61ba0e24092", // una imagen random bonita
-        price = "$10.00",
-        promprice = "$5.00"
-    )
-
-    PromoCard(promo = promo)
 }

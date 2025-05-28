@@ -67,8 +67,11 @@ fun PromoScreen(navController: NavController) {
                 )
 
                 allPromos.forEach { promo ->
-                    PromoCard(promo = promo)
+                    PromoCard(promo = promo, onClick = {
+                        navController.navigate(Screens.PromoInfo.createRoute(promo.id))
+                    })
                 }
+
             }
         }
     }
