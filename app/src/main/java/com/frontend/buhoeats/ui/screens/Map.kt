@@ -1,14 +1,10 @@
+// Map.kt (pantalla principal que contiene el mapa)
 package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,8 +23,10 @@ import com.frontend.buhoeats.ui.components.MapScreen
 import com.frontend.buhoeats.ui.components.TopBar
 
 @Composable
-fun Map(onNavigateToProfile: () -> Unit = {},
-        onBack: () -> Unit = {}) {
+fun Map(
+    onNavigateToProfile: () -> Unit = {},
+    onBack: () -> Unit = {}
+) {
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -59,27 +57,21 @@ fun Map(onNavigateToProfile: () -> Unit = {},
                     .fillMaxSize()
                     .background(Color.White.copy(alpha = 0.8f))
                     .verticalScroll(scrollState)
-                    .padding(horizontal = 20.dp, vertical =10.dp)
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
                     .padding(bottom = 160.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
-            )
- {
+            ) {
                 Text(
                     text = "Restaurantes",
                     fontSize = 30.sp,
-                    fontFamily = montserratFontFamily,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 10.dp)
                 )
 
-     MapScreen()
+                MapScreen()
             }
-
-
         }
-
-
-       }
+    }
 }

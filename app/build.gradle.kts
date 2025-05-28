@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 
+
 }
 
 android {
@@ -43,8 +44,10 @@ android {
 
 dependencies {
 
+    implementation ("org.osmdroid:osmdroid-android:6.1.16")
 
-    implementation(libs.androidx.navigation.compose)
+
+
     implementation(libs.androidx.navigation.compose)
 
     implementation("androidx.compose.ui:ui:1.6.1")
@@ -56,6 +59,14 @@ dependencies {
 
     implementation ("com.google.maps.android:maps-compose:4.3.2")
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
+
+    implementation ("org.osmdroid:osmdroid-android:6.1.14")
+
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+
 
 
     implementation(libs.androidx.core.ktx)

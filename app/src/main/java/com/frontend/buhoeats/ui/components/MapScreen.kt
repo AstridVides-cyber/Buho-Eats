@@ -1,49 +1,106 @@
+// MapScreen.kt (componente mapa con permiso y ubicación)
 package com.frontend.buhoeats.ui.components
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.location.Location
+import android.preference.PreferenceManager
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.android.gms.maps.model.LatLng
+import androidx.compose.ui.viewinterop.AndroidView
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.launch
+import org.osmdroid.config.Configuration
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 
+@OptIn(ExperimentalPermissionsApi::class)
+@SuppressLint("MissingPermission")
 @Composable
 fun MapScreen() {
-    val uca = LatLng(13.6821, -89.2365)
-    val cameraPositionState = rememberCameraPositionState {
-        position = com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(uca, 16f)
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
+
+    var currentLocation by remember { mutableStateOf<Location?>(null) }
+    var locationRequested by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
+        if (!permissionState.status.isGranted) {
+            permissionState.launchPermissionRequest()
+        }
     }
 
-    Card(
+
+    LaunchedEffect(permissionState.status.isGranted, locationRequested) {
+        if (permissionState.status.isGranted && !locationRequested) {
+            locationRequested = true
+            coroutineScope.launch {
+                currentLocation = com.frontend.buhoeats.utils.getCurrentLocation(context, fusedLocationClient)
+            }
+        }
+    }
+
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(250.dp)
-            .padding(vertical = 8.dp)
-            .border(
-                width = 2.dp,
-                color = Color.Black,
-                shape = RoundedCornerShape(16.dp)
-            ),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+            .fillMaxSize()
+            .padding(top = 10.dp)
     ) {
-        GoogleMap(
-            modifier = Modifier
-                .fillMaxSize(),
-            cameraPositionState = cameraPositionState
-        ) {
-            Marker(
-                //position = uca,
-                title = "UCA",
-                snippet = "Aquí está la universidad"
-            )
+        if (!permissionState.status.isGranted) {
+            Text("Solicitando permiso de ubicación...")
+        } else if (currentLocation == null) {
+            Text("Cargando ubicación...")
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
+                    .padding(15.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .border(
+                        width = 2.dp,
+                        color = Color.Black,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .shadow(4.dp, RoundedCornerShape(12.dp))
+            ){
+            AndroidView(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                factory = { ctx ->
+                    val mapView = MapView(ctx).apply {
+                        setMultiTouchControls(true)
+                        controller.setZoom(18.0)
+                    }
+                    val geoPoint = GeoPoint(currentLocation!!.latitude, currentLocation!!.longitude)
+                    mapView.controller.setCenter(geoPoint)
+                    val marker = Marker(mapView).apply {
+                        position = geoPoint
+                    }
+                    mapView.overlays.add(marker)
+                    mapView
+
+                }
+            )}
         }
     }
 }
