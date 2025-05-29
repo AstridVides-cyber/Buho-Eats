@@ -16,6 +16,7 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.Screens
 
 @Composable
+
 fun BottomNavigationBar(navController : NavController) {
     NavigationBar(
         containerColor = Color(0xFF3D405B)
@@ -82,7 +83,7 @@ fun BottomNavigationBar(navController : NavController) {
 
         NavigationBarItem(
             selected = false,
-            onClick = {  },
+            onClick = { navController.navigate(Screens.Search.route) },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.lupa),

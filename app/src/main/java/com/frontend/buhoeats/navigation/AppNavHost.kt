@@ -1,5 +1,6 @@
 package com.frontend.buhoeats.navigation
 
+import Search
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -30,7 +31,7 @@ fun AppNavHost(navController: NavHostController) {
         composable(Screens.Settings.route) {
             SettingSlider(
                 onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
-                onBack = { navController.popBackStack()},
+                onBack = { navController.popBackStack() },
                 navController
             )
 
@@ -39,7 +40,7 @@ fun AppNavHost(navController: NavHostController) {
             ProfileScreen(
                 onNavigateToAccount = { navController.navigate(Screens.MyAccount.route) },
                 onBack = { navController.popBackStack() },
-                navController = navController
+                navController
             )
         }
         composable(Screens.MyAccount.route) {
@@ -69,6 +70,19 @@ fun AppNavHost(navController: NavHostController) {
             selectedRestaurant?.let {
                 RestaurantScreen(navController = navController, restaurant = it)
             }
+        }
+
+        composable(Screens.Search.route) {
+            Search(
+                onBack = { navController.popBackStack() },
+                onSearchResultClick = { restaurantName ->
+                    val restaurant = DummyData.getRestaurants().find { it.name == restaurantName }
+                    restaurant?.let {
+                        navController.navigate(Screens.Restaurant.createRoute(it.id))
+                    }
+                },
+                navController
+            )
         }
         composable(Screens.Map.route) {
            Map(onBack = { navController.popBackStack() } , navController = navController
