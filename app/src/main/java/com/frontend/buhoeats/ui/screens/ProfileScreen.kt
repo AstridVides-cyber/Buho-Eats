@@ -38,7 +38,7 @@ fun ProfileScreen(
     onNavigateToAccount: () -> Unit = {},
     onBack: () -> Unit = {},
     navController: NavController
-) {
+    ) {
     val scrollState = rememberScrollState()
     val user = DummyData.getUser()
     var showLogoutDialog by remember { mutableStateOf(false) }

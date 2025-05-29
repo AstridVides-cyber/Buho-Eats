@@ -266,4 +266,3 @@ fun SettingSlider( onNavigateToProfile: () -> Unit = {},
         }
     }
 }
-

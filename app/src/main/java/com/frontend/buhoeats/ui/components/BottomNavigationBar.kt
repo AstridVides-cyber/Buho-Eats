@@ -42,7 +42,7 @@ fun BottomNavigationBar(navController : NavController) {
 
         NavigationBarItem(
             selected = false,
-            onClick = { /* TODO */ },
+            onClick = {navController.navigate(Screens.Promocion.route)  },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.promociones),
