@@ -12,11 +12,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.data.SearchHistoryManager
@@ -26,9 +28,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Search(
-    onNavigateToProfile: () -> Unit = {},
     onBack: () -> Unit = {},
-    onSearchResultClick: (String) -> Unit = {}
+    onSearchResultClick: (String) -> Unit = {},
+    navController: NavController
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -58,7 +60,7 @@ fun Search(
             )
         },
         bottomBar = {
-            BottomNavigationBar()
+            BottomNavigationBar(navController)
         }
     ) { innerPadding ->
         Box(
@@ -85,8 +87,8 @@ fun Search(
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
                     shape = RoundedCornerShape(50),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                        focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                        unfocusedContainerColor = Color.White.copy(alpha = 0.5f),
+                        focusedContainerColor = Color.White.copy(alpha = 0.6f)
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -133,10 +135,10 @@ fun Search(
 
                     searchQuery.text.isNotBlank() && searchResults.isEmpty() -> {
                         Text(
-                            text = "ese restauranteno se encunetra registrado",
+                            text = "No hay resultados para la busqueda",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(top = 24.dp)
+                            modifier = Modifier.padding(top = 20.dp).padding(horizontal = 20.dp)
                         )
                     }
 

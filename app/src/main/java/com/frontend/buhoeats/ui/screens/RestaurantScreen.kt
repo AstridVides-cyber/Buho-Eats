@@ -56,7 +56,7 @@ fun RestaurantScreen(
 
             )
         },
-        bottomBar = { BottomNavigationBar() }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
