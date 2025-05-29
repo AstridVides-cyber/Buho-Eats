@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
@@ -27,7 +28,7 @@ import com.frontend.buhoeats.ui.components.TopBar
 @Composable
 fun HomeScreen(
     onRestaurantClick: (Int) -> Unit,
-    navController: NavHostController
+    navController: NavController
 ) {
     val restaurantList = DummyData.getRestaurants()
     var selectedFilter by remember { mutableStateOf<String?>(null) }
