@@ -1,4 +1,3 @@
-// Map.kt (pantalla principal que contiene el mapa)
 package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
@@ -17,17 +16,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.frontend.buhoeats.R
+import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.MapScreen
+import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.TopBar
-
 @Composable
 fun Map(
-    onNavigateToProfile: () -> Unit = {},
+    navController: NavController,
     onBack: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
+    val restaurants = DummyData.getRestaurants()
 
     Scaffold(
         topBar = {
@@ -37,7 +40,7 @@ fun Map(
             )
         },
         bottomBar = {
-            BottomNavigationBar()
+            BottomNavigationBar(navController)
         }
     ) { innerPadding ->
         Box(
@@ -55,10 +58,9 @@ fun Map(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White.copy(alpha = 0.8f))
+                    .background(Color.White.copy(alpha = 0.85f))
                     .verticalScroll(scrollState)
-                    .padding(horizontal = 20.dp, vertical = 10.dp)
-                    .padding(bottom = 160.dp),
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -68,9 +70,19 @@ fun Map(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 10.dp)
+                        .padding(top = 10.dp)
                 )
 
                 MapScreen()
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                restaurants.forEach { restaurant ->
+                    RestaurantCard(restaurant = restaurant) {
+                        navController.navigate(Screens.Restaurant.createRoute(restaurant.id))
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
             }
         }
     }

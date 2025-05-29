@@ -24,18 +24,20 @@ fun AppNavHost(navController: NavHostController) {
     val user = DummyData.getUser()
     val restaurantList = DummyData.getRestaurants()
 
-    NavHost(navController = navController, startDestination = Screens.Map.route) {
+    NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Settings.route) {
             SettingSlider(
                 onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                navController
             )
 
         }
         composable(Screens.Profile.route) {
             ProfileScreen(
                 onNavigateToAccount = { navController.navigate(Screens.MyAccount.route) },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                navController = navController
             )
         }
         composable(Screens.MyAccount.route) {
@@ -68,7 +70,7 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable(Screens.Map.route) {
-           Map(onBack = { navController.popBackStack() }
+           Map(onBack = { navController.popBackStack() } , navController = navController
             )
         }
     }

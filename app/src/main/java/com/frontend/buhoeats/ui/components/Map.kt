@@ -1,9 +1,7 @@
-// MapScreen.kt (componente mapa con permiso y ubicación)
 package com.frontend.buhoeats.ui.components
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.location.Location
 import android.preference.PreferenceManager
 import androidx.compose.foundation.border
@@ -21,7 +19,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration

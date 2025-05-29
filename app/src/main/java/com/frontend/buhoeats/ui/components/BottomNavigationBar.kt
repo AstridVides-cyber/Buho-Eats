@@ -11,17 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.Screens
 
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(navController : NavController) {
     NavigationBar(
         containerColor = Color(0xFF3D405B)
     ) {
         NavigationBarItem(
             selected = false,
-            onClick = { Screens.Home.route },
+            onClick = { navController.navigate(Screens.Home.route) },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.hogar),
@@ -61,7 +62,7 @@ fun BottomNavigationBar() {
 
         NavigationBarItem(
             selected = false,
-            onClick = { Screens.Map.route },
+            onClick = { navController.navigate(Screens.Map.route)},
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.mapa),
