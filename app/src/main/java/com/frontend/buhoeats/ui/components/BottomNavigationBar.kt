@@ -16,13 +16,13 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.Screens
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
+fun BottomNavigationBar(navController : NavController) {
     NavigationBar(
         containerColor = Color(0xFF3D405B)
     ) {
         NavigationBarItem(
             selected = false,
-            onClick = { navController.navigate(Screens.Home.route)},
+            onClick = { navController.navigate(Screens.Home.route) },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.hogar),
@@ -62,7 +62,7 @@ fun BottomNavigationBar(navController: NavController) {
 
         NavigationBarItem(
             selected = false,
-            onClick = { /* TODO */ },
+            onClick = { navController.navigate(Screens.Map.route)},
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.mapa),
@@ -82,7 +82,7 @@ fun BottomNavigationBar(navController: NavController) {
 
         NavigationBarItem(
             selected = false,
-            onClick = { /* TODO */ },
+            onClick = {  },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.lupa),

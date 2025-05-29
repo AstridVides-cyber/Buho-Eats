@@ -31,7 +31,7 @@ import com.frontend.buhoeats.ui.components.TopBar
 @Composable
 fun SettingSlider( onNavigateToProfile: () -> Unit = {},
                    onBack: () -> Unit = {},
-                   navController: NavController
+                   navController : NavController
 ) {
     Scaffold(
         topBar = {
@@ -265,10 +265,4 @@ fun SettingSlider( onNavigateToProfile: () -> Unit = {},
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun SliderPreview () {
-    SettingSlider(navController = rememberNavController())
 }

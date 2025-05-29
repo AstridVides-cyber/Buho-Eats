@@ -28,19 +28,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.components.DisabledProfileField
-import com.frontend.buhoeats.ui.components.TopBar
-@RequiresApi(Build.VERSION_CODES.O)
+import com.frontend.buhoeats.ui.components.TopBar@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     onNavigateToAccount: () -> Unit = {},
     onBack: () -> Unit = {},
     navController: NavController
-)
-{
+    ) {
     val scrollState = rememberScrollState()
+    val user = DummyData.getUser()
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     if (showLogoutDialog) {
@@ -111,28 +111,27 @@ fun ProfileScreen(
                         .padding(bottom = 10.dp)
                 )
 
-            Image(
+                Image(
                     painter = painterResource(id = R.drawable.defaulticon),
                     contentDescription = "Foto de perfil",
                     modifier = Modifier
-                            .size(180.dp)
-                            .clip(CircleShape),
+                        .size(180.dp)
+                        .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                DisabledProfileField("Nombre:", "Michelle")
+                DisabledProfileField("Nombre:", user.name)
                 Spacer(modifier = Modifier.height(10.dp))
-                DisabledProfileField("Apellido:", "Maltez")
+                DisabledProfileField("Apellido:", user.lastName)
                 Spacer(modifier = Modifier.height(10.dp))
-                DisabledProfileField("Correo:", "michelle@example.com")
+                DisabledProfileField("Correo:", user.email)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Button(
-                    onClick = { onNavigateToAccount()
-                    },
+                    onClick = onNavigateToAccount,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC11D0C)),
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
@@ -145,15 +144,3 @@ fun ProfileScreen(
         }
     }
 }
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenPreview() {
-
-    ProfileScreen(
-        onNavigateToAccount = {},
-        onBack = {  },
-        navController = rememberNavController()
-    )
-}
-
