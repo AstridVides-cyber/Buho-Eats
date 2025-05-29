@@ -94,7 +94,7 @@ fun FavoriteScreen(
                             text = "Favoritos",
                             fontSize = 30.sp,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                            modifier = Modifier.padding(vertical = 20.dp)
                         )
                     }
 
