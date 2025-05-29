@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 
+
 }
 
 android {
@@ -43,8 +44,10 @@ android {
 
 dependencies {
 
+    implementation ("org.osmdroid:osmdroid-android:6.1.16")
 
-    implementation(libs.androidx.navigation.compose)
+
+
     implementation(libs.androidx.navigation.compose)
 
     implementation("androidx.compose.ui:ui:1.6.1")
@@ -54,6 +57,21 @@ dependencies {
     //implementation ("androidx.compose.material:material-icons-extended:1.6.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation ("com.google.maps.android:maps-compose:4.3.2")
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation ("androidx.compose.ui:ui-text:1.5.0")
+
+
+    implementation ("org.osmdroid:osmdroid-android:6.1.14")
+
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+
 
 
     implementation(libs.androidx.core.ktx)
@@ -67,6 +85,8 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
+    implementation(libs.accompanist.permissions)
+    implementation(libs.androidx.navigation.runtime.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

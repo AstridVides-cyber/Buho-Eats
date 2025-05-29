@@ -42,9 +42,6 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.ContactCard
 import com.frontend.buhoeats.ui.components.DishCard
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.frontend.buhoeats.models.ContactInfo
-import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.Review
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
@@ -62,7 +59,7 @@ fun RestaurantScreen(
 
             )
         },
-        bottomBar = { BottomNavigationBar() }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -223,56 +220,4 @@ fun RestaurantContent(
             }
         }
     }
-}
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun RestaurantScreenPreview() {
-    val sampleRestaurant =  Restaurant(
-        id = 1,
-        name = "Restaurante El Buen Sabor",
-        description = "Comida típica salvadoreña con un toque moderno.",
-        imageUrl = "https://images.unsplash.com/photo-1600891964599-f61ba0e24092",
-        categories = listOf("Salvadoreña", "Típica", "Familiar"),
-        contactInfo = ContactInfo(
-            email = "contacto@elbuen.sv",
-            phone = "2222-3333",
-            hours = "Lunes a Domingo, 8:00 AM - 9:00 PM",
-            address = "Calle El Progreso #123, San Salvador"
-        ),
-        reviews = listOf(
-            Review(
-                username = "Juan Pérez",
-                comment = "Excelente atención y la comida deliciosa.",
-                rating = 5
-            ),
-            Review(
-                username = "Ana López",
-                comment = "Muy bonito el lugar y buen ambiente.",
-                rating = 4
-            )
-        ),
-        menu = listOf(
-            Dish(
-                id = 1,
-                name = "Pupusas revueltas",
-                description = "Pupusas con chicharrón, frijoles y queso.",
-                imageUrl = "https://images.unsplash.com/photo-1625948137139-d6672c58db6e",
-                price = "$5.00"
-            ),
-            Dish(
-                id = 2,
-                name = "Sopa de gallina india",
-                description = "Sopa tradicional con vegetales frescos.",
-                imageUrl = "https://images.unsplash.com/photo-1605478371437-045aa03f2dc1",
-                price = "$5.00"
-            )
-        )
-    )
-    RestaurantScreen(
-        navController = rememberNavController(),
-        restaurant = sampleRestaurant
-    )
 }
