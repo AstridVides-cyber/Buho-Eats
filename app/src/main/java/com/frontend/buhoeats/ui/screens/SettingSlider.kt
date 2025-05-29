@@ -22,8 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.R
+import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 
@@ -242,7 +244,9 @@ fun SettingSlider( onNavigateToProfile: () -> Unit = {},
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(15.dp)
-                        .clickable {  }
+                        .clickable {
+                            navController.navigate(Screens.Favorites.route)
+                        }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.FavoriteBorder,
@@ -266,4 +270,3 @@ fun SettingSlider( onNavigateToProfile: () -> Unit = {},
         }
     }
 }
-
