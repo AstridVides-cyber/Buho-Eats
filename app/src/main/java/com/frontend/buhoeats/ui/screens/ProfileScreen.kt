@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -19,20 +18,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.frontend.buhoeats.R
 import androidx.compose.material3.Text
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.components.DisabledProfileField
-import com.frontend.buhoeats.ui.components.TopBar@RequiresApi(Build.VERSION_CODES.O)
+import com.frontend.buhoeats.ui.components.StaticProfileImage
+import com.frontend.buhoeats.ui.components.TopBar
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     onNavigateToAccount: () -> Unit = {},
@@ -111,14 +110,7 @@ fun ProfileScreen(
                         .padding(bottom = 10.dp)
                 )
 
-                Image(
-                    painter = painterResource(id = R.drawable.defaulticon),
-                    contentDescription = "Foto de perfil",
-                    modifier = Modifier
-                        .size(180.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
+                StaticProfileImage(user.imageProfile)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
