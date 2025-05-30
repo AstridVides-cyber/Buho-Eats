@@ -34,15 +34,13 @@ fun AppNavHost(navController: NavHostController) {
                 navController = navController,
                 onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
                 onBack = { navController.popBackStack() },
-                navController
             )
-
         }
         composable(Screens.Profile.route) {
             ProfileScreen(
                 onNavigateToAccount = { navController.navigate(Screens.MyAccount.route) },
                 onBack = { navController.popBackStack() },
-                navController
+                navController = navController
             )
         }
         composable(Screens.MyAccount.route) {
@@ -53,7 +51,7 @@ fun AppNavHost(navController: NavHostController) {
             Login(navController)
         }
         composable(Screens.SignUp.route) {
-            SignUp(navController)
+            SignUp(navController = navController)
         }
         composable(Screens.Home.route) {
             HomeScreen(
@@ -80,7 +78,8 @@ fun AppNavHost(navController: NavHostController) {
                 },
                 onBack = {
                     navController.popBackStack()
-                }
+                },
+                navController = navController
             )
         }
         composable(Screens.Search.route) {
@@ -92,7 +91,7 @@ fun AppNavHost(navController: NavHostController) {
                         navController.navigate(Screens.Restaurant.createRoute(it.id))
                     }
                 },
-                navController
+                navController = navController
             )
         }
         composable(Screens.Map.route) {
@@ -100,7 +99,7 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
         composable(Screens.Promocion.route) {
-            PromoScreen(navController)
+            PromoScreen( navController = navController)
         }
         composable(
             route = Screens.PromoInfo.route,

@@ -8,8 +8,6 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-
-
 @SuppressLint("MissingPermission")
 suspend fun getCurrentLocation(context: Context, fused: FusedLocationProviderClient): Location? {
     return suspendCancellableCoroutine { cont ->

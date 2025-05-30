@@ -216,8 +216,13 @@ fun RestaurantContent(
             Spacer(modifier = Modifier.size(15.dp))
 
             (reviews + newReviews).forEach { review ->
-                Opinion(review)
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)) {
+                    Opinion(review)
+                }
             }
+
         }
     }
 }

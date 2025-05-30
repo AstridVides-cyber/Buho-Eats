@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 
@@ -44,7 +45,8 @@ fun FavoriteScreen(
     onBack: () -> Unit = {},
     favoritesViewModel: FavoritesViewModel = viewModel(
         factory = ViewModelProvider.AndroidViewModelFactory(LocalContext.current.applicationContext as Application)
-    )
+    ),
+    navController: NavController
 ) {
     val favoriteIds by favoritesViewModel.favoriteRestaurantIds.collectAsState()
     val allRestaurants = DummyData.getRestaurants()
@@ -59,7 +61,7 @@ fun FavoriteScreen(
                 onNavClick = onBack
             )
         },
-        bottomBar = { BottomNavigationBar() }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
         Box(
             modifier = Modifier
