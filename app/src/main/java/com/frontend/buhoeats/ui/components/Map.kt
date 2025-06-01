@@ -25,19 +25,23 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import com.frontend.buhoeats.models.Restaurant
 
 @OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("MissingPermission")
 @Composable
-fun MapScreen() {
+fun Map(
+    restaurants: List<Restaurant>,
+    focusLocation: GeoPoint? = null
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
     var currentLocation by remember { mutableStateOf<Location?>(null) }
     var locationRequested by remember { mutableStateOf(false) }
+    val mapViewState = remember { mutableStateOf<MapView?>(null) }
 
     LaunchedEffect(Unit) {
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
@@ -45,7 +49,6 @@ fun MapScreen() {
             permissionState.launchPermissionRequest()
         }
     }
-
 
     LaunchedEffect(permissionState.status.isGranted, locationRequested) {
         if (permissionState.status.isGranted && !locationRequested) {
@@ -56,48 +59,60 @@ fun MapScreen() {
         }
     }
 
+    LaunchedEffect(focusLocation) {
+        focusLocation?.let { focus ->
+            mapViewState.value?.controller?.setCenter(focus)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 10.dp)
     ) {
-        if (!permissionState.status.isGranted) {
-            Text("Solicitando permiso de ubicación...")
-        } else if (currentLocation == null) {
-            Text("Cargando ubicación...")
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp)
-                    .padding(15.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .border(
-                        width = 2.dp,
-                        color = Color.Black,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .shadow(4.dp, RoundedCornerShape(12.dp))
-            ){
-            AndroidView(
+        when {
+            !permissionState.status.isGranted -> {
+                Text("Solicitando permiso de ubicación...")
+            }
+            currentLocation == null -> {
+                Text("Cargando ubicación...")
+            }
+            else -> {
+                AndroidView(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp),
-                factory = { ctx ->
-                    val mapView = MapView(ctx).apply {
-                        setMultiTouchControls(true)
-                        controller.setZoom(18.0)
-                    }
-                    val geoPoint = GeoPoint(currentLocation!!.latitude, currentLocation!!.longitude)
-                    mapView.controller.setCenter(geoPoint)
-                    val marker = Marker(mapView).apply {
-                        position = geoPoint
-                    }
-                    mapView.overlays.add(marker)
-                    mapView
+                        .height(250.dp)
+                        .padding(10.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(2.dp, Color.Black, RoundedCornerShape(12.dp))
+                        .shadow(4.dp, RoundedCornerShape(12.dp)),
+                    factory = { ctx ->
+                        MapView(ctx).apply {
+                            setMultiTouchControls(true)
+                            controller.setZoom(20.0)
+                            val defaultPoint = GeoPoint(currentLocation!!.latitude, currentLocation!!.longitude)
+                            controller.setCenter(defaultPoint)
 
-                }
-            )}
+                            restaurants.forEach { rest ->
+                                overlays.add(Marker(this).apply {
+                                    position = GeoPoint(rest.latitud, rest.longitud)
+                                    title = rest.name
+                                })
+                            }
+
+                            overlays.add(Marker(this).apply {
+                                position = defaultPoint
+                                title = "Tú estás aquí"
+                            })
+
+                            mapViewState.value = this
+                        }
+                    },
+                    update = { map ->
+                        map.invalidate()
+                    }
+                )
+            }
         }
     }
 }

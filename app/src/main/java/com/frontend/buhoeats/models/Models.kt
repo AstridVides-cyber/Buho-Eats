@@ -8,10 +8,9 @@ data class User(
     val lastName: String,
     val email: String,
     val password: String,
-    val confirmpassword: String,
     val imageProfile: String,
+    val rol : String,
 ) : Serializable
-
 
 data class Dish(
     val id: Int,
@@ -30,7 +29,10 @@ data class Restaurant(
     val contactInfo: ContactInfo,
     val reviews: List<Review>,
     val menu: List<Dish>,
-    val promos: List<Promo>
+    val promos: List<Promo>,
+    val latitud: Double,
+    val longitud: Double
+
 ) : Serializable
 
 data class ContactInfo(

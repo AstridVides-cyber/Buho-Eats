@@ -18,7 +18,7 @@ import com.frontend.buhoeats.ui.screens.RestaurantScreen
 import com.frontend.buhoeats.ui.screens.SettingSlider
 import com.frontend.buhoeats.ui.screens.SignUp
 import com.frontend.buhoeats.ui.screens.MyAccount
-import com.frontend.buhoeats.ui.screens.Map
+import com.frontend.buhoeats.ui.screens.MapScreen
 import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
 
@@ -95,7 +95,7 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
         composable(Screens.Map.route) {
-           Map(onBack = { navController.popBackStack() } , navController = navController
+           MapScreen(onBack = { navController.popBackStack() } , navController = navController
             )
         }
         composable(Screens.Promocion.route) {

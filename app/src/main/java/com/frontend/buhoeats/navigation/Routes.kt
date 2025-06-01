@@ -1,6 +1,5 @@
 package com.frontend.buhoeats.navigation
 
-import android.R
 
 sealed class Screens(val route: String) {
     object Profile : Screens("profile")
@@ -14,7 +13,7 @@ sealed class Screens(val route: String) {
     }
     object Favorites : Screens("favorites")
     object Search : Screens("search")
-    object Map : Screens("Map")
+    object Map : Screens("map")
     object Promocion : Screens("promocion")
     object PromoInfo : Screens("promoInfo/{promoId}") {
         fun createRoute(promoId: Int) = "promoInfo/$promoId"

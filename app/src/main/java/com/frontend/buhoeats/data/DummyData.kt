@@ -15,9 +15,9 @@ object DummyData {
         imageProfile = "",
         email = "vides67@gmail.com",
         password = "astrid",
-        confirmpassword = "astrid"
-    )
+        rol = "admin"
 
+    )
     fun getUser(): User {
         return user
     }
@@ -85,7 +85,9 @@ object DummyData {
 
 
                     )
-                )
+                ),
+                latitud = 13.6929,
+                longitud = -89.2182
             ),
             Restaurant(
                 id = 2,
@@ -148,7 +150,9 @@ object DummyData {
                         reglas = "Solo de lunes a viernes desde las 12 pm"
 
                     )
-                )
+                ),
+                latitud = 13.7929,
+                longitud = -89.2182
             )
         )
     }

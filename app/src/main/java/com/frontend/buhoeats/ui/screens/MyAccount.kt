@@ -58,7 +58,7 @@ fun MyAccount(navController: NavController, user: User, onBack: () -> Unit = {})
     var lastname by remember { mutableStateOf(user.lastName) }
     var email by remember { mutableStateOf(user.email) }
     var password by remember { mutableStateOf(user.password) }
-    var confirmPassword by remember { mutableStateOf(user.confirmpassword) }
+    var confirmPassword by remember { mutableStateOf("") }
 
     var triedToSubmit by remember { mutableStateOf(false) }
 
@@ -268,19 +268,4 @@ fun MyAccount(navController: NavController, user: User, onBack: () -> Unit = {})
             }
         }
     }
-}
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview()
-@Composable
-fun MyAccountPreview() {
-    val fakeUser = User(
-        id = 1,
-        name = "Michelle",
-        lastName = "Maltez",
-        email = "michelle@correo.com",
-        password = "lol",
-        confirmpassword = "lol",
-        imageProfile = "foto"
-    )
-    MyAccount(navController = rememberNavController(), user = fakeUser)
 }

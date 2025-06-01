@@ -1,16 +1,16 @@
 package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,18 +19,21 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
-import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
-import com.frontend.buhoeats.ui.components.MapScreen
+import com.frontend.buhoeats.ui.components.Map
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.TopBar
+import org.osmdroid.util.GeoPoint
+
 @Composable
-fun Map(
+fun MapScreen(
     navController: NavController,
     onBack: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
     val restaurants = DummyData.getRestaurants()
+    val focusedLocation = remember { mutableStateOf<GeoPoint?>(null) }
+
 
     Scaffold(
         topBar = {
@@ -58,7 +61,6 @@ fun Map(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White.copy(alpha = 0.85f))
                     .verticalScroll(scrollState)
                     .padding(horizontal = 20.dp, vertical = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -73,14 +75,18 @@ fun Map(
                         .padding(top = 10.dp)
                 )
 
-                MapScreen()
+                Map(
+                    restaurants = restaurants,
+                    focusLocation = focusedLocation.value
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 restaurants.forEach { restaurant ->
                     RestaurantCard(restaurant = restaurant) {
-                        navController.navigate(Screens.Restaurant.createRoute(restaurant.id))
+                        focusedLocation.value = GeoPoint(restaurant.latitud, restaurant.longitud)
                     }
+
                     Spacer(modifier = Modifier.height(12.dp))
                 }
             }
