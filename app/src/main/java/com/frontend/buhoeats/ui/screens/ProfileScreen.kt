@@ -23,29 +23,47 @@ import androidx.compose.ui.unit.sp
 import com.frontend.buhoeats.R
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.components.DisabledProfileField
 import com.frontend.buhoeats.ui.components.StaticProfileImage
 import com.frontend.buhoeats.ui.components.TopBar
-
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
     onNavigateToAccount: () -> Unit = {},
     onBack: () -> Unit = {},
-    navController: NavController
-    ) {
+    navController: NavController,
+    userSessionViewModel: UserSessionViewModel
+) {
     val scrollState = rememberScrollState()
-    val user = DummyData.getUser()
+    val user = userSessionViewModel.currentUser.value
     var showLogoutDialog by remember { mutableStateOf(false) }
+
+    if (user == null) {
+        LaunchedEffect(Unit) {
+            navController.navigate(Screens.Login.route) {
+                popUpTo(Screens.Profile.route) { inclusive = true }
+            }
+        }
+        return
+    }
 
     if (showLogoutDialog) {
         ConfirmationDialog(
             message = "¿Estás seguro que deseas cerrar sesión?",
-            onConfirm = { showLogoutDialog = false },
+            onConfirm = {
+                showLogoutDialog = false
+                userSessionViewModel.logout()
+                navController.navigate(Screens.Login.route) {
+                    popUpTo(Screens.Profile.route) { inclusive = true }
+                }
+            },
             onDismiss = { showLogoutDialog = false }
         )
     }

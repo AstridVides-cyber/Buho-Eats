@@ -23,15 +23,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidEmail
 import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Login(navControl: NavHostController) {
+fun Login(
+    navControl: NavHostController,
+    userSessionViewModel: UserSessionViewModel
+) {
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
@@ -183,6 +190,7 @@ fun Login(navControl: NavHostController) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
+
             Button(
                 onClick = {
                     var hasError = false
@@ -201,8 +209,18 @@ fun Login(navControl: NavHostController) {
                     }
 
                     if (!hasError) {
-                        // Lógica de login (por ahora no hace nada)
-                        navControl.navigate(Screens.Home.route)
+                        val user = DummyData.getUsers().find {
+                            it.email == email && it.password == password
+                        }
+
+                        if (user != null) {
+                            userSessionViewModel.login(user)
+                            navControl.navigate(Screens.Home.route) {
+                                popUpTo(Screens.Login.route) { inclusive = true }
+                            }
+                        } else {
+                            passwordError = "Correo o contraseña incorrectos"
+                        }
                     }
                 },
                 modifier = Modifier
@@ -221,6 +239,7 @@ fun Login(navControl: NavHostController) {
                     )
                 )
             }
+
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(

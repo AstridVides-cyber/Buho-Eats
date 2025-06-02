@@ -3,7 +3,14 @@ package com.frontend.buhoeats.navigation
 import Search
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -21,13 +28,18 @@ import com.frontend.buhoeats.ui.screens.MyAccount
 import com.frontend.buhoeats.ui.screens.MapScreen
 import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
+import com.frontend.buhoeats.viewmodel.FavoritesViewModel
+import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(navController: NavHostController) {
-    val user = DummyData.getUser()
-    val restaurantList = DummyData.getRestaurants()
-
+    val userSessionViewModel: UserSessionViewModel = viewModel()
+    val currentUser = userSessionViewModel.currentUser.value
+    val favoritesViewModel: FavoritesViewModel = viewModel(
+        factory = FavoritesViewModelFactory(userSessionViewModel)
+    )
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Settings.route) {
             SettingSlider(
@@ -40,16 +52,23 @@ fun AppNavHost(navController: NavHostController) {
             ProfileScreen(
                 onNavigateToAccount = { navController.navigate(Screens.MyAccount.route) },
                 onBack = { navController.popBackStack() },
-                navController = navController
+                navController = navController,
+                userSessionViewModel = userSessionViewModel
             )
         }
+
         composable(Screens.MyAccount.route) {
-            MyAccount(navController = navController, user = user , onBack = { navController.popBackStack() }
+            currentUser?.let {
+                MyAccount(navController = navController, user = it, onBack = { navController.popBackStack() })
+            }
+        }
+
+        composable(Screens.Login.route) {
+            Login(navController,
+                userSessionViewModel = userSessionViewModel
             )
         }
-        composable(Screens.Login.route) {
-            Login(navController)
-        }
+
         composable(Screens.SignUp.route) {
             SignUp(navController = navController)
         }
@@ -65,12 +84,18 @@ fun AppNavHost(navController: NavHostController) {
             route = Screens.Restaurant.route,
             arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val restaurantId = backStackEntry.arguments?.getInt("restaurantId") ?: 0
-            val selectedRestaurant = restaurantList.find { it.id == restaurantId }
-            selectedRestaurant?.let {
-                RestaurantScreen(navController = navController, restaurant = it)
+            val restaurantId = backStackEntry.arguments?.getInt("restaurantId")
+            val restaurant = DummyData.getRestaurants().find { it.id == restaurantId }
+
+            if (restaurant != null) {
+                RestaurantScreen(
+                    navController = navController,
+                    restaurant = restaurant,
+                    userSessionViewModel = userSessionViewModel
+                )
             }
         }
+
         composable(Screens.Favorites.route) {
             FavoriteScreen(
                 onRestaurantClick = { restaurantId ->
@@ -79,7 +104,9 @@ fun AppNavHost(navController: NavHostController) {
                 onBack = {
                     navController.popBackStack()
                 },
-                navController = navController
+                navController = navController,
+                userSessionViewModel = userSessionViewModel
+
             )
         }
         composable(Screens.Search.route) {

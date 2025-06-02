@@ -8,18 +8,40 @@ import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Review
 object DummyData {
 
-    private var user = User(
-        id = 1,
-        name = "Astrid",
-        lastName = "Vides",
-        imageProfile = "",
-        email = "vides67@gmail.com",
-        password = "astrid",
-        rol = "admin"
+    private val users = listOf(
+        User(
+            id = 1,
+            name = "Astrid",
+            lastName = "Vides",
+            imageProfile = "",
+            email = "vides67@gmail.com",
+            password = "astrid",
+            rol = "admin"
+        ),
+        User(
+            id = 2,
+            name = "Michelle",
+            lastName = "Maltez",
+            imageProfile = "",
+            email = "michelle@gmail.com",
+            password = "michelle123",
+            rol = "usuario",
+            favoritos = mutableListOf(1, 2)
 
+    ),
+        User(
+            id = 3,
+            name = "Dayalin",
+            lastName = "Ramírez",
+            imageProfile = "",
+            email = "dayalin@correo.com",
+            password = "dayalin123",
+            rol = "superadmin"
+        )
     )
-    fun getUser(): User {
-        return user
+
+    fun getUsers(): List<User> {
+        return users
     }
 
     fun getRestaurants(): List<Restaurant> {

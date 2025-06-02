@@ -45,11 +45,14 @@ import androidx.navigation.NavController
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.Review
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
+import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 @Composable
 fun RestaurantScreen(
     navController: NavController,
-    restaurant: Restaurant
+    restaurant: Restaurant,
+    userSessionViewModel: UserSessionViewModel
 ) {
     Scaffold(
         topBar = {
@@ -75,22 +78,25 @@ fun RestaurantScreen(
 
             RestaurantContent(
                 modifier = Modifier.fillMaxSize(),
-                restaurant = restaurant
-            )
+                restaurant = restaurant,
+                favoritesViewModel = remember {
+                    FavoritesViewModel(userSessionViewModel)
+                }            )
         }
     }
 }
-
 @Composable
 fun RestaurantContent(
     restaurant: Restaurant,
     modifier: Modifier = Modifier,
     favoritesViewModel: FavoritesViewModel = viewModel(
-        factory = ViewModelProvider.AndroidViewModelFactory(LocalContext.current.applicationContext as Application)
+        factory = FavoritesViewModelFactory(
+            userSessionViewModel = viewModel()
+        )
     )
 ) {
     val favoriteIds by favoritesViewModel.favoriteRestaurantIds.collectAsState()
-    val isFavorite = favoriteIds.contains(restaurant.id.toString())
+    val isFavorite = favoriteIds.contains(restaurant.id)
 
     var rating by rememberSaveable { mutableStateOf(0) }
     var comment by remember { mutableStateOf("") }

@@ -9,8 +9,10 @@ data class User(
     val email: String,
     val password: String,
     val imageProfile: String,
-    val rol : String,
-) : Serializable
+    val rol: String,
+    var favoritos: MutableList<Int> = mutableListOf()
+)
+: Serializable
 
 data class Dish(
     val id: Int,

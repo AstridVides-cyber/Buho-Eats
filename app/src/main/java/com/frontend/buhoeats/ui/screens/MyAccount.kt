@@ -2,7 +2,6 @@ package com.frontend.buhoeats.ui.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,10 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.models.User
-import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.CustomTextField
 import com.frontend.buhoeats.ui.components.ProfileImage
@@ -250,7 +246,8 @@ fun MyAccount(navController: NavController, user: User, onBack: () -> Unit = {})
                         hasError = true
                     }
 
-                    if (!hasError) { navController.popBackStack()
+                    if (!hasError) {
+                        navController.popBackStack()
                     }
                     },
                     modifier = Modifier

@@ -1,6 +1,5 @@
 package com.frontend.buhoeats.ui.screens
 
-import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -8,10 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,36 +17,40 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
+import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 @Composable
 fun FavoriteScreen(
     onRestaurantClick: (Int) -> Unit,
     onBack: () -> Unit = {},
+    navController: NavController,
+    userSessionViewModel: UserSessionViewModel,
     favoritesViewModel: FavoritesViewModel = viewModel(
-        factory = ViewModelProvider.AndroidViewModelFactory(LocalContext.current.applicationContext as Application)
-    ),
-    navController: NavController
+        factory = FavoritesViewModelFactory(userSessionViewModel)
+    )
 ) {
     val favoriteIds by favoritesViewModel.favoriteRestaurantIds.collectAsState()
+    LaunchedEffect(Unit) {
+        favoritesViewModel.refreshFavorites()
+    }
     val allRestaurants = DummyData.getRestaurants()
     val favoriteRestaurants = allRestaurants.filter { restaurant ->
-        favoriteIds.contains(restaurant.id.toString())
+        favoriteIds.contains(restaurant.id)
     }
 
     Scaffold(

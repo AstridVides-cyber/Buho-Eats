@@ -1,58 +1,55 @@
 package com.frontend.buhoeats.viewmodel
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.ViewModel
-import com.frontend.buhoeats.data.DummyData
-import com.frontend.buhoeats.models.Restaurant
-import android.app.Application
-import android.content.Context
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import androidx.datastore.preferences.core.*
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 
-val Context.dataStore by preferencesDataStore(name = "favorites")
+class FavoritesViewModel(
+    private val userSessionViewModel: UserSessionViewModel
+) : ViewModel() {
 
-class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
-    private val context = application.applicationContext
-
-    private val FAVORITES_KEY = stringSetPreferencesKey("favorite_ids")
-
-    private val _favoriteRestaurantIds = MutableStateFlow<Set<String>>(setOf())
-    val favoriteRestaurantIds: StateFlow<Set<String>> = _favoriteRestaurantIds.asStateFlow()
+    private val _favoriteRestaurantIds = MutableStateFlow<Set<Int>>(emptySet())
+    val favoriteRestaurantIds: StateFlow<Set<Int>> = _favoriteRestaurantIds.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            context.dataStore.data
-                .map { preferences ->
-                    preferences[FAVORITES_KEY] ?: setOf()
-                }
-                .collect {
-                    _favoriteRestaurantIds.value = it
-                }
+        userSessionViewModel.currentUser.value?.favoritos?.let { favs ->
+            _favoriteRestaurantIds.value = favs.toSet()
+        }
+    }
+
+    fun refreshFavorites() {
+        userSessionViewModel.currentUser.value?.favoritos?.let { favs ->
+            _favoriteRestaurantIds.value = favs.toSet()
         }
     }
 
     fun toggleFavorite(restaurantId: Int) {
-        val idAsString = restaurantId.toString()
-        val current = _favoriteRestaurantIds.value
-        val newSet = if (current.contains(idAsString)) {
-            current - idAsString
+        val currentUser = userSessionViewModel.currentUser.value ?: return
+        val current = _favoriteRestaurantIds.value.toMutableSet()
+
+        if (current.contains(restaurantId)) {
+            current.remove(restaurantId)
+            currentUser.favoritos.remove(restaurantId)
         } else {
-            current + idAsString
+            current.add(restaurantId)
+            currentUser.favoritos.add(restaurantId)
         }
 
-        viewModelScope.launch {
-            context.dataStore.edit { preferences ->
-                preferences[FAVORITES_KEY] = newSet
-            }
-        }
-    }
-
-    fun isFavorite(restaurantId: Int): Boolean {
-        return _favoriteRestaurantIds.value.contains(restaurantId.toString())
+        _favoriteRestaurantIds.value = current
+        userSessionViewModel.updateCurrentUser(currentUser)
     }
 }
+
+class FavoritesViewModelFactory(
+    private val userSessionViewModel: UserSessionViewModel
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return FavoritesViewModel(userSessionViewModel) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
 
