@@ -33,8 +33,8 @@ data class Restaurant(
     val menu: List<Dish>,
     val promos: List<Promo>,
     val latitud: Double,
-    val longitud: Double
-
+    val longitud: Double,
+    val admin : Int
 ) : Serializable
 
 data class ContactInfo(

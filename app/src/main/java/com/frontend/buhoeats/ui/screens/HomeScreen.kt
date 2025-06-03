@@ -37,6 +37,14 @@ fun HomeScreen(
     var selectedFilter by remember { mutableStateOf<String?>(null) }
     val currentUser by userSessionViewModel.currentUser
 
+    val isAdmin = currentUser?.rol == "admin"
+    val myRestaurant = restaurantList.find { it.admin == currentUser?.id }
+
+    val filteredRestaurants = if (isAdmin) {
+        restaurantList.filter { it.admin != currentUser?.id }
+    } else {
+        restaurantList
+    }
 
     Scaffold(
         topBar = {
@@ -77,6 +85,19 @@ fun HomeScreen(
                         resultCount = restaurantList.size
                     )
                     Spacer(modifier = Modifier.height(16.dp))
+                    if (isAdmin && myRestaurant != null) {
+                        Text(
+                            text = "Su local:",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        RestaurantCard(restaurant = myRestaurant) {
+                            onRestaurantClick(myRestaurant.id)
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Restaurantes",
                         fontSize = 20.sp,
@@ -85,11 +106,11 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
-                items(restaurantList) { restaurant ->
+                items(filteredRestaurants) { restaurant ->
                     RestaurantCard(restaurant = restaurant) {
                         onRestaurantClick(restaurant.id)
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
