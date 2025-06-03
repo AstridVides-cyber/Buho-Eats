@@ -79,9 +79,12 @@ fun ContactCard(contactInfo: ContactInfo) {
     }
 }
 
-
 @Composable
-fun DishCard(dish: Dish) {
+fun DishCard(
+    dish: Dish,
+    showDelete: Boolean = false,
+    onDelete: () -> Unit = {}
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,6 +101,16 @@ fun DishCard(dish: Dish) {
                     .height(180.dp),
                 contentScale = ContentScale.Crop
             )
+
+            if (showDelete) {
+                DeleteButton(
+                    onClick = onDelete,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding((4).dp)
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
