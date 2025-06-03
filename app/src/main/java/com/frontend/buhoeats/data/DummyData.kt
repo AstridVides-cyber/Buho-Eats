@@ -32,11 +32,20 @@ object DummyData {
         User(
             id = 3,
             name = "Dayalin",
-            lastName = "Ramírez",
+            lastName = "Hernandez",
             imageProfile = "",
             email = "dayalin@correo.com",
             password = "dayalin123",
             rol = "superadmin"
+        ),
+        User(
+            id = 4,
+            name = "Diego",
+            lastName = "Alvarenga",
+            imageProfile = "",
+            email = "diego@hotmail.com",
+            password = "diego123",
+            rol = "admin"
         )
     )
 
@@ -109,7 +118,8 @@ object DummyData {
                     )
                 ),
                 latitud = 13.6929,
-                longitud = -89.2182
+                longitud = -89.2182,
+                admin = 1
             ),
             Restaurant(
                 id = 2,
@@ -174,7 +184,8 @@ object DummyData {
                     )
                 ),
                 latitud = 13.7929,
-                longitud = -89.2182
+                longitud = -89.2182,
+                admin = 4
             )
         )
     }
