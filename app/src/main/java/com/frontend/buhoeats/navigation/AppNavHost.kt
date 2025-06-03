@@ -75,6 +75,7 @@ fun AppNavHost(navController: NavHostController) {
         composable(Screens.Home.route) {
             HomeScreen(
                 navController = navController,
+                userSessionViewModel = userSessionViewModel,
                 onRestaurantClick = { id ->
                     navController.navigate(Screens.Restaurant.createRoute(id))
                 }

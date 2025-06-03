@@ -23,15 +23,20 @@ import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 
 @Composable
 fun HomeScreen(
     onRestaurantClick: (Int) -> Unit,
-    navController: NavController
+    navController: NavController,
+    userSessionViewModel: UserSessionViewModel
+
 ) {
     val restaurantList = DummyData.getRestaurants()
     var selectedFilter by remember { mutableStateOf<String?>(null) }
+    val currentUser by userSessionViewModel.currentUser
+
 
     Scaffold(
         topBar = {
@@ -64,7 +69,7 @@ fun HomeScreen(
                     .padding(16.dp)
             ) {
                 item {
-                    GreetingSection()
+                    GreetingSection(userName = currentUser?.name ?: "Usuario")
                     Spacer(modifier = Modifier.height(16.dp))
                     FilterSection(
                         onFilterSelected = { selectedFilter = it },
@@ -92,10 +97,10 @@ fun HomeScreen(
 }
 
 @Composable
-fun GreetingSection() {
+fun GreetingSection(userName: String) {
     Column {
         Text(
-            text = "Buenas tardes, Usuario",
+            text = "Bienvenido, $userName",
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold
         )
