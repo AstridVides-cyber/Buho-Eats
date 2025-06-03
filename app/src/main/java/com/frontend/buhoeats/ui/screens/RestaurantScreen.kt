@@ -42,8 +42,11 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.ContactCard
 import com.frontend.buhoeats.ui.components.DishCard
 import androidx.navigation.NavController
+import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.Review
+import com.frontend.buhoeats.models.User
+import com.frontend.buhoeats.ui.components.EditFloatingButton
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
@@ -54,6 +57,9 @@ fun RestaurantScreen(
     restaurant: Restaurant,
     userSessionViewModel: UserSessionViewModel
 ) {
+    val currentUser = userSessionViewModel.currentUser.value
+    val isAdminOfThisRestaurant = currentUser?.rol == "admin" && restaurant.admin == currentUser.id
+
     Scaffold(
         topBar = {
             TopBar(
@@ -62,7 +68,15 @@ fun RestaurantScreen(
 
             )
         },
-        bottomBar = { BottomNavigationBar(navController) }
+        bottomBar = { BottomNavigationBar(navController) },
+        floatingActionButton = {
+            if (isAdminOfThisRestaurant) {
+                EditFloatingButton(
+                    onClick = { /* Navegar a pantalla de edición o lo que quieras */ }
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -81,10 +95,13 @@ fun RestaurantScreen(
                 restaurant = restaurant,
                 favoritesViewModel = remember {
                     FavoritesViewModel(userSessionViewModel)
-                }            )
+                }     ,
+                currentUser = userSessionViewModel.currentUser.value
+            )
         }
     }
 }
+
 @Composable
 fun RestaurantContent(
     restaurant: Restaurant,
@@ -93,10 +110,15 @@ fun RestaurantContent(
         factory = FavoritesViewModelFactory(
             userSessionViewModel = viewModel()
         )
-    )
+    ),
+    currentUser: User? = null
 ) {
     val favoriteIds by favoritesViewModel.favoriteRestaurantIds.collectAsState()
     val isFavorite = favoriteIds.contains(restaurant.id)
+
+    val isAdminOfThisRestaurant = currentUser?.rol == "admin" && restaurant.admin == currentUser.id
+    val menuList = remember { mutableStateListOf<Dish>().apply { addAll(restaurant.menu) } }
+
 
     var rating by rememberSaveable { mutableStateOf(0) }
     var comment by remember { mutableStateOf("") }
@@ -121,15 +143,17 @@ fun RestaurantContent(
                 modifier = Modifier.padding(bottom = 10.dp)
             )
 
-            IconButton(onClick = {
-                favoritesViewModel.toggleFavorite(restaurant.id)
-            }) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = if (isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
-                    tint = if (isFavorite) Color.Red else Color.Gray,
-                    modifier = Modifier.size(40.dp)
-                )
+            if (currentUser?.rol != "admin") {
+                IconButton(onClick = {
+                    favoritesViewModel.toggleFavorite(restaurant.id)
+                }) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = if (isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
+                        tint = if (isFavorite) Color.Red else Color.Gray,
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
             }
         }
 
@@ -163,72 +187,85 @@ fun RestaurantContent(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        restaurant.menu.forEach { dish ->
-            DishCard(dish = dish)
+        menuList.forEach { dish ->
+            DishCard(
+                dish = dish,
+                showDelete = isAdminOfThisRestaurant,
+                onDelete = { menuList.remove(dish) }
+            )
         }
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Califica la app",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium
-            )
+        if (!isAdminOfThisRestaurant) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Califica la app",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
+                )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            RatingBar(rating = rating, onRatingChanged = { rating = it })
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        OutlinedTextField(
-            value = comment,
-            onValueChange = { comment = it },
-            label = { Text("Escribe tu opinión") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Button(
-            onClick = {
-                if (comment.isNotBlank() && rating > 0) {
-                    newReviews.add(Review(username = "Usuario", comment = comment, rating = rating))
-                    comment = ""
-                    rating = 0
-                }
-            },
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(5.dp)
-        ) {
-            Text("Publicar")
-        }
-
-        Divider(modifier = Modifier.padding(vertical = 8.dp))
-        Spacer(modifier = Modifier.size(10.dp))
-
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                "Calificaciones y opiniones",
-                fontWeight = FontWeight.Medium,
-                fontSize = 18.sp
-            )
-            Spacer(modifier = Modifier.size(15.dp))
-
-            (reviews + newReviews).forEach { review ->
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)) {
-                    Opinion(review)
-                }
+                RatingBar(rating = rating, onRatingChanged = { rating = it })
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
+            OutlinedTextField(
+                value = comment,
+                onValueChange = { comment = it },
+                label = { Text("Escribe tu opinión") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = {
+                    if (comment.isNotBlank() && rating > 0) {
+                        newReviews.add(
+                            Review(
+                                username = currentUser?.name ?: "Usuario",
+                                comment = comment,
+                                rating = rating
+                            )
+                        )
+                        comment = ""
+                        rating = 0
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(5.dp)
+            ) {
+                Text("Publicar")
+            }
+
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            Spacer(modifier = Modifier.size(10.dp))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    "Calificaciones y opiniones",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 18.sp
+                )
+                Spacer(modifier = Modifier.size(15.dp))
+
+                (reviews + newReviews).forEach { review ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                    ) {
+                        Opinion(review)
+                    }
+                }
+            }
         }
     }
 }
