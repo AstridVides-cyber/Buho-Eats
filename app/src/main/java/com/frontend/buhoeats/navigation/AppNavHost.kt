@@ -3,13 +3,7 @@ package com.frontend.buhoeats.navigation
 import Search
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -17,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.ui.screens.BlockedUsersScreen
 import com.frontend.buhoeats.ui.screens.FavoriteScreen
 import com.frontend.buhoeats.ui.screens.HomeScreen
 import com.frontend.buhoeats.ui.screens.Login
@@ -30,6 +25,7 @@ import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -37,9 +33,8 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 fun AppNavHost(navController: NavHostController) {
     val userSessionViewModel: UserSessionViewModel = viewModel()
     val currentUser = userSessionViewModel.currentUser.value
-    val favoritesViewModel: FavoritesViewModel = viewModel(
-        factory = FavoritesViewModelFactory(userSessionViewModel)
-    )
+    val restaurantViewModel: RestaurantViewModel = viewModel()
+
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Settings.route) {
             SettingSlider(
@@ -148,5 +143,22 @@ fun AppNavHost(navController: NavHostController) {
                 )
             }
         }
+        composable(
+            route = Screens.BlockedUser.route,
+            arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val restaurantId = backStackEntry.arguments?.getInt("restaurantId")
+            val restaurant = DummyData.getRestaurants().find { it.id == restaurantId }
+
+            if (restaurant != null) {
+                BlockedUsersScreen(
+                    navController = navController,
+                    userSessionViewModel = userSessionViewModel,
+                    restaurantViewModel = restaurantViewModel,
+                    restaurant = restaurant
+                )
+            }
+        }
+
     }
 }

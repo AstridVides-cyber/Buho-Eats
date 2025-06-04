@@ -34,7 +34,8 @@ data class Restaurant(
     val promos: List<Promo>,
     val latitud: Double,
     val longitud: Double,
-    val admin : Int
+    val admin : Int,
+    val blockedUsers: List<Int> = emptyList()
 ) : Serializable
 
 data class ContactInfo(

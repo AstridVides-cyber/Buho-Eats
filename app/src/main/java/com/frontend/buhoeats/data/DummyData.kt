@@ -8,7 +8,7 @@ import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Review
 object DummyData {
 
-    private val users = listOf(
+        val users = listOf(
         User(
             id = 1,
             name = "Astrid",
@@ -46,6 +46,16 @@ object DummyData {
             email = "diego@hotmail.com",
             password = "diego123",
             rol = "admin"
+        ),
+        User(
+            id = 5,
+            name = "Mauricio",
+            lastName = "Apellidoxd",
+            imageProfile = "",
+            email = "mauri@hotmail.com",
+            password = "mauri123",
+            rol = "usuario",
+            favoritos = mutableListOf(1)
         )
     )
 
@@ -119,7 +129,8 @@ object DummyData {
                 ),
                 latitud = 13.6929,
                 longitud = -89.2182,
-                admin = 1
+                admin = 1,
+                blockedUsers = listOf(2)
             ),
             Restaurant(
                 id = 2,
@@ -185,7 +196,8 @@ object DummyData {
                 ),
                 latitud = 13.7929,
                 longitud = -89.2182,
-                admin = 4
+                admin = 4,
+                blockedUsers = emptyList()
             )
         )
     }

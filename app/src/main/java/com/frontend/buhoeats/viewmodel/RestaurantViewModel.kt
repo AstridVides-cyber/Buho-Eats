@@ -1,55 +1,28 @@
 package com.frontend.buhoeats.viewmodel
 
-import kotlinx.coroutines.flow.*
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.models.Restaurant
+import com.frontend.buhoeats.models.User
 
-class FavoritesViewModel(
-    private val userSessionViewModel: UserSessionViewModel
-) : ViewModel() {
+class RestaurantViewModel : ViewModel() {
+    private val _blockedUsers = mutableStateListOf<User>()
+    val blockedUsers: List<User> get() = _blockedUsers
 
-    private val _favoriteRestaurantIds = MutableStateFlow<Set<Int>>(emptySet())
-    val favoriteRestaurantIds: StateFlow<Set<Int>> = _favoriteRestaurantIds.asStateFlow()
-
-    init {
-        userSessionViewModel.currentUser.value?.favoritos?.let { favs ->
-            _favoriteRestaurantIds.value = favs.toSet()
-        }
+    fun loadBlockedUsers(restaurant: Restaurant) {
+        _blockedUsers.clear()
+        _blockedUsers.addAll(
+            restaurant.blockedUsers.mapNotNull { userId ->
+                DummyData.users.find { it.id == userId }
+            }
+        )
     }
 
-    fun refreshFavorites() {
-        userSessionViewModel.currentUser.value?.favoritos?.let { favs ->
-            _favoriteRestaurantIds.value = favs.toSet()
-        }
-    }
-
-    fun toggleFavorite(restaurantId: Int) {
-        val currentUser = userSessionViewModel.currentUser.value ?: return
-        val current = _favoriteRestaurantIds.value.toMutableSet()
-
-        if (current.contains(restaurantId)) {
-            current.remove(restaurantId)
-            currentUser.favoritos.remove(restaurantId)
-        } else {
-            current.add(restaurantId)
-            currentUser.favoritos.add(restaurantId)
-        }
-
-        _favoriteRestaurantIds.value = current
-        userSessionViewModel.updateCurrentUser(currentUser)
+    fun unblockUser(user: User) {
+        _blockedUsers.remove(user)
     }
 }
 
-class FavoritesViewModelFactory(
-    private val userSessionViewModel: UserSessionViewModel
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return FavoritesViewModel(userSessionViewModel) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
 
 
