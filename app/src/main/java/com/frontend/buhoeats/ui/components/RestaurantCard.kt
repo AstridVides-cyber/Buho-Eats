@@ -107,7 +107,7 @@ fun DishCard(
                     onClick = onDelete,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding((4).dp)
+                        .padding(4.dp)
                 )
             }
 

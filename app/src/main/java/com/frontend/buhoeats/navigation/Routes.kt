@@ -18,4 +18,7 @@ sealed class Screens(val route: String) {
     object PromoInfo : Screens("promoInfo/{promoId}") {
         fun createRoute(promoId: Int) = "promoInfo/$promoId"
     }
+    object BlockedUser : Screens("blockedusers/{restaurantId}") {
+        fun createRoute(restaurantId: Int) = "blockedusers/$restaurantId"
+    }
 }
