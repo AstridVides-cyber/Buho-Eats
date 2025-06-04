@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -28,6 +31,7 @@ import com.frontend.buhoeats.models.User
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun UserRowOptions(
@@ -37,54 +41,65 @@ fun UserRowOptions(
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
-    Box(
+    Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.CenterStart),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(6.dp)
         ) {
-            AsyncImage(
-                model = user.imageProfile ?: R.drawable.defaulticon,
-                contentDescription = "Foto de perfil",
-                contentScale = ContentScale.Crop,
+            Row(
                 modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-            )
+                    .fillMaxWidth()
+                    .align(Alignment.CenterStart),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    model = user.imageProfile ?: R.drawable.defaulticon,
+                    contentDescription = "Foto de perfil",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                )
 
-            Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
-            Text(
-                text = user.name,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium
-            )
-        }
+                Text(
+                    text = "${user.name} ${user.lastName}",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
 
-        IconButton(
-            onClick = { showDialog = true },
-            modifier = Modifier.align(Alignment.TopEnd)
-        ) {
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "Opciones del usuario"
-            )
-        }
+            IconButton(
+                onClick = { showDialog = true },
+                modifier = Modifier.align(Alignment.TopEnd)
+                    .size(55.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Cancel,
+                    contentDescription = "Opciones del usuario",
+                    tint = Color(0xFF4CAF50)
+                )
+            }
 
-        if (showDialog) {
-            ConfirmationDialog(
-                message = "¿Deseas desbloquear a ${user.name}?",
-                onConfirm = {
-                    showDialog = false
-                    onConfirmAction()
-                },
-                onDismiss = { showDialog = false }
-            )
+            if (showDialog) {
+                ConfirmationDialog(
+                    message = "¿Estas seguro que deseas desbloquear a este usuario?",
+                    onConfirm = {
+                        showDialog = false
+                        onConfirmAction()
+                    },
+                    onDismiss = { showDialog = false }
+                )
+            }
         }
     }
 }

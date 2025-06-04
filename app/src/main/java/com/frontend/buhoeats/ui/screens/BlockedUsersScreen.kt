@@ -27,6 +27,14 @@ import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.frontend.buhoeats.models.ContactInfo
+import com.frontend.buhoeats.models.Dish
+import com.frontend.buhoeats.models.Promo
+import com.frontend.buhoeats.models.Review
+import com.frontend.buhoeats.models.User
 
 
 @Composable
@@ -82,7 +90,18 @@ fun BlockedUsersScreen(
                     )
 
                     if (blockedUsers.isEmpty()) {
-                        Text("No hay usuarios bloqueados por ahora", fontSize = 16.sp)
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "No hay usuarios bloqueados por ahora",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.DarkGray
+                            )
+                        }
                     } else {
                         LazyColumn {
                             items(blockedUsers) { user ->
@@ -96,7 +115,8 @@ fun BlockedUsersScreen(
                         }
                     }
                 }
-            } else {
+
+                } else {
                 Text(
                     "No tienes permisos para ver esta pantalla",
                     modifier = Modifier.align(Alignment.Center),

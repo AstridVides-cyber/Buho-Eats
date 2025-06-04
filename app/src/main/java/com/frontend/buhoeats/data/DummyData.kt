@@ -8,7 +8,7 @@ import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Review
 object DummyData {
 
-        val users = listOf(
+         private val users = listOf(
         User(
             id = 1,
             name = "Astrid",

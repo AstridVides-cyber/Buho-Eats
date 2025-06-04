@@ -14,7 +14,7 @@ class RestaurantViewModel : ViewModel() {
         _blockedUsers.clear()
         _blockedUsers.addAll(
             restaurant.blockedUsers.mapNotNull { userId ->
-                DummyData.users.find { it.id == userId }
+                DummyData.getUsers().find { it.id == userId }
             }
         )
     }
