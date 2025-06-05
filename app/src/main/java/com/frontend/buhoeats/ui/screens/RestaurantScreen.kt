@@ -47,6 +47,7 @@
     import com.frontend.buhoeats.models.Restaurant
     import com.frontend.buhoeats.models.Review
     import com.frontend.buhoeats.models.User
+    import com.frontend.buhoeats.navigation.Screens
     import com.frontend.buhoeats.ui.components.EditFloatingButton
     import com.frontend.buhoeats.viewmodel.FavoritesViewModel
     import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
@@ -73,7 +74,7 @@
             floatingActionButton = {
                 if (isAdminOfThisRestaurant) {
                     EditFloatingButton(
-                        onClick = { /* Navegar a pantalla de edición o lo que quieras */ }
+                        onClick = {navController.navigate(Screens.EditRestaurant.route)}
                     )
                 }
             },

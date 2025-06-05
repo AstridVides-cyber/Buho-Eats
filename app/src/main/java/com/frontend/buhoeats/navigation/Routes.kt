@@ -21,4 +21,5 @@ sealed class Screens(val route: String) {
     object BlockedUser : Screens("blockedusers/{restaurantId}") {
         fun createRoute(restaurantId: Int) = "blockedusers/$restaurantId"
     }
+    object EditRestaurant : Screens ("editrestaurant")
 }
