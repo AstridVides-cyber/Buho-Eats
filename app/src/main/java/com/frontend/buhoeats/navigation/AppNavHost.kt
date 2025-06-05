@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.ui.screens.BlockedUsersScreen
+import com.frontend.buhoeats.ui.screens.EditRestaurantScreen
 import com.frontend.buhoeats.ui.screens.FavoriteScreen
 import com.frontend.buhoeats.ui.screens.HomeScreen
 import com.frontend.buhoeats.ui.screens.Login
@@ -159,6 +160,14 @@ fun AppNavHost(navController: NavHostController) {
                 )
             }
         }
-
+        composable(Screens.EditRestaurant.route) {
+            EditRestaurantScreen(
+                navController = navController,
+                onBack = { navController.popBackStack() },
+                onEditImages = { navController.navigate("edit_images") },
+                onEditMenu = { navController.navigate("edit_menu") },
+                onEditInfo = { navController.navigate("edit_info") }
+            )
+        }
     }
 }
