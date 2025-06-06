@@ -121,9 +121,15 @@ fun AppNavHost(navController: NavHostController) {
            MapScreen(onBack = { navController.popBackStack() } , navController = navController
             )
         }
+
+
         composable(Screens.Promocion.route) {
-            PromoScreen( navController = navController)
+            PromoScreen(
+                navController = navController,
+                userSessionViewModel = userSessionViewModel
+            )
         }
+
         composable(
             route = Screens.PromoInfo.route,
             arguments = listOf(navArgument("promoId") { type = NavType.IntType })
