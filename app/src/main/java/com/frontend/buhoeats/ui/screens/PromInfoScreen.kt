@@ -1,20 +1,15 @@
 package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.*
+import androidx.compose.material3.SearchBarDefaults.colors
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,25 +21,34 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import com.frontend.buhoeats.R
-import com.frontend.buhoeats.models.Promo
-import com.frontend.buhoeats.ui.components.BottomNavigationBar
-import com.frontend.buhoeats.ui.components.TopBar
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.frontend.buhoeats.R
 import com.frontend.buhoeats.models.ContactInfo
+import com.frontend.buhoeats.models.Promo
+import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.ContactCard
+import com.frontend.buhoeats.ui.components.EditFloatingButton
+import com.frontend.buhoeats.ui.components.TopBar
 
 @Composable
 fun PromoInfoScreen(
+    isAdmin: Boolean = false,
     promo: Promo,
     restaurantName: String,
     contactInfo: ContactInfo,
     navController: NavController,
     onBackClick: () -> Unit = {}
 ) {
+    var isEditing by remember { mutableStateOf(false) }
+
+    var name by remember { mutableStateOf(promo.name) }
+    var description by remember { mutableStateOf(promo.description) }
+    var promprice by remember { mutableStateOf(promo.promprice) }
+    var price by remember { mutableStateOf(promo.price) }
+    var reglas by remember { mutableStateOf(promo.reglas ?: "") }
+
     Scaffold(
         topBar = {
             TopBar(
@@ -54,7 +58,14 @@ fun PromoInfoScreen(
         },
         bottomBar = {
             BottomNavigationBar(navController)
+        },
+        floatingActionButton = {
+            if (isAdmin && !isEditing) {
+                EditFloatingButton(onClick = { isEditing = true })
+            }
         }
+
+
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -74,22 +85,11 @@ fun PromoInfoScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
-                Text(
-                    text = "Promoción",
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color.Black
-                )
+                Text("Promoción", fontSize = 26.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+
 
                 Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = restaurantName,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
+                Text(restaurantName, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                 Spacer(modifier = Modifier.height(12.dp))
 
                 AsyncImage(
@@ -102,22 +102,14 @@ fun PromoInfoScreen(
                     contentScale = ContentScale.Crop
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = promo.name,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = promo.description,
-                    fontSize = 16.sp,
-                    color = Color.Black
-                )
+                if (isEditing) {
+                    Text("Titulo:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                    OutlinedTextField(value = name, onValueChange = { name = it }, modifier = Modifier.fillMaxWidth())
+                } else {
+                    Text(name, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -125,45 +117,80 @@ fun PromoInfoScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(
-                        text = promo.promprice,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Green
-                    )
+                    if (isEditing) {
 
-                    Text(
-                        text = promo.price,
-                        fontSize = 20.sp,
-                        color = Color.Gray,
-                        textDecoration = TextDecoration.LineThrough
-                    )
+                        Text("Ahora:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                        OutlinedTextField(value = price, onValueChange = { price = it }, modifier = Modifier.weight(1f))
+                        Text("Antes:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                        OutlinedTextField(value = promprice, onValueChange = { promprice = it },  modifier = Modifier.weight(1f))
+
+                    } else {
+                        Text(promprice, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Green)
+                        Text(price, fontSize = 20.sp, color = Color.Gray, textDecoration = TextDecoration.LineThrough)
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = "Reglas:",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black
-                )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                if (isEditing) {
+                    Text("Descripción:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
 
-                Text(
-                    text = promo.reglas ?: "Sin reglas específicas",
-                    fontSize = 15.sp,
-                    color = Color.Black
-                )
+                    OutlinedTextField(value = description, onValueChange = { description = it },  modifier = Modifier.fillMaxWidth())
+                } else {
+                    Text(description, fontSize = 16.sp, color = Color.Black)
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
+                Text("Reglas:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                Spacer(modifier = Modifier.height(4.dp))
 
+                if (isEditing) {
+                    OutlinedTextField(value = reglas, onValueChange = { reglas = it }, modifier = Modifier.fillMaxWidth())
+                } else {
+                    Text(text = if (reglas.isNotBlank()) reglas else "Sin reglas específicas", fontSize = 15.sp, color = Color.Black)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
                 ContactCard(contactInfo)
+
+                if (isEditing) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Button(onClick = {
+                            isEditing = false
+                        },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF3D405B),
+                                contentColor = Color.White
+                            )
+                        )
+
+                        {
+                            Text("Guardar")
+                        }
+                        OutlinedButton(onClick = {
+
+                            name = promo.name
+                            description = promo.description
+                            promprice = promo.promprice
+                            price = promo.price
+                            reglas = promo.reglas ?: ""
+                            isEditing = false
+                        }) {
+                            Text("Cancelar")
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+
 @Preview(showBackground = true)
 @Composable
 fun PromoInfoScreenPreview() {
