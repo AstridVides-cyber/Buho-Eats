@@ -119,7 +119,7 @@ object DummyData {
                         id = 2,
                         name = "Sopa de gallina india",
                         description = "Sopa tradicional con vegetales frescos.",
-                        imageUrl = "https://images.unsplash.com/photo-1605478371437-045aa03f2dc1",
+                        imageUrl = "https://www.honduras.com/wp-content/uploads/2020/09/receta-sopa-de-gallina.jpg",
                         price = "$5.00",
                         promprice = "$3.00",
                         reglas = "Solo de lunes a viernes desde las 12 pm"
