@@ -18,7 +18,7 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.*
-import com.frontend.buhoeats.viewmodel.PromoViewModel // 👈 AÑADIDO
+import com.frontend.buhoeats.viewmodel.PromoViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 @Composable
@@ -55,9 +55,12 @@ fun PromoScreen(
         bottomBar = { BottomNavigationBar(navController) },
         floatingActionButton = {
             if (isAdmin && adminRestaurant != null) {
-                EditFloatingButton(onClick = {
-                    navController.navigate("pantalla_editar_promos")
-                })
+                adminRestaurant?.promos?.firstOrNull()?.let { firstPromo ->
+                    EditFloatingButton(onClick = {
+                        navController.navigate(Screens.PromoInfo.createRoute(firstPromo.id))
+                    })
+                }
+
             }
         },
         floatingActionButtonPosition = FabPosition.End
