@@ -166,5 +166,28 @@ fun AppNavHost(navController: NavHostController) {
             }
         }
 
+        composable(
+            route = Screens.PromoInfo.route,
+            arguments = listOf(navArgument("promoId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val promoId = backStackEntry.arguments?.getInt("promoId")
+            val allPromos = DummyData.getRestaurants().flatMap { it.promos }
+            val promo = allPromos.find { it.id == promoId }
+            val restaurant = DummyData.getRestaurants().find { it.promos.any { p -> p.id == promoId } }
+            val isAdmin = userSessionViewModel.currentUser.value?.rol == "admin"
+
+            if (promo != null && restaurant != null) {
+                PromoInfoScreen(
+                    promo = promo,
+                    restaurantName = restaurant.name,
+                    contactInfo = restaurant.contactInfo,
+                    navController = navController,
+                    onBackClick = { navController.popBackStack() },
+                    isAdmin = isAdmin // 👈 PASADO AQUÍ
+                )
+            }
+        }
+
+
     }
 }
