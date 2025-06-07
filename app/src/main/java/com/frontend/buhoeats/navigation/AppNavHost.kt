@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.ui.screens.BlockedUsersScreen
+import com.frontend.buhoeats.ui.screens.EditInfo
 import com.frontend.buhoeats.ui.screens.EditRestaurantScreen
 import com.frontend.buhoeats.ui.screens.FavoriteScreen
 import com.frontend.buhoeats.ui.screens.HomeScreen
@@ -36,7 +37,7 @@ fun AppNavHost(navController: NavHostController) {
     val currentUser = userSessionViewModel.currentUser.value
     val restaurantViewModel: RestaurantViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = Screens.Login.route) {
+    NavHost(navController = navController, startDestination = Screens.EditInfo.route) {
         composable(Screens.Settings.route) {
             SettingSlider(
                 navController = navController,
@@ -168,6 +169,10 @@ fun AppNavHost(navController: NavHostController) {
                 onEditMenu = { navController.navigate("edit_menu") },
                 onEditInfo = { navController.navigate("edit_info") }
             )
+        }
+
+        composable(Screens.EditInfo.route) {
+            EditInfo( navController = navController)
         }
     }
 }
