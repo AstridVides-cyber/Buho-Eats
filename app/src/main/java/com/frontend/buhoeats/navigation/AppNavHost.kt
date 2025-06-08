@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.ui.screens.BlockedUsersScreen
+import com.frontend.buhoeats.ui.screens.EditImageScreen
 import com.frontend.buhoeats.ui.screens.EditRestaurantScreen
 import com.frontend.buhoeats.ui.screens.FavoriteScreen
 import com.frontend.buhoeats.ui.screens.HomeScreen
@@ -161,13 +162,34 @@ fun AppNavHost(navController: NavHostController) {
             }
         }
         composable(Screens.EditRestaurant.route) {
+            val restaurant = DummyData.getRestaurants().first()
+
             EditRestaurantScreen(
                 navController = navController,
+                restaurant = restaurant,
                 onBack = { navController.popBackStack() },
-                onEditImages = { navController.navigate("edit_images") },
-                onEditMenu = { navController.navigate("edit_menu") },
+                onEditImages = { restaurantId ->
+                    navController.navigate(Screens.ImagesRestaurant.createRoute(restaurantId))
+                },
                 onEditInfo = { navController.navigate("edit_info") }
             )
         }
+
+        composable(
+            route = Screens.ImagesRestaurant.route,
+            arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val restaurantId = backStackEntry.arguments?.getInt("restaurantId")
+            val restaurant = DummyData.getRestaurants().find { it.id == restaurantId }
+
+            if (restaurant != null) {
+                EditImageScreen(
+                    navController = navController,
+                    restaurant = restaurant,
+                    userSessionViewModel = userSessionViewModel
+                )
+            }
+        }
+
     }
 }

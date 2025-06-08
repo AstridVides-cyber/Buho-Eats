@@ -136,7 +136,7 @@ object DummyData {
                 id = 2,
                 name = "La Esquinita Gourmet",
                 description = "Fusión de sabores latinos e internacionales.",
-                imageUrl = "https://images.unsplash.com/photo-1600891964190-46e1c7b4cfaf",
+                imageUrl = "https://images.unsplash.com/photo-1651440204227-a9a5b9d19712",
                 categories = listOf("Gourmet", "Fusión", "Internacional"),
                 contactInfo = ContactInfo(
                     email = "info@laesquinita.com",
