@@ -38,11 +38,17 @@ fun AppNavHost(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Settings.route) {
-            SettingSlider(
-                navController = navController,
-                onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
-                onBack = { navController.popBackStack() },
-            )
+            currentUser?.let { user ->
+                val adminRestaurant = DummyData.getRestaurants().find { it.admin == user.id }
+
+                SettingSlider(
+                    navController = navController,
+                    currentUser = user,
+                    restaurant = adminRestaurant,
+                    onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
+                    onBack = { navController.popBackStack() },
+                )
+            }
         }
         composable(Screens.Profile.route) {
             ProfileScreen(
