@@ -37,7 +37,7 @@ fun AppNavHost(navController: NavHostController) {
     val currentUser = userSessionViewModel.currentUser.value
     val restaurantViewModel: RestaurantViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = Screens.EditInfo.route) {
+    NavHost(navController = navController, startDestination = Screens.EditRestaurant.route) {
         composable(Screens.Settings.route) {
             SettingSlider(
                 navController = navController,

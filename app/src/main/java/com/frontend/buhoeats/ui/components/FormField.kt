@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -20,14 +21,16 @@ fun FormField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
-    isMultiline: Boolean = false
+    isMultiline: Boolean = false,
+    isError: Boolean = false,
+    errorMessage: String = ""
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = label,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = Color.Black
+            color = if (isError) Color.Red else Color.Black
         )
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -38,11 +41,23 @@ fun FormField(
                 .fillMaxWidth()
                 .height(if (isMultiline) 100.dp else 56.dp),
             singleLine = !isMultiline,
+            isError = isError,
+            shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color(0xFFF3EDED),
-                focusedContainerColor = Color(0xFFF3EDED)
+                focusedContainerColor = Color(0xFFF3EDED),
+                errorBorderColor = Color.Red,
+                errorLabelColor = Color.Red,
+                errorCursorColor = Color.Red
             )
         )
+        if (isError && errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
     }
 }
-

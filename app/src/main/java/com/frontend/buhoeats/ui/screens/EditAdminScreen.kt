@@ -58,6 +58,11 @@ fun EditInfo(navController: NavController) {
     val originalSchedule = remember { schedule }
     val originalAddress = remember { address }
 
+    var emailError by remember { mutableStateOf(false) }
+    var phoneError by remember { mutableStateOf(false) }
+    var scheduleError by remember { mutableStateOf(false) }
+    var addressError by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopBar(showBackIcon = true) {
@@ -96,17 +101,52 @@ fun EditInfo(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                FormField(label = "Correo:", value = email, onValueChange = { email = it })
+                FormField(
+                    label = "Correo:",
+                    value = email,
+                    onValueChange = {
+                        email = it
+                        emailError = false
+                    },
+                    isError = emailError,
+                    errorMessage = "El correo no puede estar vacío"
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-                FormField(label = "Teléfono:", value = phone, onValueChange = { phone = it })
+
+                FormField(
+                    label = "Teléfono:",
+                    value = phone,
+                    onValueChange = {
+                        phone = it
+                        phoneError = false
+                    },
+                    isError = phoneError,
+                    errorMessage = "El teléfono no puede estar vacío"
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-                FormField(label = "Horario:", value = schedule, onValueChange = { schedule = it })
+
+                FormField(
+                    label = "Horario:",
+                    value = schedule,
+                    onValueChange = {
+                        schedule = it
+                        scheduleError = false
+                    },
+                    isError = scheduleError,
+                    errorMessage = "El horario no puede estar vacío"
+                )
                 Spacer(modifier = Modifier.height(16.dp))
+
                 FormField(
                     label = "Dirección:",
                     value = address,
-                    onValueChange = { address = it },
-                    isMultiline = true
+                    onValueChange = {
+                        address = it
+                        addressError = false
+                    },
+                    isMultiline = true,
+                    isError = addressError,
+                    errorMessage = "La dirección no puede estar vacía"
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -121,6 +161,11 @@ fun EditInfo(navController: NavController) {
                             phone = originalPhone
                             schedule = originalSchedule
                             address = originalAddress
+
+                            emailError = false
+                            phoneError = false
+                            scheduleError = false
+                            addressError = false
                         },
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC11D0C)),
@@ -131,7 +176,16 @@ fun EditInfo(navController: NavController) {
 
                     Button(
                         onClick = {
-                            println("Guardado: $email, $phone, $schedule, $address")
+                            emailError = email.isBlank()
+                            phoneError = phone.isBlank()
+                            scheduleError = schedule.isBlank()
+                            addressError = address.isBlank()
+
+                            val hasErrors = emailError || phoneError || scheduleError || addressError
+
+                            if (!hasErrors) {
+                                println("Guardado: $email, $phone, $schedule, $address")
+                            }
                         },
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C)),
@@ -144,5 +198,6 @@ fun EditInfo(navController: NavController) {
         }
     }
 }
+
 
 
