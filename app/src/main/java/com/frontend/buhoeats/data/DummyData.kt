@@ -174,7 +174,7 @@ object DummyData {
                 ),
                 promos = listOf(
                     Promo(
-                        id = 3,
+                        id = 1,
                         name = "Ceviche mixto",
                         description = "Pescado, camarones y calamares en jugo de limón.",
                         imageUrl = "https://images.unsplash.com/photo-1613145998174-17f89e068e2e",
@@ -184,7 +184,7 @@ object DummyData {
 
                     ),
                     Promo(
-                        id = 4,
+                        id = 2,
                         name = "Tacos al pastor",
                         description = "Tacos con carne de cerdo marinada al estilo mexicano.",
                         imageUrl = "https://images.unsplash.com/photo-1601050690094-0cfb389d7e18",

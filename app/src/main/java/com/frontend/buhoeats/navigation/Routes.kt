@@ -15,8 +15,9 @@ sealed class Screens(val route: String) {
     object Search : Screens("search")
     object Map : Screens("map")
     object Promocion : Screens("promocion")
-    object PromoInfo : Screens("promoInfo/{promoId}") {
-        fun createRoute(promoId: Int) = "promoInfo/$promoId"
+    object PromoInfo : Screens("promo_info/{promoId}?isNew={isNew}") {
+        fun createRoute(promoId: Int, isNew: Boolean = false) =
+            "promo_info/$promoId?isNew=$isNew"
     }
     object BlockedUser : Screens("blockedusers/{restaurantId}") {
         fun createRoute(restaurantId: Int) = "blockedusers/$restaurantId"
