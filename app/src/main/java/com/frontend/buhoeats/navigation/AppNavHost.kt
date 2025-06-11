@@ -14,6 +14,8 @@ import androidx.navigation.navArgument
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.ui.screens.BlockedUsersScreen
+import com.frontend.buhoeats.ui.screens.EditImageScreen
+import com.frontend.buhoeats.ui.screens.EditRestaurantScreen
 import com.frontend.buhoeats.ui.screens.FavoriteScreen
 import com.frontend.buhoeats.ui.screens.HomeScreen
 import com.frontend.buhoeats.ui.screens.Login
@@ -150,6 +152,34 @@ fun AppNavHost(navController: NavHostController) {
                 )
             }
         }
+         composable(Screens.EditRestaurant.route) {
+            val restaurant = DummyData.getRestaurants().first()
+
+            EditRestaurantScreen(
+                navController = navController,
+                restaurant = restaurant,
+                onBack = { navController.popBackStack() },
+                onEditImages = { restaurantId ->
+                    navController.navigate(Screens.ImagesRestaurant.createRoute(restaurantId))
+                },
+                onEditInfo = { navController.navigate("edit_info") }
+            )
+        }
+         composable(
+            route = Screens.ImagesRestaurant.route,
+            arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val restaurantId = backStackEntry.arguments?.getInt("restaurantId")
+            val restaurant = DummyData.getRestaurants().find { it.id == restaurantId }
+
+            if (restaurant != null) {
+                EditImageScreen(
+                    navController = navController,
+                    restaurant = restaurant,
+                    userSessionViewModel = userSessionViewModel
+                )
+            }
+        }
         composable(
             route = Screens.PromoInfo.route,
             arguments = listOf(
@@ -176,7 +206,7 @@ fun AppNavHost(navController: NavHostController) {
 
             val restaurant = DummyData.getRestaurants().find { it.promos.any { it.id == promoId } }
                 ?: DummyData.getRestaurants().find { it.admin == userSessionViewModel.currentUser.value?.id }
-
+                
             val isAdmin = userSessionViewModel.currentUser.value?.rol == "admin"
 
             if (restaurant != null) {

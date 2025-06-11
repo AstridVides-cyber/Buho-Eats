@@ -86,7 +86,7 @@ fun SettingSlider( onNavigateToProfile: () -> Unit = {},
                 }
 
                 var expandedTheme by remember { mutableStateOf(false) }
-                var selectedTheme by remember { mutableStateOf("Claro") }
+                var selectedTheme by remember { mutableStateOf("Claro")}
 
                 Column {
                     Row(

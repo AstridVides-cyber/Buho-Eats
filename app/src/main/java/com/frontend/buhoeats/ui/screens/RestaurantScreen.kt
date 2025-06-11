@@ -47,6 +47,8 @@
     import com.frontend.buhoeats.models.Restaurant
     import com.frontend.buhoeats.models.Review
     import com.frontend.buhoeats.models.User
+    import com.frontend.buhoeats.navigation.Screens
+    import com.frontend.buhoeats.ui.components.ConfirmationDialog
     import com.frontend.buhoeats.ui.components.EditFloatingButton
     import com.frontend.buhoeats.viewmodel.FavoritesViewModel
     import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
@@ -73,7 +75,7 @@
             floatingActionButton = {
                 if (isAdminOfThisRestaurant) {
                     EditFloatingButton(
-                        onClick = { /* Navegar a pantalla de edición o lo que quieras */ }
+                        onClick = {navController.navigate(Screens.EditRestaurant.route)}
                     )
                 }
             },
@@ -125,7 +127,10 @@
         var comment by remember { mutableStateOf("") }
         val newReviews = remember { mutableStateListOf<Review>() }
         var reviews by remember { mutableStateOf(restaurant.reviews) }
-    
+        var dishToDelete by remember { mutableStateOf<Dish?>(null) }
+        var showDialog by remember { mutableStateOf(false) }
+
+
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -192,7 +197,10 @@
                 DishCard(
                     dish = dish,
                     showDelete = isAdminOfThisRestaurant,
-                    onDelete = { menuList.remove(dish) }
+                    onDelete = {
+                        dishToDelete = dish
+                        showDialog = true
+                    }
                 )
             }
     
@@ -279,6 +287,22 @@
                         }
                     }
                 }
+            }
+            if (showDialog && dishToDelete != null) {
+                ConfirmationDialog(
+                    message = "¿Estás seguro que deseas eliminar el plato?",
+                    onConfirm = {
+                        dishToDelete?.let {
+                            menuList.remove(it)
+                        }
+                        showDialog = false
+                        dishToDelete = null
+                    },
+                    onDismiss = {
+                        showDialog = false
+                        dishToDelete = null
+                    }
+                )
             }
 
         }
