@@ -33,6 +33,9 @@ import com.frontend.buhoeats.models.ContactInfo
 import com.frontend.buhoeats.models.Dish
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import com.frontend.buhoeats.models.Comment
+import com.frontend.buhoeats.models.Rating
+import com.frontend.buhoeats.models.User
 
 @Composable
 fun ContactCard(contactInfo: ContactInfo) {
@@ -146,32 +149,23 @@ fun DishCard(
 }
 
 @Composable
-fun Opinion(review: com.frontend.buhoeats.models.Review) {
+fun Opinion(user: User?, comment: Comment, rating: Rating?) {
     Row(modifier = Modifier.padding(vertical = 4.dp)) {
         Icon(Icons.Filled.Person, contentDescription = "Persona")
-
         Spacer(modifier = Modifier.width(10.dp))
 
         Column {
-            Text(review.username, fontWeight = FontWeight.Bold)
-            Text(review.comment)
+            Text(text = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido", fontWeight = FontWeight.Bold)
+            Text(text = comment.comment)
 
-            Row {
-                repeat(review.rating) {
-                    Icon(
-                        imageVector = Icons.Filled.Star,
-                        contentDescription = null,
-                        tint = Color(0xFFFFC107),
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                repeat(5 - review.rating) {
-                    Icon(
-                        imageVector = Icons.Outlined.Star,
-                        contentDescription = null,
-                        tint = Color.Gray,
-                        modifier = Modifier.size(20.dp)
-                    )
+            rating?.let {
+                Row {
+                    repeat(it.rating) {
+                        Icon(Icons.Filled.Star, contentDescription = null, tint = Color(0xFFFFC107), modifier = Modifier.size(20.dp))
+                    }
+                    repeat(5 - it.rating) {
+                        Icon(Icons.Outlined.Star, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(20.dp))
+                    }
                 }
             }
         }

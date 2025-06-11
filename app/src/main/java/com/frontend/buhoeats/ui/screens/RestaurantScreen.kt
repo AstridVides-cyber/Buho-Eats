@@ -1,5 +1,5 @@
     package com.frontend.buhoeats.ui.screens
-    
+
     import android.app.Application
     import android.util.Log
     import androidx.compose.foundation.Image
@@ -43,9 +43,11 @@
     import com.frontend.buhoeats.ui.components.ContactCard
     import com.frontend.buhoeats.ui.components.DishCard
     import androidx.navigation.NavController
+    import com.frontend.buhoeats.data.DummyData
+    import com.frontend.buhoeats.models.Comment
     import com.frontend.buhoeats.models.Dish
+    import com.frontend.buhoeats.models.Rating
     import com.frontend.buhoeats.models.Restaurant
-    import com.frontend.buhoeats.models.Review
     import com.frontend.buhoeats.models.User
     import com.frontend.buhoeats.navigation.Screens
     import com.frontend.buhoeats.ui.components.ConfirmationDialog
@@ -53,7 +55,7 @@
     import com.frontend.buhoeats.viewmodel.FavoritesViewModel
     import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
     import com.frontend.buhoeats.viewmodel.UserSessionViewModel
-    
+
     @Composable
     fun RestaurantScreen(
         navController: NavController,
@@ -68,7 +70,7 @@
                 TopBar(
                     showBackIcon = true,
                     onNavClick = { navController.popBackStack() }
-    
+
                 )
             },
             bottomBar = { BottomNavigationBar(navController) },
@@ -92,19 +94,24 @@
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
-    
+
+                var selectedRestaurant by remember { mutableStateOf(restaurant) }
+
                 RestaurantContent(
                     modifier = Modifier.fillMaxSize(),
-                    restaurant = restaurant,
+                    restaurant = selectedRestaurant,
                     favoritesViewModel = remember {
                         FavoritesViewModel(userSessionViewModel)
                     }     ,
-                    currentUser = userSessionViewModel.currentUser.value
+                    currentUser = userSessionViewModel.currentUser.value,
+                    onUpdate = { updatedRestaurant ->
+                        selectedRestaurant = updatedRestaurant
+                    }
                 )
             }
         }
     }
-    
+
     @Composable
     fun RestaurantContent(
         restaurant: Restaurant,
@@ -114,22 +121,23 @@
                 userSessionViewModel = viewModel()
             )
         ),
-        currentUser: User? = null
+        currentUser: User? = null,
+        onUpdate: (Restaurant) -> Unit
     ) {
         val favoriteIds by favoritesViewModel.favoriteRestaurantIds.collectAsState()
         val isFavorite = favoriteIds.contains(restaurant.id)
-    
         val isAdminOfThisRestaurant = currentUser?.rol == "admin" && restaurant.admin == currentUser.id
+
         val menuList = remember { mutableStateListOf<Dish>().apply { addAll(restaurant.menu) } }
-    
-    
+
         var rating by rememberSaveable { mutableStateOf(0) }
         var comment by remember { mutableStateOf("") }
-        val newReviews = remember { mutableStateListOf<Review>() }
-        var reviews by remember { mutableStateOf(restaurant.reviews) }
+        val userAlreadyRated = restaurant.ratings.any { it.userId == currentUser?.id }
         var dishToDelete by remember { mutableStateOf<Dish?>(null) }
         var showDialog by remember { mutableStateOf(false) }
 
+        val user = DummyData.getUsers().find { it.id == currentUser?.id }
+        val displayName = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
 
         Column(
             modifier = modifier
@@ -148,7 +156,7 @@
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
-    
+
                 if (currentUser?.rol != "admin") {
                     IconButton(onClick = {
                         favoritesViewModel.toggleFavorite(restaurant.id)
@@ -162,9 +170,9 @@
                     }
                 }
             }
-    
+
             Spacer(modifier = Modifier.padding(8.dp))
-    
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -180,11 +188,11 @@
                         .clip(RoundedCornerShape(12.dp))
                 )
             }
-    
+
             ContactCard(contactInfo = restaurant.contactInfo)
-    
+
             Spacer(modifier = Modifier.padding(10.dp))
-    
+
             Text(
                 "Menú del día",
                 fontSize = 20.sp,
@@ -192,7 +200,7 @@
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(8.dp))
-    
+
             menuList.forEach { dish ->
                 DishCard(
                     dish = dish,
@@ -203,25 +211,30 @@
                     }
                 )
             }
-    
+
             Divider(modifier = Modifier.padding(vertical = 8.dp))
 
             if (!isAdminOfThisRestaurant) {
                 if (!restaurant.blockedUsers.contains(currentUser?.id)) {
+                    val existingRating = restaurant.ratings.find { it.userId == currentUser?.id }
+
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "Califica la app",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium
-                        )
+                        if (existingRating == null) {
+                            Text(
+                                text = "Califica la app",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium
+                            )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        RatingBar(rating = rating, onRatingChanged = { rating = it })
-                        Spacer(modifier = Modifier.height(8.dp))
+                            RatingBar(rating = rating, onRatingChanged = { rating = it })
+
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
 
                         OutlinedTextField(
                             value = comment,
@@ -232,14 +245,27 @@
 
                         Button(
                             onClick = {
-                                if (comment.isNotBlank() && rating > 0) {
-                                    newReviews.add(
-                                        Review(
-                                            username = currentUser?.name ?: "Usuario",
-                                            comment = comment,
-                                            rating = rating
-                                        )
+                                val user = DummyData.getUsers().find { it.id == currentUser?.id }
+                                if (user != null && comment.isNotBlank()) {
+                                    val updatedComments = restaurant.comments.toMutableList().apply {
+                                        add(Comment(userId = user.id, comment = comment))
+                                    }
+
+                                    val updatedRatings = restaurant.ratings.toMutableList().apply {
+                                        if (existingRating == null && rating > 0) {
+                                            add(Rating(userId = user.id, rating = rating))
+                                        }
+                                    }
+
+                                    val updatedRestaurant = restaurant.copy(
+                                        comments = updatedComments,
+                                        ratings = updatedRatings
                                     )
+
+                                    DummyData.updateRestaurant(updatedRestaurant)
+                                    onUpdate(updatedRestaurant)
+
+
                                     comment = ""
                                     rating = 0
                                 }
@@ -250,7 +276,20 @@
                         ) {
                             Text("Publicar")
                         }
+
+                        Spacer(modifier = Modifier.size(10.dp))
+
+                        if (existingRating != null) {
+                            Text(
+                                text = "Ya calificaste este restaurante con ${existingRating.rating} estrellas.",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
                     }
+
+
                 } else {
                     Text(
                         text = "Has sido bloqueado de este restaurante y no puedes dejar opiniones.",
@@ -262,7 +301,6 @@
                         textAlign = TextAlign.Center
                     )
                 }
-
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
                 Spacer(modifier = Modifier.size(10.dp))
 
@@ -277,13 +315,16 @@
                     )
                     Spacer(modifier = Modifier.size(15.dp))
 
-                    (reviews + newReviews).forEach { review ->
+                    restaurant.comments.forEach { comment ->
+                        val user = DummyData.getUsers().find { it.id == comment.userId }
+                        val userRating = restaurant.ratings.find { it.userId == comment.userId }
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 10.dp)
                         ) {
-                            Opinion(review)
+                            Opinion(user, comment, userRating)
                         }
                     }
                 }

@@ -24,6 +24,7 @@ import com.frontend.buhoeats.ui.screens.MyAccount
 import com.frontend.buhoeats.ui.screens.MapScreen
 import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
+import com.frontend.buhoeats.ui.screens.StatisticsScreen
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
@@ -38,11 +39,17 @@ fun AppNavHost(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Settings.route) {
-            SettingSlider(
-                navController = navController,
-                onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
-                onBack = { navController.popBackStack() },
-            )
+            currentUser?.let { user ->
+                val adminRestaurant = DummyData.getRestaurants().find { it.admin == user.id }
+
+                SettingSlider(
+                    navController = navController,
+                    currentUser = user,
+                    restaurant = adminRestaurant,
+                    onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
+                    onBack = { navController.popBackStack() },
+                )
+            }
         }
         composable(Screens.Profile.route) {
             ProfileScreen(
@@ -168,6 +175,20 @@ fun AppNavHost(navController: NavHostController) {
                 onEditMenu = { navController.navigate("edit_menu") },
                 onEditInfo = { navController.navigate("edit_info") }
             )
+        }
+
+        composable(Screens.Statistics.route) {
+            currentUser?.let { user ->
+                val restaurant = DummyData.getRestaurants().find { it.admin == user.id }
+                if (restaurant != null) {
+                    StatisticsScreen(
+                        navController = navController,
+                        restaurant = restaurant,
+                        onBack = { navController.popBackStack() },
+                        restaurantViewModel = restaurantViewModel
+                    )
+                }
+            }
         }
     }
 }
