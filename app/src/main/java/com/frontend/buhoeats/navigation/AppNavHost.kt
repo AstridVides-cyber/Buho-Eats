@@ -24,8 +24,6 @@ import com.frontend.buhoeats.ui.screens.MyAccount
 import com.frontend.buhoeats.ui.screens.MapScreen
 import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
-import com.frontend.buhoeats.viewmodel.FavoritesViewModel
-import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
@@ -37,19 +35,7 @@ fun AppNavHost(navController: NavHostController) {
     val restaurantViewModel: RestaurantViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screens.Login.route) {
-        composable(Screens.Settings.route) {
-            currentUser?.let { user ->
-                val adminRestaurant = DummyData.getRestaurants().find { it.admin == user.id }
 
-                SettingSlider(
-                    navController = navController,
-                    currentUser = user,
-                    restaurant = adminRestaurant,
-                    onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
-                    onBack = { navController.popBackStack() },
-                )
-            }
-        }
         composable(Screens.Profile.route) {
             ProfileScreen(
                 onNavigateToAccount = { navController.navigate(Screens.MyAccount.route) },

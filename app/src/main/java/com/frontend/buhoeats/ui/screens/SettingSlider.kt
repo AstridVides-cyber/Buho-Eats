@@ -33,45 +33,28 @@ import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingSlider(
     onNavigateToProfile: () -> Unit = {},
-    onBack: () -> Unit = {},
     navController: NavController,
     currentUser: User,
-    restaurant: Restaurant? = null
+    restaurant: Restaurant? = null,
+    closeDrawer: () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            TopBar(
-                showBackIcon = true,
-                onNavClick = onBack
-            )
-                 },
-        bottomBar = {
-            BottomNavigationBar(navController)
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
+    Box(modifier = Modifier.fillMaxSize()) {
 
-            Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-
-            Column {
+        Image(
+            painter = painterResource(id = R.drawable.backgroundlighttheme),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+        Column(modifier = Modifier.fillMaxSize()) {
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(15.dp)
-                        .clickable { onNavigateToProfile()}
+                        .clickable { onNavigateToProfile() }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Person,
@@ -248,31 +231,33 @@ fun SettingSlider(
                     }
                 }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .clickable {
-                            navController.navigate(Screens.Favorites.route)
-                        }
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Favoritos",
-                        tint = Color.Black,
-                        modifier = Modifier.size(45.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text("Favoritos", fontSize = 25.sp, color = Color.Black)
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = "Cuenta",
+                if (currentUser.rol == "usuario" ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .graphicsLayer { rotationY = 180f }
-                            .padding(10.dp)
-                            .size(30.dp)
-                    )
+                            .padding(15.dp)
+                            .clickable {
+                                navController.navigate(Screens.Favorites.route)
+                            }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Favoritos",
+                            tint = Color.Black,
+                            modifier = Modifier.size(45.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text("Favoritos", fontSize = 25.sp, color = Color.Black)
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIosNew,
+                            contentDescription = "Cuenta",
+                            modifier = Modifier
+                                .graphicsLayer { rotationY = 180f }
+                                .padding(10.dp)
+                                .size(30.dp)
+                        )
+                    }
                 }
 
                 if (currentUser.rol == "admin" && restaurant != null) {
@@ -336,4 +321,7 @@ fun SettingSlider(
             }
         }
     }
-}
+
+
+
+
