@@ -29,7 +29,8 @@ data class Restaurant(
     val imageUrl: String,
     val categories: List<String>,
     val contactInfo: ContactInfo,
-    val reviews: List<Review>,
+    val ratings: MutableList<Rating>,
+    val comments: MutableList<Comment>,
     val menu: List<Dish>,
     var promos: List<Promo>,
     val latitud: Double,
@@ -45,10 +46,14 @@ data class ContactInfo(
     val address: String
 ) : Serializable
 
-data class Review(
-    val username: String,
-    val comment: String,
+data class Rating(
+    val userId: Int,
     val rating: Int
+) : Serializable
+
+data class Comment(
+    val userId: Int,
+    val comment: String
 ) : Serializable
 
 data class Promo (

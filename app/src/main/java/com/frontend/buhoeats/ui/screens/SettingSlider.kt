@@ -317,6 +317,65 @@ fun SettingSlider(
                         )
                     }
                 }
+
+                if (currentUser.rol == "admin" && restaurant != null) {
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(15.dp)
+                            .clickable {
+                                navController.navigate(Screens.Statistics.route)
+                            }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.BarChart,
+                            contentDescription = "Estadísticas",
+                            tint = Color.Black,
+                            modifier = Modifier.size(45.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text("Ver estadísticas", fontSize = 25.sp, color = Color.Black)
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIosNew,
+                            contentDescription = "Estadísticas",
+                            modifier = Modifier
+                                .graphicsLayer { rotationY = 180f }
+                                .padding(10.dp)
+                                .size(30.dp)
+                        )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(15.dp)
+                            .clickable {
+                                navController.navigate(
+                                    Screens.BlockedUser.createRoute(restaurant.id)
+                                )
+                            }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Block,
+                            contentDescription = "Clientes bloqueados",
+                            tint = Color.Black,
+                            modifier = Modifier.size(45.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text("Clientes bloqueados", fontSize = 25.sp, color = Color.Black)
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIosNew,
+                            contentDescription = "Clientes bloqueados",
+                            modifier = Modifier
+                                .graphicsLayer { rotationY = 180f }
+                                .padding(10.dp)
+                                .size(30.dp)
+                        )
+                    }
+                }
             }
         }
     }

@@ -27,6 +27,7 @@ import com.frontend.buhoeats.ui.screens.MyAccount
 import com.frontend.buhoeats.ui.screens.MapScreen
 import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
+import com.frontend.buhoeats.ui.screens.StatisticsScreen
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
 import com.frontend.buhoeats.viewmodel.PromoViewModel
@@ -42,7 +43,6 @@ fun AppNavHost(navController: NavHostController) {
     val promoViewModel : PromoViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screens.Login.route) {
-
         composable(Screens.Profile.route) {
             ProfileScreen(
                 onNavigateToAccount = { navController.navigate(Screens.MyAccount.route) },
@@ -159,6 +159,17 @@ fun AppNavHost(navController: NavHostController) {
                 onEditInfo = { navController.navigate("edit_info") }
             )
         }
+        composable(Screens.Statistics.route) {
+            currentUser?.let { user ->
+                val restaurant = DummyData.getRestaurants().find { it.admin == user.id }
+                if (restaurant != null) {
+                    StatisticsScreen(
+                        navController = navController,
+                        restaurant = restaurant,
+                        onBack = { navController.popBackStack() },
+                        restaurantViewModel = restaurantViewModel
+                    )
+                }
          composable(
             route = Screens.ImagesRestaurant.route,
             arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })

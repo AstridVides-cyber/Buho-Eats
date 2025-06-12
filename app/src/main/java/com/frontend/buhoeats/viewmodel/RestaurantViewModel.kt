@@ -24,6 +24,23 @@ class RestaurantViewModel : ViewModel() {
         _blockedUsers.remove(user)
     }
 
+    fun blockUser(user: User, restaurant: Restaurant, onUpdate: (Restaurant) -> Unit) {
+        if (!_blockedUsers.contains(user)) {
+            _blockedUsers.add(user)
+
+            val updatedComments = restaurant.comments.filterNot { it.userId == user.id }.toMutableList()
+            val updatedRatings = restaurant.ratings.filterNot { it.userId == user.id }.toMutableList()
+
+            val updatedRestaurant = restaurant.copy(
+                comments = updatedComments,
+                ratings = updatedRatings,
+                blockedUsers = restaurant.blockedUsers + user.id
+            )
+
+            onUpdate(updatedRestaurant)
+            loadBlockedUsers(updatedRestaurant)
+        }
+    }
 }
 
 class PromoViewModel : ViewModel() {

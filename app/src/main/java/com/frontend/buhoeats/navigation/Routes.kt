@@ -23,6 +23,7 @@ sealed class Screens(val route: String) {
         fun createRoute(restaurantId: Int) = "blockedusers/$restaurantId"
     }
     object EditRestaurant : Screens ("editrestaurant")
+    object Statistics : Screens("statistics")
     object ImagesRestaurant : Screens("imagerestaurant/{restaurantId}") {
         fun createRoute(id: Int) = "imagerestaurant/$id"
     }
