@@ -39,7 +39,6 @@ fun SettingSlider(
     navController: NavController,
     currentUser: User,
     restaurant: Restaurant? = null,
-    closeDrawer: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
