@@ -42,13 +42,7 @@ fun AppNavHost(navController: NavHostController) {
     val promoViewModel : PromoViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screens.Login.route) {
-        composable(Screens.Settings.route) {
-            SettingSlider(
-                navController = navController,
-                onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
-                onBack = { navController.popBackStack() },
-            )
-        }
+
         composable(Screens.Profile.route) {
             ProfileScreen(
                 onNavigateToAccount = { navController.navigate(Screens.MyAccount.route) },
