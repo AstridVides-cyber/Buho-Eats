@@ -119,7 +119,7 @@ object DummyData {
                         id = 2,
                         name = "Sopa de gallina india",
                         description = "Sopa tradicional con vegetales frescos.",
-                        imageUrl = "https://images.unsplash.com/photo-1605478371437-045aa03f2dc1",
+                        imageUrl = "https://www.honduras.com/wp-content/uploads/2020/09/receta-sopa-de-gallina.jpg",
                         price = "$5.00",
                         promprice = "$3.00",
                         reglas = "Solo de lunes a viernes desde las 12 pm"
@@ -136,7 +136,7 @@ object DummyData {
                 id = 2,
                 name = "La Esquinita Gourmet",
                 description = "Fusión de sabores latinos e internacionales.",
-                imageUrl = "https://images.unsplash.com/photo-1600891964190-46e1c7b4cfaf",
+                imageUrl = "https://images.unsplash.com/photo-1651440204227-a9a5b9d19712",
                 categories = listOf("Gourmet", "Fusión", "Internacional"),
                 contactInfo = ContactInfo(
                     email = "info@laesquinita.com",
@@ -174,7 +174,7 @@ object DummyData {
                 ),
                 promos = listOf(
                     Promo(
-                        id = 3,
+                        id = 1,
                         name = "Ceviche mixto",
                         description = "Pescado, camarones y calamares en jugo de limón.",
                         imageUrl = "https://images.unsplash.com/photo-1613145998174-17f89e068e2e",
@@ -184,7 +184,7 @@ object DummyData {
 
                     ),
                     Promo(
-                        id = 4,
+                        id = 2,
                         name = "Tacos al pastor",
                         description = "Tacos con carne de cerdo marinada al estilo mexicano.",
                         imageUrl = "https://images.unsplash.com/photo-1601050690094-0cfb389d7e18",

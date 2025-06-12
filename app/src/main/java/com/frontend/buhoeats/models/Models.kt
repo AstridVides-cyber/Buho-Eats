@@ -31,7 +31,7 @@ data class Restaurant(
     val contactInfo: ContactInfo,
     val reviews: List<Review>,
     val menu: List<Dish>,
-    val promos: List<Promo>,
+    var promos: List<Promo>,
     val latitud: Double,
     val longitud: Double,
     val admin : Int,
