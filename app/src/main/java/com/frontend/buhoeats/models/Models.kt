@@ -32,7 +32,7 @@ data class Restaurant(
     val ratings: MutableList<Rating>,
     val comments: MutableList<Comment>,
     val menu: List<Dish>,
-    val promos: List<Promo>,
+    var promos: List<Promo>,
     val latitud: Double,
     val longitud: Double,
     val admin : Int,
