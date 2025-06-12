@@ -62,9 +62,7 @@ fun HomeScreen(
                             navController = navController,
                             currentUser = currentUser!!,
                             restaurant = adminRestaurant,
-                            onNavigateToProfile = { navController.navigate(Screens.Profile.route) },
-                            closeDrawer = { scope.launch { drawerState.close() } }
-                        )
+                            onNavigateToProfile = { navController.navigate(Screens.Profile.route) })
                     }
                 }
             }

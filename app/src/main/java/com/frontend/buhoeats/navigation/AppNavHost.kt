@@ -40,7 +40,7 @@ fun AppNavHost(navController: NavHostController) {
     val userSessionViewModel: UserSessionViewModel = viewModel()
     val currentUser = userSessionViewModel.currentUser.value
     val restaurantViewModel: RestaurantViewModel = viewModel()
-    val promoViewModel : PromoViewModel = viewModel()
+    val promoViewModel: PromoViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Profile.route) {
@@ -54,12 +54,16 @@ fun AppNavHost(navController: NavHostController) {
 
         composable(Screens.MyAccount.route) {
             currentUser?.let {
-                MyAccount(navController = navController, user = it, onBack = { navController.popBackStack() })
+                MyAccount(
+                    navController = navController,
+                    user = it,
+                    onBack = { navController.popBackStack() })
             }
         }
 
         composable(Screens.Login.route) {
-            Login(navController,
+            Login(
+                navController,
                 userSessionViewModel = userSessionViewModel
             )
         }
@@ -118,7 +122,8 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
         composable(Screens.Map.route) {
-           MapScreen(onBack = { navController.popBackStack() } , navController = navController
+            MapScreen(
+                onBack = { navController.popBackStack() }, navController = navController
             )
         }
 
@@ -146,7 +151,7 @@ fun AppNavHost(navController: NavHostController) {
                 )
             }
         }
-         composable(Screens.EditRestaurant.route) {
+        composable(Screens.EditRestaurant.route) {
             val restaurant = DummyData.getRestaurants().first()
 
             EditRestaurantScreen(
@@ -170,7 +175,9 @@ fun AppNavHost(navController: NavHostController) {
                         restaurantViewModel = restaurantViewModel
                     )
                 }
-         composable(
+            }
+        }
+        composable(
             route = Screens.ImagesRestaurant.route,
             arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })
         ) { backStackEntry ->
@@ -185,6 +192,7 @@ fun AppNavHost(navController: NavHostController) {
                 )
             }
         }
+
         composable(
             route = Screens.PromoInfo.route,
             arguments = listOf(
@@ -209,9 +217,11 @@ fun AppNavHost(navController: NavHostController) {
                 promoViewModel.promos.find { it.id == promoId } ?: return@composable
             }
 
-            val restaurant = DummyData.getRestaurants().find { it.promos.any { it.id == promoId } }
-                ?: DummyData.getRestaurants().find { it.admin == userSessionViewModel.currentUser.value?.id }
-                
+            val restaurant =
+                DummyData.getRestaurants().find { it.promos.any { it.id == promoId } }
+                    ?: DummyData.getRestaurants()
+                        .find { it.admin == userSessionViewModel.currentUser.value?.id }
+
             val isAdmin = userSessionViewModel.currentUser.value?.rol == "admin"
 
             if (restaurant != null) {
@@ -228,3 +238,4 @@ fun AppNavHost(navController: NavHostController) {
         }
     }
 }
+

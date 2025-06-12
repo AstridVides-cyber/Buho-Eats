@@ -1,5 +1,6 @@
 package com.frontend.buhoeats.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,11 +33,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
-
 
 @Composable
 fun StatisticsScreen(
@@ -49,8 +52,6 @@ fun StatisticsScreen(
     var showDialog by remember { mutableStateOf(false) }
     var userToBlock by remember { mutableStateOf<User?>(null) }
 
-
-
     Scaffold(
         topBar = {
             TopBar(
@@ -62,88 +63,104 @@ fun StatisticsScreen(
             BottomNavigationBar(navController = navController)
         }
     ) { innerPadding ->
-        LazyColumn(
+        Box(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxSize()
-                .background(Color.White)
+                .padding(innerPadding)
         ) {
-            items(currentRestaurant.comments) { comment ->
-                val user = DummyData.getUsers().find { it.id == comment.userId }
-                val rating = currentRestaurant.ratings.find { it.userId == comment.userId }
+            Image(
+                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
 
-                Card(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(4.dp)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Outlined.AccountCircle,
-                                contentDescription = "Usuario",
-                                tint = Color.Black,
-                                modifier = Modifier.size(30.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 16.dp)
+            ) {
+                items(currentRestaurant.comments) { comment ->
+                    val user = DummyData.getUsers().find { it.id == comment.userId }
+                    val rating = currentRestaurant.ratings.find { it.userId == comment.userId }
 
-                            val displayName = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
+                    Card(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .fillMaxWidth(),
+                        elevation = CardDefaults.cardElevation(4.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Outlined.AccountCircle,
+                                    contentDescription = "Usuario",
+                                    tint = Color.Black,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
 
-                            Text(
-                                text = displayName,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
+                                val displayName = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
 
-                            IconButton(onClick = {
-                                userToBlock = user
-                                showDialog = true
-                            }) {
-                                Icon(Icons.Default.Block, contentDescription = null, tint = Color.Red)
+                                Text(
+                                    text = displayName,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+
+                                IconButton(onClick = {
+                                    userToBlock = user
+                                    showDialog = true
+                                }) {
+                                    Icon(Icons.Default.Block, contentDescription = null, tint = Color.Red)
+                                }
                             }
-                        }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(text = comment.comment, fontSize = 16.sp, color = Color.DarkGray)
-                        Spacer(modifier = Modifier.height(8.dp))
+                            Text(text = comment.comment, fontSize = 16.sp, color = Color.DarkGray)
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        rating?.let {
-                            Row {
-                                repeat(it.rating) {
-                                    Icon(Icons.Default.Star, contentDescription = null, tint = Color(0xFFFFC107), modifier = Modifier.size(20.dp))
+                            rating?.let {
+                                Row {
+                                    repeat(it.rating) {
+                                        Icon(
+                                            Icons.Default.Star,
+                                            contentDescription = null,
+                                            tint = Color(0xFFFFC107),
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
 
-        if (showDialog && userToBlock != null) {
-            ConfirmationDialog(
-                message = "¿Estás seguro que deseas bloquear a este usuario?",
-                onConfirm = {
-                    restaurantViewModel.blockUser(
-                        user = userToBlock!!,
-                        restaurant = currentRestaurant,
-                        onUpdate = { updatedRestaurant ->
-                            DummyData.updateRestaurant(updatedRestaurant)
-                            currentRestaurant = updatedRestaurant
-                            restaurantViewModel.loadBlockedUsers(updatedRestaurant)
-                        }
-
-                    )
-                    showDialog = false
-                    userToBlock = null
-                },
-                onDismiss = {
-                    showDialog = false
-                    userToBlock = null
-                }
-            )
+            if (showDialog && userToBlock != null) {
+                ConfirmationDialog(
+                    message = "¿Estás seguro que deseas bloquear a este usuario?",
+                    onConfirm = {
+                        restaurantViewModel.blockUser(
+                            user = userToBlock!!,
+                            restaurant = currentRestaurant,
+                            onUpdate = { updatedRestaurant ->
+                                DummyData.updateRestaurant(updatedRestaurant)
+                                currentRestaurant = updatedRestaurant
+                                restaurantViewModel.loadBlockedUsers(updatedRestaurant)
+                            }
+                        )
+                        showDialog = false
+                        userToBlock = null
+                    },
+                    onDismiss = {
+                        showDialog = false
+                        userToBlock = null
+                    }
+                )
+            }
         }
     }
 }

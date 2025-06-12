@@ -181,6 +181,7 @@ object DummyData {
                         imageUrl = "https://images.unsplash.com/photo-1601050690094-0cfb389d7e18",
                         price = "$5.00",
                         promprice = "$3.00",
+                        reglas = "Solo de lunes a viernes desde las 12 pm"
                   )
             ),
             latitud = 13.7929,
