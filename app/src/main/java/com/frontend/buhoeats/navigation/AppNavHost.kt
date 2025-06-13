@@ -167,9 +167,15 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable(Screens.EditInfo.route) {
-            EditInfo( navController = navController)
+            EditInfo(
+                navController = navController,
+                userSessionViewModel = userSessionViewModel,
+                restaurantViewModel = restaurantViewModel
+            )
+        }
 
-          composable(Screens.Statistics.route) {
+
+        composable(Screens.Statistics.route) {
             currentUser?.let { user ->
                 val restaurant = DummyData.getRestaurants().find { it.admin == user.id }
                 if (restaurant != null) {
@@ -182,6 +188,7 @@ fun AppNavHost(navController: NavHostController) {
                 }
             }
         }
+
         composable(
             route = Screens.ImagesRestaurant.route,
             arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })

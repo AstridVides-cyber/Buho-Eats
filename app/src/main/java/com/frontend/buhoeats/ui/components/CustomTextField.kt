@@ -82,8 +82,8 @@ fun CustomTextField(
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp), // altura igual a la del disabled
-            shape = RoundedCornerShape(12.dp), // igual que el disabled
+                .height(50.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = containerColor,
                 unfocusedContainerColor = containerColor,

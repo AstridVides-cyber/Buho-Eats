@@ -146,7 +146,8 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
                         .height(55.dp),
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                 ) {
                     Text("Editar perfil", color = Color.White, fontSize = 17.sp)
                 }

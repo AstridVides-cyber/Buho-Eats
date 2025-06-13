@@ -88,7 +88,8 @@ fun StatisticsScreen(
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                             .fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(4.dp)
+                        elevation = CardDefaults.cardElevation(4.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {

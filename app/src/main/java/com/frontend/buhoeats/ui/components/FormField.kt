@@ -44,8 +44,8 @@ fun FormField(
             isError = isError,
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = Color(0xFFF3EDED),
-                focusedContainerColor = Color(0xFFF3EDED),
+                unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color.White,
                 errorBorderColor = Color.Red,
                 errorLabelColor = Color.Red,
                 errorCursorColor = Color.Red

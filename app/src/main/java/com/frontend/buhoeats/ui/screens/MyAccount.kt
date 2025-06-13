@@ -198,7 +198,8 @@ fun MyAccount(navController: NavController, user: User, onBack: () -> Unit = {})
                         .padding(start = 6.dp)
                         .shadow(8.dp, RoundedCornerShape(8.dp)),
                     shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE63946))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE63946)),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                 ) {
                     Text("Cancelar", color = Color.White, fontSize = 18.sp)
                 }
@@ -256,10 +257,12 @@ fun MyAccount(navController: NavController, user: User, onBack: () -> Unit = {})
                         .padding(end = 6.dp)
                         .shadow(8.dp, RoundedCornerShape(8.dp)),
                     shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C)),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                 ) {
                     Text("Confirmar", color = Color.White, fontSize = 18.sp)
                 }
+                Spacer(modifier = Modifier.height(12.dp))
 
 
             }

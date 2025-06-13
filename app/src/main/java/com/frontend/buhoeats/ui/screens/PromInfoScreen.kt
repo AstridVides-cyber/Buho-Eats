@@ -247,7 +247,7 @@ fun PromoInfoScreen(
                     Text(text = if (reglas.isNotBlank()) reglas else "Sin reglas específicas", fontSize = 15.sp, color = Color.Black)
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 ContactCard(contactInfo)
 
                 if (showError) {
@@ -274,10 +274,11 @@ fun PromoInfoScreen(
                                         promprice = promprice,
                                         price = price,
                                         imageUrl = selectedImageUri?.toString()
-                                            ?: promo.imageUrl.ifBlank { "https://plus.unsplash.com/premium_photo-1670604211960-82b8d84f6aea" },
+                                            ?: promo.imageUrl.ifBlank {
+                                                "https://plus.unsplash.com/premium_photo-1670604211960-82b8d84f6aea"
+                                            },
                                         reglas = reglas
                                     )
-
 
                                     if (esNuevaPromo) {
                                         promoViewModel.addPromo(nuevaPromo)
@@ -290,31 +291,38 @@ fun PromoInfoScreen(
                                     navController.navigate(Screens.Promocion.route)
                                 }
                             },
-                                colors = ButtonDefaults.buttonColors(
+                            colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF06BB0C),
                                 contentColor = Color.White
                             ),
-                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
+                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
+                            modifier = Modifier
+                                .weight(0.8f)
+                                .height(50.dp)
+                                .padding(end = 10.dp)
                         ) {
-                            Text("Guardar")
+                            Text("Guardar", fontSize = 18.sp)
                         }
-
-                        Spacer(modifier = Modifier.size(6.dp))
 
                         Button(
                             shape = RoundedCornerShape(12.dp),
                             onClick = {
-                               navController.navigate(Screens.Promocion.route)
+                                navController.navigate(Screens.Promocion.route)
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFFC11D0C),
                                 contentColor = Color.White
                             ),
-                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
+                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
+                            modifier = Modifier
+                                .weight(0.8f)
+                                .height(50.dp)
+                                .padding(start = 10.dp)
                         ) {
-                            Text("Cancelar")
+                            Text("Cancelar", fontSize = 18.sp)
                         }
                     }
+
                 }
             }
         }

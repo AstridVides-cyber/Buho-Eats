@@ -35,7 +35,7 @@ fun DisabledProfileField(label: String, value: String) {
         shape = RoundedCornerShape(12.dp),
         colors = OutlinedTextFieldDefaults.colors(
             disabledTextColor = Color.Black,
-            disabledContainerColor = Color(0xFFE0E0E0),
+            disabledContainerColor = Color.White,
             disabledBorderColor = Color.Black
         ),
         modifier = Modifier
