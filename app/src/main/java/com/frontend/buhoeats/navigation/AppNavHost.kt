@@ -14,6 +14,7 @@ import androidx.navigation.navArgument
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.ui.screens.BlockedUsersScreen
+import com.frontend.buhoeats.ui.screens.EditInfo
 import com.frontend.buhoeats.ui.screens.EditImageScreen
 import com.frontend.buhoeats.ui.screens.EditRestaurantScreen
 import com.frontend.buhoeats.ui.screens.FavoriteScreen
@@ -41,7 +42,7 @@ fun AppNavHost(navController: NavHostController) {
     val currentUser = userSessionViewModel.currentUser.value
     val restaurantViewModel: RestaurantViewModel = viewModel()
     val promoViewModel: PromoViewModel = viewModel()
-
+    
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Profile.route) {
             ProfileScreen(
@@ -164,7 +165,11 @@ fun AppNavHost(navController: NavHostController) {
                 onEditInfo = { navController.navigate("edit_info") }
             )
         }
-        composable(Screens.Statistics.route) {
+
+        composable(Screens.EditInfo.route) {
+            EditInfo( navController = navController)
+
+          composable(Screens.Statistics.route) {
             currentUser?.let { user ->
                 val restaurant = DummyData.getRestaurants().find { it.admin == user.id }
                 if (restaurant != null) {
