@@ -33,7 +33,6 @@ import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.models.ContactInfo
 import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.models.Promo
-import com.frontend.buhoeats.models.Review
 import com.frontend.buhoeats.models.User
 
 

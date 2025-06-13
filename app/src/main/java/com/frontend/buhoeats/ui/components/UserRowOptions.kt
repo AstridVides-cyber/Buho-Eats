@@ -37,7 +37,9 @@ import androidx.compose.ui.graphics.Color
 fun UserRowOptions(
     user: User,
     onConfirmAction: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    confirmationMessage: String = "¿Estás seguro que deseas desbloquear a este usuario?",
+    iconTint: Color = Color(0xFF4CAF50)
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -80,19 +82,20 @@ fun UserRowOptions(
 
             IconButton(
                 onClick = { showDialog = true },
-                modifier = Modifier.align(Alignment.TopEnd)
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
                     .size(55.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Cancel,
                     contentDescription = "Opciones del usuario",
-                    tint = Color(0xFF4CAF50)
+                    tint = iconTint
                 )
             }
 
             if (showDialog) {
                 ConfirmationDialog(
-                    message = "¿Estas seguro que deseas desbloquear a este usuario?",
+                    message = confirmationMessage,
                     onConfirm = {
                         showDialog = false
                         onConfirmAction()

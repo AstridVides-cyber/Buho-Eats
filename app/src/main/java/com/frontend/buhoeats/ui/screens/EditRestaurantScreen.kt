@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.FoodBank
 import androidx.compose.material.icons.outlined.InsertPhoto
 import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Photo
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,6 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.R
+import com.frontend.buhoeats.models.Restaurant
+import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 
@@ -50,9 +53,10 @@ import com.frontend.buhoeats.ui.components.TopBar
 fun EditRestaurantScreen(
     navController: NavHostController,
     onBack: () -> Unit = {},
-    onEditImages: () -> Unit = {},
+    onEditImages: (Int) -> Unit = {},
     onEditMenu: () -> Unit = {},
-    onEditInfo: () -> Unit = {}
+    onEditInfo: () -> Unit = {},
+    restaurant: Restaurant
 ) {
     Scaffold(
         topBar = {
@@ -79,22 +83,21 @@ fun EditRestaurantScreen(
 
             Column(modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp)) {
 
-                // 🖼️ Editar Imágenes
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onEditImages() }
+                        .clickable { onEditImages(restaurant.id) }
                         .padding(vertical = 10.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.PhotoLibrary,
-                        contentDescription = "Editar imágenes",
+                        imageVector = Icons.Outlined.Photo,
+                        contentDescription = "Editar Imagen",
                         tint = Color.Black,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Editar Imágenes", fontSize = 22.sp, color = Color.Black)
+                    Text("Editar Imagen", fontSize = 22.sp, color = Color.Black)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
@@ -106,7 +109,6 @@ fun EditRestaurantScreen(
                 }
                 Divider(thickness = 1.dp, color = Color.Gray.copy(alpha = 0.3f))
 
-                // 🍽️ Editar Menú
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -132,7 +134,6 @@ fun EditRestaurantScreen(
                 }
                 Divider(thickness = 1.dp, color = Color.Gray.copy(alpha = 0.3f))
 
-                // 📝 Editar Información
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier

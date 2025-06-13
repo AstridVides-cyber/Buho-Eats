@@ -24,14 +24,13 @@ import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
-
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     onRestaurantClick: (Int) -> Unit,
     navController: NavController,
     userSessionViewModel: UserSessionViewModel
-
 ) {
     val restaurantList = DummyData.getRestaurants()
     var selectedFilter by remember { mutableStateOf<String?>(null) }
@@ -46,78 +45,102 @@ fun HomeScreen(
         restaurantList
     }
 
-    Scaffold(
-        topBar = {
-            TopBar(
-                showMenuIcon = true,
-                onNavClick = {
-                    navController.navigate(Screens.Settings.route)
-                }
-            )
-        },
-        bottomBar = {
-            BottomNavigationBar(navController)
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    val adminRestaurant = DummyData.getRestaurants().find { it.admin == currentUser?.id }
 
-            LazyColumn(
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            if (currentUser != null) {
+                Scaffold(
+                    topBar = { TopBar(showBackIcon = true) { scope.launch { drawerState.close() } } },
+                    bottomBar = { BottomNavigationBar(navController) }
+                ) { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        SettingSlider(
+                            navController = navController,
+                            currentUser = currentUser!!,
+                            restaurant = adminRestaurant,
+                            onNavigateToProfile = { navController.navigate(Screens.Profile.route) })
+                    }
+                }
+            }
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                TopBar(
+                    showMenuIcon = true,
+                    onNavClick = {
+                        scope.launch { drawerState.open() }
+                    }
+                )
+
+            },
+            bottomBar = {
+                BottomNavigationBar(navController)
+            }
+        ) { innerPadding ->
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(innerPadding)
             ) {
-                item {
-                    GreetingSection(userName = currentUser?.name ?: "Usuario")
-                    Spacer(modifier = Modifier.height(16.dp))
-                    FilterSection(
-                        onFilterSelected = { selectedFilter = it },
-                        onReset = { selectedFilter = null },
-                        resultCount = restaurantList.size
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    if (isAdmin && myRestaurant != null) {
+                Image(
+                    painter = painterResource(id = R.drawable.backgroundlighttheme),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    item {
+                        GreetingSection(userName = currentUser?.name ?: "Usuario")
+                        Spacer(modifier = Modifier.height(16.dp))
+                        FilterSection(
+                            onFilterSelected = { selectedFilter = it },
+                            onReset = { selectedFilter = null },
+                            resultCount = restaurantList.size
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        if (isAdmin && myRestaurant != null) {
+                            Text(
+                                text = "Su local:",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            RestaurantCard(restaurant = myRestaurant) {
+                                onRestaurantClick(myRestaurant.id)
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "Su local:",
+                            text = "Restaurantes",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        RestaurantCard(restaurant = myRestaurant) {
-                            onRestaurantClick(myRestaurant.id)
+                    }
+
+                    items(filteredRestaurants) { restaurant ->
+                        RestaurantCard(restaurant = restaurant) {
+                            onRestaurantClick(restaurant.id)
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "Restaurantes",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-
-                items(filteredRestaurants) { restaurant ->
-                    RestaurantCard(restaurant = restaurant) {
-                        onRestaurantClick(restaurant.id)
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
     }
 }
-
 @Composable
 fun GreetingSection(userName: String) {
     Column {
