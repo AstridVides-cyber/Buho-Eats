@@ -22,6 +22,7 @@ import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
+import com.frontend.buhoeats.ui.components.EditFloatingButton
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.launch
@@ -37,6 +38,7 @@ fun HomeScreen(
     val currentUser by userSessionViewModel.currentUser
 
     val isAdmin = currentUser?.rol == "admin"
+    val isSuperAdmin = currentUser?.rol == "superadmin"
     val myRestaurant = restaurantList.find { it.admin == currentUser?.id }
 
     val filteredRestaurants = if (isAdmin) {
@@ -76,10 +78,14 @@ fun HomeScreen(
                         scope.launch { drawerState.open() }
                     }
                 )
-
             },
             bottomBar = {
                 BottomNavigationBar(navController)
+            },
+            floatingActionButton = {
+                if (isSuperAdmin) {
+                    EditFloatingButton(onClick = { /* Acción para superadmin */ })
+                }
             }
         ) { innerPadding ->
             Box(
@@ -141,6 +147,7 @@ fun HomeScreen(
         }
     }
 }
+
 @Composable
 fun GreetingSection(userName: String) {
     Column {
