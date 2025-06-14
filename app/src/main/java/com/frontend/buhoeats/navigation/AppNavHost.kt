@@ -16,6 +16,7 @@ import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.ui.screens.BlockedUsersScreen
 import com.frontend.buhoeats.ui.screens.EditInfo
 import com.frontend.buhoeats.ui.screens.EditImageScreen
+import com.frontend.buhoeats.ui.screens.EditMenuScreen
 import com.frontend.buhoeats.ui.screens.EditRestaurantScreen
 import com.frontend.buhoeats.ui.screens.FavoriteScreen
 import com.frontend.buhoeats.ui.screens.HomeScreen
@@ -247,6 +248,16 @@ fun AppNavHost(navController: NavHostController) {
                     promoViewModel = promoViewModel
                 )
             }
+        }
+
+        composable("edit_menu") {
+            EditMenuScreen(
+                navController = navController,
+                restaurant = currentRestaurant,
+                onUpdate = { updatedRestaurant ->
+
+                }
+            )
         }
     }
 }
