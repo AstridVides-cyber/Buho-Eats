@@ -15,49 +15,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
 @Composable
 fun FormField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
-    isMultiline: Boolean = false,
     isError: Boolean = false,
-    errorMessage: String = ""
+    isMultiline: Boolean = false,
+    placeholderText: String = ""
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = label,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-            color = if (isError) Color.Red else Color.Black
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-
+    Column {
+        Text(label, fontWeight = FontWeight.SemiBold, color = Color.Black , fontSize = 16.sp, modifier = Modifier.padding(bottom = 4.dp))
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(if (isMultiline) 100.dp else 56.dp),
-            singleLine = !isMultiline,
+            modifier = Modifier.fillMaxWidth(),
             isError = isError,
-            shape = RoundedCornerShape(16.dp),
+            maxLines = if (isMultiline) 4 else 1,
+            shape = RoundedCornerShape(12.dp),
+            placeholder = {
+                if (placeholderText.isNotBlank()) {
+                    Text(text = placeholderText, color = Color.Gray)
+                }
+            },
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = Color.White,
-                focusedContainerColor = Color.White,
-                errorBorderColor = Color.Red,
-                errorLabelColor = Color.Red,
-                errorCursorColor = Color.Red
+                unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
+                focusedContainerColor = Color.White.copy(alpha = 0.95f)
             )
         )
-        if (isError && errorMessage.isNotEmpty()) {
-            Text(
-                text = errorMessage,
-                color = Color.Red,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
     }
 }

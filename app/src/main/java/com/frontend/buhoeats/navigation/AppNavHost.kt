@@ -43,7 +43,7 @@ fun AppNavHost(navController: NavHostController) {
     val currentUser = userSessionViewModel.currentUser.value
     val restaurantViewModel: RestaurantViewModel = viewModel()
     val promoViewModel: PromoViewModel = viewModel()
-    
+
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Profile.route) {
             ProfileScreen(
@@ -82,6 +82,7 @@ fun AppNavHost(navController: NavHostController) {
                 }
             )
         }
+
         composable(
             route = Screens.Restaurant.route,
             arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })
@@ -163,7 +164,8 @@ fun AppNavHost(navController: NavHostController) {
                 onEditImages = { restaurantId ->
                     navController.navigate(Screens.ImagesRestaurant.createRoute(restaurantId))
                 },
-                onEditInfo = { navController.navigate("edit_info") }
+                onEditInfo = { navController.navigate(Screens.EditInfo.route)  },
+                onEditMenu = { navController.navigate(Screens.EditMenu.route) }
             )
         }
 
@@ -250,15 +252,13 @@ fun AppNavHost(navController: NavHostController) {
             }
         }
 
-        composable("edit_menu") {
+        composable(Screens.EditMenu.route) {
             EditMenuScreen(
                 navController = navController,
-                restaurant = currentRestaurant,
-                onUpdate = { updatedRestaurant ->
-
-                }
+                userSessionViewModel = userSessionViewModel
             )
         }
+
     }
 }
 
