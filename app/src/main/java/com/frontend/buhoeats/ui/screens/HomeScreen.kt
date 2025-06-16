@@ -12,16 +12,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
+import com.frontend.buhoeats.ui.components.DeleteFloatingButton
 import com.frontend.buhoeats.ui.components.EditFloatingButton
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
@@ -84,9 +83,16 @@ fun HomeScreen(
             },
             floatingActionButton = {
                 if (isSuperAdmin) {
-                    EditFloatingButton(onClick = { /* Acción para superadmin */ })
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        EditFloatingButton(onClick = { /* Acción de editar */ })
+                        DeleteFloatingButton(onClick = { /* Acción de eliminar */ })
+                    }
                 }
             }
+
         ) { innerPadding ->
             Box(
                 modifier = Modifier
