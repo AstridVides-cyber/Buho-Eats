@@ -16,6 +16,7 @@ import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.ui.screens.BlockedUsersScreen
 import com.frontend.buhoeats.ui.screens.EditInfo
 import com.frontend.buhoeats.ui.screens.EditImageScreen
+import com.frontend.buhoeats.ui.screens.EditLocalScreen
 import com.frontend.buhoeats.ui.screens.EditMenuScreen
 import com.frontend.buhoeats.ui.screens.EditRestaurantScreen
 import com.frontend.buhoeats.ui.screens.FavoriteScreen
@@ -256,6 +257,13 @@ fun AppNavHost(navController: NavHostController) {
             EditMenuScreen(
                 navController = navController,
                 userSessionViewModel = userSessionViewModel
+            )
+        }
+        composable(Screens.EditLocal.route) {
+            EditLocalScreen(
+                isNewLocal = true,
+                navController = navController,
+                onBackClick = { navController.popBackStack() }
             )
         }
 

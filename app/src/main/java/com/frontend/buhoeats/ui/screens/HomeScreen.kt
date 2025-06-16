@@ -153,6 +153,7 @@ fun HomeScreen(
                         item {
                             AddRestaurantCard(onClick = {
                                 isCreatingNewLocal = true
+                                navController.navigate(Screens.EditLocal.route)
                             })
                             Spacer(modifier = Modifier.height(10.dp))
                         }
