@@ -101,7 +101,7 @@ fun EditInfo(
             ) {
                 Text(
                     text = "Editar Información del Restaurante",
-                    fontSize = 22.sp,
+                    fontSize = 23.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                     modifier = Modifier.align(Alignment.CenterHorizontally)

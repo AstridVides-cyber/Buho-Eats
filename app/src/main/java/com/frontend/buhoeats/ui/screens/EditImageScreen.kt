@@ -99,7 +99,7 @@ fun EditImageScreen(
             ) {
                 Text(
                     "Editar Imagen del Restaurante",
-                    fontSize = 22.sp,
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
 
