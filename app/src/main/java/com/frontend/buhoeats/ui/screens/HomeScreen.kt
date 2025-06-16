@@ -1,9 +1,13 @@
 package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,6 +43,9 @@ fun HomeScreen(
     val isAdmin = currentUser?.rol == "admin"
     val isSuperAdmin = currentUser?.rol == "superadmin"
     val myRestaurant = restaurantList.find { it.admin == currentUser?.id }
+    var isEditing by remember { mutableStateOf(false) }
+    var isCreatingNewLocal by remember { mutableStateOf(false) }
+
 
     val filteredRestaurants = if (isAdmin) {
         restaurantList.filter { it.admin != currentUser?.id }
@@ -87,9 +94,10 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         horizontalAlignment = Alignment.End
                     ) {
-                        EditFloatingButton(onClick = { /* Acción de editar */ })
-                        DeleteFloatingButton(onClick = { /* Acción de eliminar */ })
-                    }
+                        EditFloatingButton(onClick = { isEditing = !isEditing })
+                        if (!isEditing) {
+                            DeleteFloatingButton(onClick = { /* Acción de eliminar */ })
+                        }                    }
                 }
             }
 
@@ -141,7 +149,14 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-
+                    if (isEditing) {
+                        item {
+                            AddRestaurantCard(onClick = {
+                                isCreatingNewLocal = true
+                            })
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
+                    }
                     items(filteredRestaurants) { restaurant ->
                         RestaurantCard(restaurant = restaurant) {
                             onRestaurantClick(restaurant.id)
@@ -214,3 +229,26 @@ fun FilterSection(
         }
     }
 }
+@Composable
+fun AddRestaurantCard(onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF7C83C5))
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.AddCircleOutline,
+                contentDescription = "Agregar nuevo restaurante",
+                tint = Color.White,
+                modifier = Modifier.size(60.dp)
+            )
+        }
+    }
+}
+
