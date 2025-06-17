@@ -4,8 +4,11 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,6 +35,9 @@ data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
 fun RolAssign(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
+
+    var showMenu by remember { mutableStateOf(false) }
+
 
     var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
 
@@ -141,92 +147,68 @@ fun RolAssign(navController: NavController) {
                         .align(Alignment.Start)
                 )
 
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { expanded = !expanded },
-                    modifier = Modifier.fillMaxWidth()
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .border(1.dp, Color.Black, RoundedCornerShape(16.dp))
+                        .background(Color(0xFFF3EDED), RoundedCornerShape(16.dp))
+                        .clickable { showMenu = !showMenu }
+                        .padding(16.dp)
                 ) {
-                    OutlinedTextField(
-                        readOnly = true,
-                        value = selectedRole?.label ?: "",
-                        onValueChange = {},
-                        placeholder = {
-                            Text(
-                                "Seleccione un rol",
-                                fontFamily = montserratFontFamily,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = Color.Gray
-                            )
-                        },
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                        },
-                        modifier = Modifier
-                            .menuAnchor()
-                            .fillMaxWidth()
-                            .onGloballyPositioned { coordinates ->
-                                textFieldSize = coordinates.size
-                            },
-                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color.Black,
-                            unfocusedBorderColor = Color.Black,
-                            errorBorderColor = Color.Red,
-                            focusedContainerColor = Color(0xFFF3EDED),
-                            unfocusedContainerColor = Color(0xFFF3EDED),
-                            cursorColor = Color.Black
-                        ),
-                        textStyle = TextStyle(
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = selectedRole?.label ?: "Seleccione un rol",
                             fontFamily = montserratFontFamily,
                             fontSize = 16.sp,
-                            color = Color.Black
+                            fontWeight = FontWeight.Medium,
+                            color = if (selectedRole == null) Color.Gray else Color.Black
                         )
-                    )
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                            tint = Color.Black
+                        )
+                    }
 
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier
-                            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                            .background(
-                                color = Color(0xFFF3EDED),
-                                shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
-                            )
-                            .border(
-                                width = 1.dp,
-                                color = Color.Black,
-                                shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
-                            )
-                    ) {
+                    if (showMenu) {
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Divider(
+                            color = Color.Gray,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(bottom = 10.dp)
+                        )
+
                         roleOptions.forEach { role ->
-                            DropdownMenuItem(
-                                text = {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Image(
-                                            painter = painterResource(id = role.imageRes),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(10.dp))
-                                        Text(
-                                            text = role.label,
-                                            fontFamily = montserratFontFamily,
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontSize = 16.sp,
-                                            color = Color.Black
-                                        )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        selectedRole = role
+                                        showMenu = false
                                     }
-                                },
-                                onClick = {
-                                    selectedRole = role
-                                    expanded = false
-                                }
-                            )
+                                    .padding(vertical = 10.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = role.imageRes),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Text(
+                                    text = role.label,
+                                    fontFamily = montserratFontFamily,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 16.sp,
+                                    color = Color.Black
+                                )
+                            }
                         }
                     }
-                }
-            }
-        }
-    }
-}
+                } }}}}
