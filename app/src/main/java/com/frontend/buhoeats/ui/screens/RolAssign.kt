@@ -26,7 +26,9 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 import androidx.annotation.DrawableRes
-
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 
 
 data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
@@ -163,7 +165,7 @@ fun RolAssign(navController: NavController) {
                         modifier = Modifier
                             .menuAnchor()
                             .fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedContainerColor = Color(0xFFF3EDED),
                             unfocusedContainerColor = Color(0xFFF3EDED),
@@ -178,38 +180,45 @@ fun RolAssign(navController: NavController) {
                         )
                     )
 
+
                     ExposedDropdownMenu(
                         expanded = expanded,
-                        onDismissRequest = { expanded = false }
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .background(Color.Transparent)
                     ) {
-                        roleOptions.forEach { role ->
-                            DropdownMenuItem(
-                                text = {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Image(
-                                            painter = painterResource(id = role.imageRes),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(10.dp))
-                                        Text(
-                                            text = role.label,
-                                            fontSize = 16.sp,
-                                            fontFamily = montserratFontFamily,
-                                            color = Color.Black
-                                        )
+                        Column(
+                            modifier = Modifier
+                                .background(
+                                    color = Color(0xFFF3EDED),
+                                    shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+                                )
+                                .border(1.dp, Color.Black, shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
+                                .fillMaxWidth()
+                        ) {
+                            roleOptions.forEach { role ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Image(
+                                                painter = painterResource(id = role.imageRes),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(10.dp))
+                                            Text(
+                                                text = role.label,
+                                                fontSize = 16.sp,
+                                                fontFamily = montserratFontFamily,
+                                                color = Color.Black
+                                            )
+                                        }
+                                    },
+                                    onClick = {
+                                        selectedRole = role
+                                        expanded = false
                                     }
-                                },
-                                onClick = {
-                                    selectedRole = role
-                                    expanded = false
-                                }
-                            )
-
+                                )
+                            }
                         }
-                    }
-                }
-            }
-        }
-    }
-}
+                    }}}}}}
