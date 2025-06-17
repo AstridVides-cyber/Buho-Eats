@@ -25,9 +25,11 @@ import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
+import androidx.annotation.DrawableRes
 
 
-data class RoleOption(val label: String, val icon: ImageVector)
+
+data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,9 +38,9 @@ fun RolAssign(navController: NavController) {
     var emailError by remember { mutableStateOf("") }
 
     val roleOptions = listOf(
-        RoleOption("Super Administrador", Icons.Default.SupervisorAccount),
-        RoleOption("Administrador de Local", Icons.Default.AdminPanelSettings),
-        RoleOption("Usuario", Icons.Default.AccountCircle)
+        RoleOption("Super Administrador", R.drawable.super_admin),
+        RoleOption("Administrador de Local", R.drawable.admi_local),
+        RoleOption("Usuario", R.drawable.ususario)
     )
     var selectedRole by remember { mutableStateOf<RoleOption?>(null) }
     var expanded by remember { mutableStateOf(false) }
@@ -184,11 +186,10 @@ fun RolAssign(navController: NavController) {
                             DropdownMenuItem(
                                 text = {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            imageVector = role.icon,
+                                        Image(
+                                            painter = painterResource(id = role.imageRes),
                                             contentDescription = null,
-                                            tint = Color.Black,
-                                            modifier = Modifier.size(20.dp)
+                                            modifier = Modifier.size(24.dp)
                                         )
                                         Spacer(modifier = Modifier.width(10.dp))
                                         Text(
@@ -204,6 +205,7 @@ fun RolAssign(navController: NavController) {
                                     expanded = false
                                 }
                             )
+
                         }
                     }
                 }
