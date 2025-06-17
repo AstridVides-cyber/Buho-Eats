@@ -15,12 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -35,19 +32,15 @@ data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
 fun RolAssign(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
-
     var showMenu by remember { mutableStateOf(false) }
-
-
-    var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
+    var selectedRole by remember { mutableStateOf<RoleOption?>(null) }
+    var showValidationErrors by remember { mutableStateOf(false) }
 
     val roleOptions = listOf(
         RoleOption("Super Administrador", R.drawable.super_admin),
         RoleOption("Administrador de Local", R.drawable.admi_local),
         RoleOption("Usuario", R.drawable.ususario)
     )
-    var selectedRole by remember { mutableStateOf<RoleOption?>(null) }
-    var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -82,8 +75,7 @@ fun RolAssign(navController: NavController) {
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = montserratFontFamily,
-                    modifier = Modifier
-                        .padding(top = 50.dp, bottom = 20.dp)
+                    modifier = Modifier.padding(top = 50.dp, bottom = 20.dp)
                 )
 
                 Spacer(modifier = Modifier.height(25.dp))
@@ -126,7 +118,7 @@ fun RolAssign(navController: NavController) {
                         focusedBorderColor = Color.Black,
                         unfocusedBorderColor = Color.Black,
                         disabledBorderColor = Color.Black,
-                        errorBorderColor = Color.Red,
+                        errorBorderColor = Color.Black,
                         focusedContainerColor = Color(0xFFF3EDED),
                         unfocusedContainerColor = Color(0xFFF3EDED),
                         disabledContainerColor = Color(0xFFF3EDED),
@@ -134,6 +126,18 @@ fun RolAssign(navController: NavController) {
                         cursorColor = Color.Black
                     )
                 )
+
+                if (emailError.isNotEmpty()) {
+                    Text(
+                        text = emailError,
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        fontFamily = montserratFontFamily,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 25.dp, top = 4.dp)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(25.dp))
 
@@ -177,7 +181,6 @@ fun RolAssign(navController: NavController) {
 
                     if (showMenu) {
                         Spacer(modifier = Modifier.height(10.dp))
-
                         Divider(
                             color = Color.Gray,
                             thickness = 1.dp,
@@ -212,6 +215,19 @@ fun RolAssign(navController: NavController) {
                         }
                     }
                 }
+
+                if (showValidationErrors && selectedRole == null) {
+                    Text(
+                        text = "Seleccione un rol",
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 25.dp, top = 4.dp),
+                        fontFamily = montserratFontFamily
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(30.dp))
 
                 val isEmailValid = email.contains("@") && email.contains(".")
@@ -219,25 +235,26 @@ fun RolAssign(navController: NavController) {
 
                 Button(
                     onClick = {
-                        if (!isEmailValid) emailError = "Ingrese un correo válido"
-                        if (selectedRole == null) {
+                        showValidationErrors = true
+                        if (!isEmailValid) {
+                            emailError = "Ingrese un correo válido"
+                        } else {
+                            emailError = ""
                         }
+
                         if (isFormValid) {
                             println("Correo: $email")
                             println("Rol: ${selectedRole?.label}")
                         }
                     },
-                    enabled = isFormValid,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF06BB0C),
                         contentColor = Color.White,
-                        disabledContainerColor = Color(0xFF06BB0C),
+                        disabledContainerColor = Color.Gray,
                         disabledContentColor = Color.White
-
-                ),
+                    ),
                     modifier = Modifier
                         .width(200.dp)
-                        .height(55.dp)
                         .height(55.dp)
                         .padding(horizontal = 20.dp),
                     shape = RoundedCornerShape(16.dp)
