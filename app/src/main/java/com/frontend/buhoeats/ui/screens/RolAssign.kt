@@ -211,4 +211,40 @@ fun RolAssign(navController: NavController) {
                             }
                         }
                     }
-                } }}}}
+                }
+                Spacer(modifier = Modifier.height(30.dp))
+
+                val isEmailValid = email.contains("@") && email.contains(".")
+                val isFormValid = isEmailValid && selectedRole != null
+
+                Button(
+                    onClick = {
+                        if (!isEmailValid) emailError = "Ingrese un correo válido"
+                        if (selectedRole == null) {
+                        }
+                        if (isFormValid) {
+                            println("Correo: $email")
+                            println("Rol: ${selectedRole?.label}")
+                        }
+                    },
+                    enabled = isFormValid,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF06BB0C),
+                        contentColor = Color.White,
+                        disabledContainerColor = Color(0xFF06BB0C),
+                        disabledContentColor = Color.White
+
+                ),
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(55.dp)
+                        .height(55.dp)
+                        .padding(horizontal = 20.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text("Confirmar", fontFamily = montserratFontFamily, fontSize = 18.sp)
+                }
+            }
+        }
+    }
+}
