@@ -29,6 +29,7 @@ import com.frontend.buhoeats.ui.screens.MyAccount
 import com.frontend.buhoeats.ui.screens.MapScreen
 import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
+import com.frontend.buhoeats.ui.screens.RolAssign
 import com.frontend.buhoeats.ui.screens.StatisticsScreen
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
@@ -256,6 +257,12 @@ fun AppNavHost(navController: NavHostController) {
             EditMenuScreen(
                 navController = navController,
                 userSessionViewModel = userSessionViewModel
+            )
+        }
+
+        composable (Screens.RolAssign.route){
+            RolAssign(
+                navController = navController
             )
         }
 
