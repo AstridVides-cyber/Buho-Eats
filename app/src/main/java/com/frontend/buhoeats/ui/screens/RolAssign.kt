@@ -1,35 +1,29 @@
 package com.frontend.buhoeats.ui.screens
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.AdminPanelSettings
-import androidx.compose.material.icons.filled.SupervisorAccount
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-
 
 data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
 
@@ -38,6 +32,8 @@ data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
 fun RolAssign(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
+
+    var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
 
     val roleOptions = listOf(
         RoleOption("Super Administrador", R.drawable.super_admin),
@@ -148,77 +144,89 @@ fun RolAssign(navController: NavController) {
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     OutlinedTextField(
+                        readOnly = true,
                         value = selectedRole?.label ?: "",
                         onValueChange = {},
-                        readOnly = true,
-                        label = {
-                            Text("Seleccione un rol", fontWeight = FontWeight.SemiBold, fontFamily = montserratFontFamily)
+                        placeholder = {
+                            Text(
+                                "Seleccione un rol",
+                                fontFamily = montserratFontFamily,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.Gray
+                            )
                         },
                         trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(expanded)
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                         },
                         modifier = Modifier
                             .menuAnchor()
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .onGloballyPositioned { coordinates ->
+                                textFieldSize = coordinates.size
+                            },
                         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFFF3EDED),
-                            unfocusedContainerColor = Color(0xFFF3EDED),
                             focusedBorderColor = Color.Black,
                             unfocusedBorderColor = Color.Black,
+                            errorBorderColor = Color.Red,
+                            focusedContainerColor = Color(0xFFF3EDED),
+                            unfocusedContainerColor = Color(0xFFF3EDED),
                             cursorColor = Color.Black
                         ),
                         textStyle = TextStyle(
-                            fontSize = 16.sp,
                             fontFamily = montserratFontFamily,
+                            fontSize = 16.sp,
                             color = Color.Black
                         )
                     )
 
-
-                    ExposedDropdownMenu(
+                    DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         modifier = Modifier
-                            .background(Color.Transparent)
+                            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                            .background(
+                                color = Color(0xFFF3EDED),
+                                shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = Color.Black,
+                                shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+                            )
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .background(
-                                    color = Color(0xFFF3EDED),
-                                    shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
-                                )
-                                .border(1.dp, Color.Black, shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
-                                .fillMaxWidth()
-                        ) {
-                            roleOptions.forEach { role ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Image(
-                                                painter = painterResource(id = role.imageRes),
-                                                contentDescription = null,
-                                                modifier = Modifier.size(24.dp)
-                                            )
-                                            Spacer(modifier = Modifier.width(10.dp))
-                                            Text(
-                                                text = role.label,
-                                                fontSize = 16.sp,
-                                                fontFamily = montserratFontFamily,
-                                                color = Color.Black
-                                            )
-                                        }
-                                    },
-                                    onClick = {
-                                        selectedRole = role
-                                        expanded = false
+                        roleOptions.forEach { role ->
+                            DropdownMenuItem(
+                                text = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Image(
+                                            painter = painterResource(id = role.imageRes),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(10.dp))
+                                        Text(
+                                            text = role.label,
+                                            fontFamily = montserratFontFamily,
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontSize = 16.sp,
+                                            color = Color.Black
+                                        )
                                     }
-                                )
-                            }
+                                },
+                                onClick = {
+                                    selectedRole = role
+                                    expanded = false
+                                }
+                            )
                         }
-                    }}}}}}
+                    }
+                }
+            }
+        }
+    }
+}
