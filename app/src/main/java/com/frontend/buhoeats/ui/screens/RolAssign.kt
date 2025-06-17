@@ -126,6 +126,18 @@ fun RolAssign(navController: NavController){
                         cursorColor = Color.Black
                     )
                 )
+
+                Spacer(modifier = Modifier.height(25.dp))
+
+                Text(
+                    "Tipo de Rol:",
+                    color = Color.Black,
+                    fontSize = 18.sp,
+                    style = TextStyle(fontFamily = montserratFontFamily),
+                    modifier = Modifier
+                        .padding(start = 25.dp, bottom = 8.dp)
+                        .align(Alignment.Start)
+                )
             }
         }
     }
