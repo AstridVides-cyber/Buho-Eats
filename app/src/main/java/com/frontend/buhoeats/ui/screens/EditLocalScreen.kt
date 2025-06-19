@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,31 +39,39 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.R
+import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.models.ContactInfo
+import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.FormField
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.utils.ValidatorUtils
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditLocalScreen(
     isNewLocal: Boolean,
+    restaurant: Restaurant? = null,
     navController: NavController,
-    adminEmail: String = "admin@email.com", // reemplazar con dato real
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    restaurantViewModel: RestaurantViewModel
 ) {
-    var name by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf(restaurant?.name ?: "") }
+    var description by remember { mutableStateOf(restaurant?.description ?: "") }
+    var adminEmail by remember { mutableStateOf(restaurant?.admin?.let { DummyData.getUserEmailById(it) } ?: "") }
+
 
     var nameError by remember { mutableStateOf(false) }
     var descriptionError by remember { mutableStateOf(false) }
+    var emailError by remember { mutableStateOf(false) }
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -83,7 +90,45 @@ fun EditLocalScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* confirmación pendiente */ },
+                onClick = {
+                    nameError = name.isBlank()
+                    descriptionError = description.isBlank()
+                    emailError = !ValidatorUtils.isValidEmail(adminEmail)
+
+                    if (!nameError && !descriptionError && !emailError) {
+                        val adminUser = DummyData.getUsers().find { it.email == adminEmail }
+
+                        if (adminUser != null) {
+                            val updatedRestaurant = Restaurant(
+                                id = restaurant?.id ?: DummyData.getNextRestaurantId(),
+                                name = name,
+                                description = description,
+                                imageUrl = selectedImageUri?.toString() ?: restaurant?.imageUrl ?: "",
+                                categories = restaurant?.categories ?: emptyList(),
+                                contactInfo = restaurant?.contactInfo ?: ContactInfo("", "", "",""),
+                                ratings = restaurant?.ratings?.toMutableList() ?: mutableListOf(),
+                                comments = restaurant?.comments?.toMutableList() ?: mutableListOf(),
+                                menu = restaurant?.menu ?: emptyList(),
+                                promos = restaurant?.promos ?: emptyList(),
+                                latitud = restaurant?.latitud ?: 0.0,
+                                longitud = restaurant?.longitud ?: 0.0,
+                                admin = adminUser.id,
+                                blockedUsers = restaurant?.blockedUsers ?: emptyList()
+                            )
+
+                            if (isNewLocal) {
+                                restaurantViewModel.addRestaurant(updatedRestaurant)
+                            } else {
+                                restaurantViewModel.updateRestaurant(updatedRestaurant)
+                            }
+
+                            navController.popBackStack()
+                        } else {
+                            emailError = true
+                        }
+                    }
+
+                },
                 containerColor = Color(0xFF06BB0C),
                 contentColor = Color.White,
                 modifier = Modifier.size(70.dp),
@@ -109,18 +154,20 @@ fun EditLocalScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(16.dp)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = if (isNewLocal) "Agregar local" else "Editar local",
-                    fontSize = 26.sp,
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color.Black
+                    color = Color.Black,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Cuadro de imagen
+                // Imagen del local
                 Box(
                     modifier = Modifier
                         .height(200.dp)
@@ -161,7 +208,6 @@ fun EditLocalScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Campos
                 FormField(
                     label = "Nombre:",
                     value = name,
@@ -185,14 +231,14 @@ fun EditLocalScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(
+                FormField(
+                    label = "Administrador:",
                     value = adminEmail,
-                    onValueChange = {},
-                    enabled = false,
-                    label = { Text("Administrador:") },
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = TextStyle(fontSize = 16.sp)
+                    onValueChange = { adminEmail = it; emailError = false },
+                    isError = emailError,
+                    placeholderText = "Correo del administrador"
                 )
+                if (emailError) ValidationMessage("Correo no válido")
             }
         }
     }

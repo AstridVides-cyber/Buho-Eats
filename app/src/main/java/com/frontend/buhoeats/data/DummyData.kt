@@ -200,4 +200,14 @@ object DummyData {
             restaurants[index] = updatedRestaurant
         }
     }
+    fun getUserEmailById(userId: Int): String {
+        return getUsers().find { it.id == userId }?.email ?: ""
+    }
+    fun addRestaurant(restaurant: Restaurant) {
+        restaurants.add(restaurant)
+    }
+    fun getNextRestaurantId(): Int {
+        return (restaurants.maxOfOrNull { it.id } ?: 0) + 1
+    }
+
 }

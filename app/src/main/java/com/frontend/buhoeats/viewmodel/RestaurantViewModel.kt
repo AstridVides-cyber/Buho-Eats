@@ -8,6 +8,15 @@ import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.User
 
 class RestaurantViewModel : ViewModel() {
+
+    fun addRestaurant(restaurant: Restaurant) {
+        DummyData.addRestaurant(restaurant)
+    }
+
+    fun updateRestaurant(updated: Restaurant) {
+        DummyData.updateRestaurant(updated)
+    }
+
     private val _blockedUsers = mutableStateListOf<User>()
     val blockedUsers: List<User> get() = _blockedUsers
 

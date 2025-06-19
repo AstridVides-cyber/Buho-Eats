@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -153,15 +152,21 @@ fun HomeScreen(
                         item {
                             AddRestaurantCard(onClick = {
                                 isCreatingNewLocal = true
-                                navController.navigate(Screens.EditLocal.route)
+                                navController.navigate(Screens.EditLocal.createRoute(-1, true))
                             })
                             Spacer(modifier = Modifier.height(10.dp))
                         }
                     }
                     items(filteredRestaurants) { restaurant ->
                         RestaurantCard(restaurant = restaurant) {
-                            onRestaurantClick(restaurant.id)
+                            if (isEditing) {
+                                isCreatingNewLocal = false
+                                navController.navigate(Screens.EditLocal.createRoute(restaurant.id, false))
+                            } else {
+                                onRestaurantClick(restaurant.id)
+                            }
                         }
+
                         Spacer(modifier = Modifier.height(10.dp))
                     }
                 }

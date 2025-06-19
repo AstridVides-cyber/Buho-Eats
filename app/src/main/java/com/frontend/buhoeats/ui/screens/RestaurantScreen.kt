@@ -132,12 +132,12 @@
 
         var rating by rememberSaveable { mutableStateOf(0) }
         var comment by remember { mutableStateOf("") }
-        val userAlreadyRated = restaurant.ratings.any { it.userId == currentUser?.id }
+        restaurant.ratings.any { it.userId == currentUser?.id }
         var dishToDelete by remember { mutableStateOf<Dish?>(null) }
         var showDialog by remember { mutableStateOf(false) }
 
         val user = DummyData.getUsers().find { it.id == currentUser?.id }
-        val displayName = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
+        user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
 
         Column(
             modifier = modifier
@@ -157,7 +157,7 @@
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
 
-                if (currentUser?.rol != "admin") {
+                if (currentUser?.rol != "admin" && currentUser?.rol != "superadmin") {
                     IconButton(onClick = {
                         favoritesViewModel.toggleFavorite(restaurant.id)
                     }) {

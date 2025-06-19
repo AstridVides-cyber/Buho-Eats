@@ -202,7 +202,7 @@ fun EditInfo(
                                         address = address
                                     )
                                 )
-                                DummyData.updateRestaurant(updatedRestaurant)
+                                restaurantViewModel.updateRestaurant(updatedRestaurant)
                                 navController.popBackStack()
                             }
                         },
