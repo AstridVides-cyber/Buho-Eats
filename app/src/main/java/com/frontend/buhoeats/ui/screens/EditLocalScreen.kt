@@ -49,6 +49,7 @@ import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.models.ContactInfo
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
+import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.components.FormField
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
@@ -72,8 +73,12 @@ fun EditLocalScreen(
     var nameError by remember { mutableStateOf(false) }
     var descriptionError by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf(false) }
+    var adminRoleError by remember { mutableStateOf(false) }
+
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -96,39 +101,10 @@ fun EditLocalScreen(
                     emailError = !ValidatorUtils.isValidEmail(adminEmail)
 
                     if (!nameError && !descriptionError && !emailError) {
-                        val adminUser = DummyData.getUsers().find { it.email == adminEmail }
-
-                        if (adminUser != null) {
-                            val updatedRestaurant = Restaurant(
-                                id = restaurant?.id ?: DummyData.getNextRestaurantId(),
-                                name = name,
-                                description = description,
-                                imageUrl = selectedImageUri?.toString() ?: restaurant?.imageUrl ?: "",
-                                categories = restaurant?.categories ?: emptyList(),
-                                contactInfo = restaurant?.contactInfo ?: ContactInfo("", "", "",""),
-                                ratings = restaurant?.ratings?.toMutableList() ?: mutableListOf(),
-                                comments = restaurant?.comments?.toMutableList() ?: mutableListOf(),
-                                menu = restaurant?.menu ?: emptyList(),
-                                promos = restaurant?.promos ?: emptyList(),
-                                latitud = restaurant?.latitud ?: 0.0,
-                                longitud = restaurant?.longitud ?: 0.0,
-                                admin = adminUser.id,
-                                blockedUsers = restaurant?.blockedUsers ?: emptyList()
-                            )
-
-                            if (isNewLocal) {
-                                restaurantViewModel.addRestaurant(updatedRestaurant)
-                            } else {
-                                restaurantViewModel.updateRestaurant(updatedRestaurant)
-                            }
-
-                            navController.popBackStack()
-                        } else {
-                            emailError = true
-                        }
+                        showConfirmationDialog = true
                     }
-
-                },
+                }
+                ,
                 containerColor = Color(0xFF06BB0C),
                 contentColor = Color.White,
                 modifier = Modifier.size(70.dp),
@@ -239,7 +215,57 @@ fun EditLocalScreen(
                     placeholderText = "Correo del administrador"
                 )
                 if (emailError) ValidationMessage("Correo no válido")
+                if (adminRoleError) ValidationMessage("El correo debe pertenecer a un administrador")
+
             }
+            if (showConfirmationDialog) {
+                ConfirmationDialog(
+                    message = if (isNewLocal) "¿Estás seguro que deseas agregar un nuevo local?" else "¿Deseas guardar los cambios en el local?",
+                    onConfirm = {
+                        val adminUser = DummyData.getUsers().find { it.email == adminEmail && it.rol == "admin" }
+
+                        if (adminUser != null) {
+                            val updatedRestaurant = Restaurant(
+                                id = restaurant?.id ?: DummyData.getNextRestaurantId(),
+                                name = name,
+                                description = description,
+                                imageUrl = selectedImageUri?.toString() ?: restaurant?.imageUrl ?: "",
+                                categories = restaurant?.categories ?: emptyList(),
+                                contactInfo = restaurant?.contactInfo ?: ContactInfo("", "", "", ""),
+                                ratings = restaurant?.ratings?.toMutableList() ?: mutableListOf(),
+                                comments = restaurant?.comments?.toMutableList() ?: mutableListOf(),
+                                menu = restaurant?.menu ?: emptyList(),
+                                promos = restaurant?.promos ?: emptyList(),
+                                latitud = restaurant?.latitud ?: 0.0,
+                                longitud = restaurant?.longitud ?: 0.0,
+                                admin = adminUser.id,
+                                blockedUsers = restaurant?.blockedUsers ?: emptyList()
+                            )
+
+                            if (isNewLocal) {
+                                restaurantViewModel.addRestaurant(updatedRestaurant)
+                            } else {
+                                restaurantViewModel.updateRestaurant(updatedRestaurant)
+                            }
+
+                            showConfirmationDialog = false
+                            navController.popBackStack()
+                        } else {
+                            if (adminUser == null || adminUser.rol != "admin") {
+                                emailError = true
+                                adminRoleError = true
+                                showConfirmationDialog = false
+                                return@ConfirmationDialog
+                            }
+                            showConfirmationDialog = false
+                        }
+                    },
+                    onDismiss = {
+                        showConfirmationDialog = false
+                    }
+                )
+            }
+
         }
     }
 }
