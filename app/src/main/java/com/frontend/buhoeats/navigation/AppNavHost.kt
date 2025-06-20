@@ -45,7 +45,7 @@ fun AppNavHost(navController: NavHostController) {
     val restaurantViewModel: RestaurantViewModel = viewModel()
     val promoViewModel: PromoViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = Screens.RolAssign.route) {
+    NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Profile.route) {
             ProfileScreen(
                 onNavigateToAccount = { navController.navigate(Screens.MyAccount.route) },

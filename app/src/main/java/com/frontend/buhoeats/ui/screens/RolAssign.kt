@@ -27,7 +27,6 @@ import com.frontend.buhoeats.ui.components.TopBar
 
 data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RolAssign(navController: NavController) {
     var email by remember { mutableStateOf("") }
