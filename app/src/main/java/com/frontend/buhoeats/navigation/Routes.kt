@@ -3,7 +3,6 @@ package com.frontend.buhoeats.navigation
 
 sealed class Screens(val route: String) {
     object Profile : Screens("profile")
-    object Settings : Screens("settings")
     object MyAccount : Screens ("myaccount")
     object Login : Screens("login")
     object SignUp : Screens("signup")
@@ -29,4 +28,10 @@ sealed class Screens(val route: String) {
         fun createRoute(id: Int) = "imagerestaurant/$id"
     }
     object EditMenu : Screens("editmenu")
+    object EditLocal : Screens("editlocal/{restaurantId}?isNew={isNew}") {
+        fun createRoute(restaurantId: Int, isNew: Boolean): String {
+            return "editlocal/$restaurantId?isNew=$isNew"
+        }
+    }
+
 }
