@@ -152,10 +152,12 @@ fun EditLocalScreen(
                         .border(2.dp, Color.Gray, RoundedCornerShape(16.dp)),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    if (selectedImageUri != null) {
+                    val imageToShow = selectedImageUri?.toString() ?: restaurant?.imageUrl
+
+                    if (!imageToShow.isNullOrEmpty()) {
                         AsyncImage(
-                            model = selectedImageUri,
-                            contentDescription = "Imagen seleccionada",
+                            model = imageToShow,
+                            contentDescription = "Imagen del local",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
@@ -229,7 +231,9 @@ fun EditLocalScreen(
                                 id = restaurant?.id ?: DummyData.getNextRestaurantId(),
                                 name = name,
                                 description = description,
-                                imageUrl = selectedImageUri?.toString() ?: restaurant?.imageUrl ?: "",
+                                imageUrl = selectedImageUri?.toString()
+                                    ?: restaurant?.imageUrl
+                                    ?: "https://plus.unsplash.com/premium_photo-1670604211960-82b8d84f6aea",
                                 categories = restaurant?.categories ?: emptyList(),
                                 contactInfo = restaurant?.contactInfo ?: ContactInfo("", "", "", ""),
                                 ratings = restaurant?.ratings?.toMutableList() ?: mutableListOf(),
