@@ -328,7 +328,7 @@ fun SettingSlider(
                     modifier = Modifier
                         .padding(15.dp)
                         .clickable {
-
+                            navController.navigate(Screens.RolAssign.route)
                         }
                 ) {
                     Icon(

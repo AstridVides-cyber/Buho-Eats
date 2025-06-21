@@ -41,6 +41,7 @@ import com.frontend.buhoeats.ui.components.ProfileImage
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 
 val montserratFontFamily = FontFamily(
@@ -48,7 +49,11 @@ val montserratFontFamily = FontFamily(
 )
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MyAccount(navController: NavController, user: User, onBack: () -> Unit = {}) {
+fun EditAccountScreen(navController: NavController,
+                      user: User
+                      , onBack: () -> Unit = {},
+                      userSessionViewModel: UserSessionViewModel
+) {
 
     var name by remember { mutableStateOf(user.name) }
     var lastname by remember { mutableStateOf(user.lastName) }
@@ -207,49 +212,57 @@ fun MyAccount(navController: NavController, user: User, onBack: () -> Unit = {})
 
                 Button(
                     onClick = {
-                    triedToSubmit = true
-                    var hasError = false
+                        triedToSubmit = true
+                        var hasError = false
 
-                    if (name.isBlank()) {
-                        nameError = "El nombre no debe estar vacío"
-                        hasError = true
-                    } else if (!ValidatorUtils.isOnlyLetters(name)) {
-                        nameError = "El nombre solo debe contener letras"
-                        hasError = true
-                    }
+                        if (name.isBlank()) {
+                            nameError = "El nombre no debe estar vacío"
+                            hasError = true
+                        } else if (!ValidatorUtils.isOnlyLetters(name)) {
+                            nameError = "El nombre solo debe contener letras"
+                            hasError = true
+                        }
 
-                    if (lastname.isBlank()) {
-                        lastnameError = "El apellido no debe estar vacío"
-                        hasError = true
-                    } else if (!ValidatorUtils.isOnlyLetters(lastname)) {
-                        lastnameError = "El apellido solo debe contener letras"
-                        hasError = true
-                    }
+                        if (lastname.isBlank()) {
+                            lastnameError = "El apellido no debe estar vacío"
+                            hasError = true
+                        } else if (!ValidatorUtils.isOnlyLetters(lastname)) {
+                            lastnameError = "El apellido solo debe contener letras"
+                            hasError = true
+                        }
 
-                    if (email.isBlank()) {
-                        emailError = "El correo no debe estar vacío"
-                        hasError = true
-                    } else if (!ValidatorUtils.isValidEmail(email)) {
-                        emailError = "Correo inválido"
-                        hasError = true
-                    }
+                        if (email.isBlank()) {
+                            emailError = "El correo no debe estar vacío"
+                            hasError = true
+                        } else if (!ValidatorUtils.isValidEmail(email)) {
+                            emailError = "Correo inválido"
+                            hasError = true
+                        }
 
-                    if (password.isBlank()) {
-                        passwordError = "La contraseña no debe estar vacía"
-                        hasError = true
-                    }
+                        if (password.isBlank()) {
+                            passwordError = "La contraseña no debe estar vacía"
+                            hasError = true
+                        }
 
-                    if (confirmPassword.isBlank()) {
-                        confirmPasswordError = "Debe confirmar la contraseña"
-                        hasError = true
-                    } else if (password != confirmPassword) {
-                        confirmPasswordError = "Las contraseñas no coinciden"
-                        hasError = true
-                    }
+                        if (confirmPassword.isBlank()) {
+                            confirmPasswordError = "Debe confirmar la contraseña"
+                            hasError = true
+                        } else if (password != confirmPassword) {
+                            confirmPasswordError = "Las contraseñas no coinciden"
+                            hasError = true
+                        }
 
-                    if (!hasError) {
-                        navController.popBackStack()
-                    }
+                        if (!hasError) {
+                            val updatedUser = user.copy(
+                                name = name,
+                                lastName = lastname,
+                                email = email,
+                                password = password
+                            )
+
+                            userSessionViewModel.updateCurrentUser(updatedUser)
+                            navController.popBackStack()
+                        }
                     },
                     modifier = Modifier
                         .width(150.dp)

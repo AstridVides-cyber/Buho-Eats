@@ -25,9 +25,19 @@ class UserSessionViewModel : ViewModel() {
     fun updateCurrentUser(user: User) {
         _currentUser.value = user
     }
+    fun assignRoleToUser(email: String, newRole: String): Boolean {
+        val userIndex = DummyData.getUsers().indexOfFirst { it.email.equals(email, ignoreCase = true) }
 
-    fun getUserById(id: Int): User? {
-        return DummyData.getUsers().find { it.id == id }
+        if (userIndex != -1) {
+            val userList = DummyData.getUsers().toMutableList()
+            val user = userList[userIndex]
+            val updatedUser = user.copy(rol = newRole)
+            userList[userIndex] = updatedUser
+
+            println("Usuario actualizado: ${updatedUser.email} -> ${updatedUser.rol}")
+            return true
+        }
+        return false
     }
 
 

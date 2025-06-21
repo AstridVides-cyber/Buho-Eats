@@ -1,6 +1,9 @@
 package com.frontend.buhoeats.ui.screens
 
+import android.os.Build
+import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -24,11 +28,18 @@ import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
+import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RolAssign(navController: NavController) {
+fun RolAssign(
+    navController: NavController,
+    userSessionViewModel: UserSessionViewModel
+) {
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
     var showMenu by remember { mutableStateOf(false) }
@@ -127,16 +138,12 @@ fun RolAssign(navController: NavController) {
                 )
 
                 if (emailError.isNotEmpty()) {
-                    Text(
-                        text = emailError,
-                        color = Color.Red,
-                        fontSize = 14.sp,
-                        fontFamily = montserratFontFamily,
-                        modifier = Modifier
-                            .align(Alignment.Start)
-                            .padding(start = 25.dp, top = 4.dp)
+                    ValidationMessage(
+                        message = emailError,
+                        modifier = Modifier.padding(horizontal = 20.dp)
                     )
                 }
+
 
                 Spacer(modifier = Modifier.height(25.dp))
 
@@ -216,16 +223,12 @@ fun RolAssign(navController: NavController) {
                 }
 
                 if (showValidationErrors && selectedRole == null) {
-                    Text(
-                        text = "Seleccione un rol",
-                        color = Color.Red,
-                        fontSize = 14.sp,
-                        modifier = Modifier
-                            .align(Alignment.Start)
-                            .padding(start = 25.dp, top = 4.dp),
-                        fontFamily = montserratFontFamily
+                    ValidationMessage(
+                        message = "Seleccione un rol",
+                        modifier = Modifier.padding(horizontal = 20.dp)
                     )
                 }
+
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -235,28 +238,42 @@ fun RolAssign(navController: NavController) {
                 Button(
                     onClick = {
                         showValidationErrors = true
-                        if (!isEmailValid) {
-                            emailError = "Ingrese un correo válido"
-                        } else {
-                            emailError = ""
-                        }
 
+                        emailError = if (!isEmailValid) {
+                            "Ingrese un correo válido"
+                        } else {
+                            ""
+                        }
                         if (isFormValid) {
-                            println("Correo: $email")
-                            println("Rol: ${selectedRole?.label}")
+                            val currentUser by userSessionViewModel.currentUser
+
+                            if (currentUser?.rol != "superadmin") {
+                                emailError = "Solo los Super Administradores pueden asignar roles"
+                                return@Button
+                            }
+
+                            val success = userSessionViewModel.assignRoleToUser(
+                                email.trim(),
+                                selectedRole?.label ?: ""
+                            )
+
+                            if (success) {
+                                Toast.makeText(context, "Rol asignado exitosamente", Toast.LENGTH_SHORT).show()
+                                email = ""
+                                selectedRole = null
+                                showValidationErrors = false
+                            } else {
+                                emailError = "No se encontró ningún usuario con ese correo"
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF06BB0C),
-                        contentColor = Color.White,
-                        disabledContainerColor = Color.Gray,
-                        disabledContentColor = Color.White
+                        contentColor = Color.White
                     ),
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(55.dp)
-                        .padding(horizontal = 20.dp),
-                    shape = RoundedCornerShape(16.dp)
+                    modifier = Modifier.size(width = 220.dp, height = 50.dp),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Confirmar", fontFamily = montserratFontFamily, fontSize = 18.sp)
                 }

@@ -24,7 +24,7 @@ import com.frontend.buhoeats.ui.screens.Login
 import com.frontend.buhoeats.ui.screens.ProfileScreen
 import com.frontend.buhoeats.ui.screens.RestaurantScreen
 import com.frontend.buhoeats.ui.screens.SignUp
-import com.frontend.buhoeats.ui.screens.MyAccount
+import com.frontend.buhoeats.ui.screens.EditAccountScreen
 import com.frontend.buhoeats.ui.screens.MapScreen
 import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
@@ -47,19 +47,20 @@ fun AppNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Profile.route) {
             ProfileScreen(
-                onNavigateToAccount = { navController.navigate(Screens.MyAccount.route) },
+                onNavigateToAccount = { navController.navigate(Screens.EditAccount.route) },
                 onBack = { navController.popBackStack() },
                 navController = navController,
                 userSessionViewModel = userSessionViewModel
             )
         }
 
-        composable(Screens.MyAccount.route) {
+        composable(Screens.EditAccount.route) {
             currentUser?.let {
-                MyAccount(
+                EditAccountScreen(
                     navController = navController,
                     user = it,
-                    onBack = { navController.popBackStack() })
+                    onBack = { navController.popBackStack() },
+                    userSessionViewModel = userSessionViewModel)
             }
         }
 
@@ -279,10 +280,10 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
-
         composable (Screens.RolAssign.route){
             RolAssign(
-                navController = navController
+                navController = navController,
+                userSessionViewModel = userSessionViewModel
             )
         }
 
