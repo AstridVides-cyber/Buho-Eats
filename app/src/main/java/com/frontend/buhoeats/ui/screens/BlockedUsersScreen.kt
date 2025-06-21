@@ -34,13 +34,14 @@ import com.frontend.buhoeats.models.ContactInfo
 import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.User
+import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
 
 
 @Composable
 fun BlockedUsersScreen(
     navController: NavController,
     userSessionViewModel: UserSessionViewModel,
-    restaurantViewModel: RestaurantViewModel,
+    blockeUsersViewModel: BlockedUsersViewModel,
     restaurant: Restaurant
 ) {
     val currentUser = userSessionViewModel.currentUser.value
@@ -48,11 +49,11 @@ fun BlockedUsersScreen(
 
     LaunchedEffect(restaurant) {
         if (isAdminOfThisRestaurant) {
-            restaurantViewModel.loadBlockedUsers(restaurant)
+            blockeUsersViewModel.loadBlockedUsers(restaurant)
         }
     }
 
-    val blockedUsers = restaurantViewModel.blockedUsers
+    val blockedUsers = blockeUsersViewModel.blockedUsers
 
     Scaffold(
         topBar = {
@@ -107,7 +108,7 @@ fun BlockedUsersScreen(
                                 UserRowOptions(
                                     user = user,
                                     onConfirmAction = {
-                                        restaurantViewModel.unblockUser(user)
+                                        blockeUsersViewModel.unblockUser(user)
                                     }
                                 )
                             }

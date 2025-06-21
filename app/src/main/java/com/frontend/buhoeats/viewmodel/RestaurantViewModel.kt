@@ -9,14 +9,46 @@ import com.frontend.buhoeats.models.User
 
 class RestaurantViewModel : ViewModel() {
 
+    private val _restaurantList = mutableStateListOf<Restaurant>()
+    val restaurantList: List<Restaurant> get() = _restaurantList
+
+    init {
+        loadRestaurants()
+    }
+
+    fun loadRestaurants() {
+        _restaurantList.clear()
+        _restaurantList.addAll(DummyData.getRestaurants())
+    }
+
+    fun deleteRestaurant(restaurantId: Int) {
+        DummyData.deleteRestaurant(restaurantId)
+        _restaurantList.removeIf { it.id == restaurantId }
+    }
+
     fun addRestaurant(restaurant: Restaurant) {
         DummyData.addRestaurant(restaurant)
+        _restaurantList.add(restaurant)
     }
 
-    fun updateRestaurant(updated: Restaurant) {
-        DummyData.updateRestaurant(updated)
+    fun updateRestaurant(updatedRestaurant: Restaurant) {
+        DummyData.updateRestaurant(updatedRestaurant)
+        val index = _restaurantList.indexOfFirst { it.id == updatedRestaurant.id }
+        if (index != -1) {
+            _restaurantList[index] = updatedRestaurant
+        }
     }
 
+    fun getNextRestaurantId(): Int {
+        return DummyData.getNextRestaurantId()
+    }
+
+    fun getUserEmailById(userId: Int): String {
+        return DummyData.getUserEmailById(userId)
+    }
+}
+
+class BlockedUsersViewModel : ViewModel() {
     private val _blockedUsers = mutableStateListOf<User>()
     val blockedUsers: List<User> get() = _blockedUsers
 

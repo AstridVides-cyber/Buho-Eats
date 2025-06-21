@@ -8,7 +8,7 @@ import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Rating
 
-object DummyData {
+object  DummyData {
 
          private val users = listOf(
         User(
@@ -58,7 +58,17 @@ object DummyData {
             password = "mauri123",
             rol = "usuario",
             favoritos = mutableListOf(1)
-        )
+        ),
+             User(
+                 id = 6,
+                 name = "Dani",
+                 lastName = "Apellidoxd",
+                 imageProfile = "",
+                 email = "dani@hotmail.com",
+                 password = "dani123",
+                 rol = "usuario",
+                 favoritos = mutableListOf(2)
+             )
     )
 
     fun getUsers(): List<User> {
@@ -209,5 +219,9 @@ object DummyData {
     fun getNextRestaurantId(): Int {
         return (restaurants.maxOfOrNull { it.id } ?: 0) + 1
     }
+    fun deleteRestaurant(restaurantId: Int) {
+        restaurants.removeIf { it.id == restaurantId }
+    }
+
 
 }

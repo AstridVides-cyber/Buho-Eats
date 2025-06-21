@@ -29,6 +29,7 @@ import com.frontend.buhoeats.ui.screens.MapScreen
 import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
 import com.frontend.buhoeats.ui.screens.StatisticsScreen
+import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
 import com.frontend.buhoeats.viewmodel.PromoViewModel
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
@@ -40,6 +41,7 @@ fun AppNavHost(navController: NavHostController) {
     val currentUser = userSessionViewModel.currentUser.value
     val restaurantViewModel: RestaurantViewModel = viewModel()
     val promoViewModel: PromoViewModel = viewModel()
+    val blockedUsersViewModel: BlockedUsersViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Profile.route) {
@@ -76,7 +78,8 @@ fun AppNavHost(navController: NavHostController) {
                 userSessionViewModel = userSessionViewModel,
                 onRestaurantClick = { id ->
                     navController.navigate(Screens.Restaurant.createRoute(id))
-                }
+                },
+                restaurantViewModel = restaurantViewModel
             )
         }
 
@@ -91,7 +94,8 @@ fun AppNavHost(navController: NavHostController) {
                 RestaurantScreen(
                     navController = navController,
                     restaurant = restaurant,
-                    userSessionViewModel = userSessionViewModel
+                    userSessionViewModel = userSessionViewModel,
+                    restaurantViewModel = restaurantViewModel
                 )
             }
         }
@@ -146,7 +150,7 @@ fun AppNavHost(navController: NavHostController) {
                 BlockedUsersScreen(
                     navController = navController,
                     userSessionViewModel = userSessionViewModel,
-                    restaurantViewModel = restaurantViewModel,
+                    blockeUsersViewModel = blockedUsersViewModel,
                     restaurant = restaurant
                 )
             }
@@ -183,8 +187,7 @@ fun AppNavHost(navController: NavHostController) {
                         navController = navController,
                         restaurant = restaurant,
                         onBack = { navController.popBackStack() },
-                        restaurantViewModel = restaurantViewModel
-                    )
+                        blockedUsersViewModel = blockedUsersViewModel)
                 }
             }
         }

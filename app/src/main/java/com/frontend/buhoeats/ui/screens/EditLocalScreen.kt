@@ -67,7 +67,7 @@ fun EditLocalScreen(
 ) {
     var name by remember { mutableStateOf(restaurant?.name ?: "") }
     var description by remember { mutableStateOf(restaurant?.description ?: "") }
-    var adminEmail by remember { mutableStateOf(restaurant?.admin?.let { DummyData.getUserEmailById(it) } ?: "") }
+    var adminEmail by remember { mutableStateOf(restaurant?.admin?.let { restaurantViewModel.getUserEmailById(it) } ?: "") }
 
 
     var nameError by remember { mutableStateOf(false) }
@@ -228,7 +228,7 @@ fun EditLocalScreen(
 
                         if (adminUser != null) {
                             val updatedRestaurant = Restaurant(
-                                id = restaurant?.id ?: DummyData.getNextRestaurantId(),
+                                id = restaurant?.id ?: restaurantViewModel.getNextRestaurantId(),
                                 name = name,
                                 description = description,
                                 imageUrl = selectedImageUri?.toString()
