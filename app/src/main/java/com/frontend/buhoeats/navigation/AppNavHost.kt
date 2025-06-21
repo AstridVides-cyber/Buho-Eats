@@ -4,7 +4,6 @@ import Search
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -16,6 +15,7 @@ import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.ui.screens.BlockedUsersScreen
 import com.frontend.buhoeats.ui.screens.EditInfo
 import com.frontend.buhoeats.ui.screens.EditImageScreen
+import com.frontend.buhoeats.ui.screens.EditLocalScreen
 import com.frontend.buhoeats.ui.screens.EditMenuScreen
 import com.frontend.buhoeats.ui.screens.EditRestaurantScreen
 import com.frontend.buhoeats.ui.screens.FavoriteScreen
@@ -23,7 +23,6 @@ import com.frontend.buhoeats.ui.screens.HomeScreen
 import com.frontend.buhoeats.ui.screens.Login
 import com.frontend.buhoeats.ui.screens.ProfileScreen
 import com.frontend.buhoeats.ui.screens.RestaurantScreen
-import com.frontend.buhoeats.ui.screens.SettingSlider
 import com.frontend.buhoeats.ui.screens.SignUp
 import com.frontend.buhoeats.ui.screens.MyAccount
 import com.frontend.buhoeats.ui.screens.MapScreen
@@ -31,8 +30,7 @@ import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
 import com.frontend.buhoeats.ui.screens.RolAssign
 import com.frontend.buhoeats.ui.screens.StatisticsScreen
-import com.frontend.buhoeats.viewmodel.FavoritesViewModel
-import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
+import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
 import com.frontend.buhoeats.viewmodel.PromoViewModel
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
@@ -44,6 +42,7 @@ fun AppNavHost(navController: NavHostController) {
     val currentUser = userSessionViewModel.currentUser.value
     val restaurantViewModel: RestaurantViewModel = viewModel()
     val promoViewModel: PromoViewModel = viewModel()
+    val blockedUsersViewModel: BlockedUsersViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screens.Login.route) {
         composable(Screens.Profile.route) {
@@ -80,7 +79,8 @@ fun AppNavHost(navController: NavHostController) {
                 userSessionViewModel = userSessionViewModel,
                 onRestaurantClick = { id ->
                     navController.navigate(Screens.Restaurant.createRoute(id))
-                }
+                },
+                restaurantViewModel = restaurantViewModel
             )
         }
 
@@ -95,7 +95,8 @@ fun AppNavHost(navController: NavHostController) {
                 RestaurantScreen(
                     navController = navController,
                     restaurant = restaurant,
-                    userSessionViewModel = userSessionViewModel
+                    userSessionViewModel = userSessionViewModel,
+                    restaurantViewModel = restaurantViewModel
                 )
             }
         }
@@ -150,7 +151,7 @@ fun AppNavHost(navController: NavHostController) {
                 BlockedUsersScreen(
                     navController = navController,
                     userSessionViewModel = userSessionViewModel,
-                    restaurantViewModel = restaurantViewModel,
+                    blockeUsersViewModel = blockedUsersViewModel,
                     restaurant = restaurant
                 )
             }
@@ -187,8 +188,7 @@ fun AppNavHost(navController: NavHostController) {
                         navController = navController,
                         restaurant = restaurant,
                         onBack = { navController.popBackStack() },
-                        restaurantViewModel = restaurantViewModel
-                    )
+                        blockedUsersViewModel = blockedUsersViewModel)
                 }
             }
         }
@@ -259,6 +259,26 @@ fun AppNavHost(navController: NavHostController) {
                 userSessionViewModel = userSessionViewModel
             )
         }
+        composable(
+            route = Screens.EditLocal.route,
+            arguments = listOf(
+                navArgument("restaurantId") { type = NavType.IntType },
+                navArgument("isNew") { type = NavType.BoolType; defaultValue = false }
+            )
+        ) { backStackEntry ->
+            val restaurantId = backStackEntry.arguments?.getInt("restaurantId") ?: -1
+            val isNew = backStackEntry.arguments?.getBoolean("isNew") ?: false
+            val restaurant = DummyData.getRestaurants().find { it.id == restaurantId }
+
+            EditLocalScreen(
+                isNewLocal = isNew,
+                restaurant = restaurant,
+                navController = navController,
+                onBackClick = { navController.popBackStack() },
+                restaurantViewModel = restaurantViewModel
+            )
+        }
+
 
         composable (Screens.RolAssign.route){
             RolAssign(

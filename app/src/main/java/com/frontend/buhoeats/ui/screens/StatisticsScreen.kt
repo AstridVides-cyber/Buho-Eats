@@ -39,6 +39,7 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
+import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 
 @Composable
@@ -46,7 +47,7 @@ fun StatisticsScreen(
     navController: NavController,
     restaurant: Restaurant,
     onBack: () -> Unit,
-    restaurantViewModel: RestaurantViewModel
+    blockedUsersViewModel: BlockedUsersViewModel
 ) {
     var currentRestaurant by remember { mutableStateOf(restaurant) }
     var showDialog by remember { mutableStateOf(false) }
@@ -80,7 +81,11 @@ fun StatisticsScreen(
                     .fillMaxSize()
                     .padding(bottom = 16.dp)
             ) {
-                items(currentRestaurant.comments) { comment ->
+                val nonBlockedComments = currentRestaurant.comments.filter { comment ->
+                    comment.userId !in currentRestaurant.blockedUsers
+                }
+
+                items(nonBlockedComments) { comment ->
                     val user = DummyData.getUsers().find { it.id == comment.userId }
                     val rating = currentRestaurant.ratings.find { it.userId == comment.userId }
 
@@ -144,13 +149,13 @@ fun StatisticsScreen(
                 ConfirmationDialog(
                     message = "¿Estás seguro que deseas bloquear a este usuario?",
                     onConfirm = {
-                        restaurantViewModel.blockUser(
+                        blockedUsersViewModel.blockUser(
                             user = userToBlock!!,
                             restaurant = currentRestaurant,
                             onUpdate = { updatedRestaurant ->
                                 DummyData.updateRestaurant(updatedRestaurant)
                                 currentRestaurant = updatedRestaurant
-                                restaurantViewModel.loadBlockedUsers(updatedRestaurant)
+                                blockedUsersViewModel.loadBlockedUsers(updatedRestaurant)
                             }
                         )
                         showDialog = false

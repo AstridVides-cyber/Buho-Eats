@@ -40,129 +40,129 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
 
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun PromoInfoScreen(
-    isAdmin: Boolean = false,
-    promo: Promo,
-    restaurantName: String,
-    contactInfo: ContactInfo,
-    navController: NavController,
-    promoViewModel: PromoViewModel = viewModel(),
-    onBackClick: () -> Unit = {}
-) {
-    val esNuevaPromo = promo.name.isBlank() && promo.description.isBlank()
-    var isEditing by remember { mutableStateOf(esNuevaPromo) }
+    @RequiresApi(Build.VERSION_CODES.O)
+    @Composable
+    fun PromoInfoScreen(
+        isAdmin: Boolean = false,
+        promo: Promo,
+        restaurantName: String,
+        contactInfo: ContactInfo,
+        navController: NavController,
+        promoViewModel: PromoViewModel = viewModel(),
+        onBackClick: () -> Unit = {}
+    ) {
+        val esNuevaPromo = promo.name.isBlank() && promo.description.isBlank()
+        var isEditing by remember { mutableStateOf(esNuevaPromo) }
 
-    var name by remember { mutableStateOf(promo.name) }
-    var description by remember { mutableStateOf(promo.description) }
-    var promprice by remember { mutableStateOf(promo.promprice) }
-    var price by remember { mutableStateOf(promo.price) }
-    var reglas by remember { mutableStateOf(promo.reglas ?: "") }
+        var name by remember { mutableStateOf(promo.name) }
+        var description by remember { mutableStateOf(promo.description) }
+        var promprice by remember { mutableStateOf(promo.promprice) }
+        var price by remember { mutableStateOf(promo.price) }
+        var reglas by remember { mutableStateOf(promo.reglas ?: "") }
 
-    var showError by remember { mutableStateOf(false) }
+        var showError by remember { mutableStateOf(false) }
 
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+        var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        selectedImageUri = uri
-    }
-
-
-
-    Scaffold(
-        topBar = {
-            TopBar(
-                showBackIcon = true,
-                onNavClick = onBackClick
-            )
-        },
-        bottomBar = {
-            BottomNavigationBar(navController)
-        },
-        floatingActionButton = {
-            if (isAdmin && !isEditing && !esNuevaPromo) {
-                EditFloatingButton(onClick = { isEditing = true })
-            }
+        val imagePickerLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+            selectedImageUri = uri
         }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
 
-            Column(
+
+
+        Scaffold(
+            topBar = {
+                TopBar(
+                    showBackIcon = true,
+                    onNavClick = onBackClick
+                )
+            },
+            bottomBar = {
+                BottomNavigationBar(navController)
+            },
+            floatingActionButton = {
+                if (isAdmin && !isEditing && !esNuevaPromo) {
+                    EditFloatingButton(onClick = { isEditing = true })
+                }
+            }
+        ) { paddingValues ->
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp)
+                    .padding(paddingValues)
             ) {
-                Text("Promoción", fontSize = 26.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+                Image(
+                    painter = painterResource(id = R.drawable.backgroundlighttheme),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
 
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(restaurantName, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-                Spacer(modifier = Modifier.height(12.dp))
-                Box(
+                Column(
                     modifier = Modifier
-                        .height(200.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .border(2.dp, Color.Gray, RoundedCornerShape(16.dp)),
-                    contentAlignment = Alignment.BottomEnd
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp)
                 ) {
-                    when {
-                        selectedImageUri != null -> {
-                            AsyncImage(
-                                model = selectedImageUri,
-                                contentDescription = "Imagen seleccionada",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
+                    Text("Promoción", fontSize = 26.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(restaurantName, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Box(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .border(2.dp, Color.Gray, RoundedCornerShape(16.dp)),
+                        contentAlignment = Alignment.BottomEnd
+                    ) {
+                        when {
+                            selectedImageUri != null -> {
+                                AsyncImage(
+                                    model = selectedImageUri,
+                                    contentDescription = "Imagen seleccionada",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            promo.imageUrl.isNotBlank() -> {
+                                AsyncImage(
+                                    model = promo.imageUrl,
+                                    contentDescription = "Imagen actual",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            else -> {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(Color.LightGray)
+                                )
+                            }
                         }
-                        promo.imageUrl.isNotBlank() -> {
-                            AsyncImage(
-                                model = promo.imageUrl,
-                                contentDescription = "Imagen actual",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-                        else -> {
-                            Box(
+
+                        if (isEditing) {
+                            IconButton(
+                                onClick = { imagePickerLauncher.launch("image/*") },
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(Color.LightGray)
-                            )
+                                    .offset(x = (-8).dp, y = (-8).dp)
+                                    .size(48.dp)
+                                    .background(Color.White, CircleShape)
+                                    .border(1.dp, Color.Gray, CircleShape)
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.camera),
+                                    contentDescription = "Cambiar imagen"
+                                )
+                            }
                         }
                     }
 
-                    if (isEditing) {
-                        IconButton(
-                            onClick = { imagePickerLauncher.launch("image/*") },
-                            modifier = Modifier
-                                .offset(x = (-8).dp, y = (-8).dp)
-                                .size(48.dp)
-                                .background(Color.White, CircleShape)
-                                .border(1.dp, Color.Gray, CircleShape)
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.camera),
-                                contentDescription = "Cambiar imagen"
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                 if (isEditing) {
                     Text("Titulo:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
@@ -264,6 +264,24 @@ fun PromoInfoScreen(
                         Button(
                             shape = RoundedCornerShape(12.dp),
                             onClick = {
+                                navController.navigate(Screens.Promocion.route)
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFC11D0C),
+                                contentColor = Color.White
+                            ),
+                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
+                            modifier = Modifier
+                                .weight(0.8f)
+                                .height(50.dp)
+                                .padding(end = 10.dp)
+                        ) {
+                            Text("Cancelar", fontSize = 18.sp)
+                        }
+
+                        Button(
+                            shape = RoundedCornerShape(12.dp),
+                            onClick = {
                                 if (name.isBlank() || description.isBlank() || promprice.isBlank() || price.isBlank()) {
                                     showError = true
                                 } else {
@@ -299,28 +317,11 @@ fun PromoInfoScreen(
                             modifier = Modifier
                                 .weight(0.8f)
                                 .height(50.dp)
-                                .padding(end = 10.dp)
+                                .padding(start = 10.dp)
                         ) {
                             Text("Guardar", fontSize = 18.sp)
                         }
 
-                        Button(
-                            shape = RoundedCornerShape(12.dp),
-                            onClick = {
-                                navController.navigate(Screens.Promocion.route)
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFC11D0C),
-                                contentColor = Color.White
-                            ),
-                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
-                            modifier = Modifier
-                                .weight(0.8f)
-                                .height(50.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Text("Cancelar", fontSize = 18.sp)
-                        }
                     }
 
                 }

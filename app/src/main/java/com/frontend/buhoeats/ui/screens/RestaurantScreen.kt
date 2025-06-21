@@ -54,17 +54,18 @@
     import com.frontend.buhoeats.ui.components.EditFloatingButton
     import com.frontend.buhoeats.viewmodel.FavoritesViewModel
     import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
+    import com.frontend.buhoeats.viewmodel.RestaurantViewModel
     import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
     @Composable
     fun RestaurantScreen(
         navController: NavController,
         restaurant: Restaurant,
-        userSessionViewModel: UserSessionViewModel
+        userSessionViewModel: UserSessionViewModel,
+        restaurantViewModel: RestaurantViewModel
     ) {
         val currentUser = userSessionViewModel.currentUser.value
         val isAdminOfThisRestaurant = currentUser?.rol == "admin" && restaurant.admin == currentUser.id
-
         Scaffold(
             topBar = {
                 TopBar(
@@ -102,11 +103,12 @@
                     restaurant = selectedRestaurant,
                     favoritesViewModel = remember {
                         FavoritesViewModel(userSessionViewModel)
-                    }     ,
+                    },
                     currentUser = userSessionViewModel.currentUser.value,
                     onUpdate = { updatedRestaurant ->
                         selectedRestaurant = updatedRestaurant
-                    }
+                    },
+                    restaurantViewModel = restaurantViewModel
                 )
             }
         }
@@ -122,22 +124,24 @@
             )
         ),
         currentUser: User? = null,
-        onUpdate: (Restaurant) -> Unit
+        onUpdate: (Restaurant) -> Unit,
+        restaurantViewModel: RestaurantViewModel
     ) {
         val favoriteIds by favoritesViewModel.favoriteRestaurantIds.collectAsState()
         val isFavorite = favoriteIds.contains(restaurant.id)
         val isAdminOfThisRestaurant = currentUser?.rol == "admin" && restaurant.admin == currentUser.id
-
+        val isAdmin = currentUser?.rol == "admin" && restaurant.admin != currentUser.id
+        val isSuperAdmin = currentUser?.rol == "superadmin"
         val menuList = remember { mutableStateListOf<Dish>().apply { addAll(restaurant.menu) } }
 
         var rating by rememberSaveable { mutableStateOf(0) }
         var comment by remember { mutableStateOf("") }
-        val userAlreadyRated = restaurant.ratings.any { it.userId == currentUser?.id }
+        restaurant.ratings.any { it.userId == currentUser?.id }
         var dishToDelete by remember { mutableStateOf<Dish?>(null) }
         var showDialog by remember { mutableStateOf(false) }
 
         val user = DummyData.getUsers().find { it.id == currentUser?.id }
-        val displayName = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
+        user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
 
         Column(
             modifier = modifier
@@ -157,7 +161,7 @@
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
 
-                if (currentUser?.rol != "admin") {
+                if (currentUser?.rol != "admin" && currentUser?.rol != "superadmin") {
                     IconButton(onClick = {
                         favoritesViewModel.toggleFavorite(restaurant.id)
                     }) {
@@ -215,93 +219,97 @@
             Divider(modifier = Modifier.padding(vertical = 8.dp))
 
             if (!isAdminOfThisRestaurant) {
-                if (!restaurant.blockedUsers.contains(currentUser?.id)) {
-                    val existingRating = restaurant.ratings.find { it.userId == currentUser?.id }
+                if (!isSuperAdmin){
+                    if (!isAdmin) {
+                        if (!restaurant.blockedUsers.contains(currentUser?.id)) {
+                            val existingRating = restaurant.ratings.find { it.userId == currentUser?.id }
 
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        if (existingRating == null) {
-                            Text(
-                                text = "Califica la app",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            RatingBar(rating = rating, onRatingChanged = { rating = it })
-
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-
-                        OutlinedTextField(
-                            value = comment,
-                            onValueChange = { comment = it },
-                            label = { Text("Escribe tu opinión") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-
-                        Button(
-                            onClick = {
-                                val user = DummyData.getUsers().find { it.id == currentUser?.id }
-                                if (user != null && comment.isNotBlank()) {
-                                    val updatedComments = restaurant.comments.toMutableList().apply {
-                                        add(Comment(userId = user.id, comment = comment))
-                                    }
-
-                                    val updatedRatings = restaurant.ratings.toMutableList().apply {
-                                        if (existingRating == null && rating > 0) {
-                                            add(Rating(userId = user.id, rating = rating))
-                                        }
-                                    }
-
-                                    val updatedRestaurant = restaurant.copy(
-                                        comments = updatedComments,
-                                        ratings = updatedRatings
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                if (existingRating == null) {
+                                    Text(
+                                        text = "Califica la app",
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Medium
                                     )
 
-                                    DummyData.updateRestaurant(updatedRestaurant)
-                                    onUpdate(updatedRestaurant)
+                                    Spacer(modifier = Modifier.height(8.dp))
 
+                                    RatingBar(rating = rating, onRatingChanged = { rating = it })
 
-                                    comment = ""
-                                    rating = 0
+                                    Spacer(modifier = Modifier.height(8.dp))
                                 }
-                            },
-                            modifier = Modifier
-                                .align(Alignment.End)
-                                .padding(5.dp)
-                        ) {
-                            Text("Publicar")
-                        }
 
-                        Spacer(modifier = Modifier.size(10.dp))
+                                OutlinedTextField(
+                                    value = comment,
+                                    onValueChange = { comment = it },
+                                    label = { Text("Escribe tu opinión") },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
 
-                        if (existingRating != null) {
+                                Button(
+                                    onClick = {
+                                        val user = DummyData.getUsers().find { it.id == currentUser?.id }
+                                        if (user != null && comment.isNotBlank()) {
+                                            val updatedComments = restaurant.comments.toMutableList().apply {
+                                                add(Comment(userId = user.id, comment = comment))
+                                            }
+
+                                            val updatedRatings = restaurant.ratings.toMutableList().apply {
+                                                if (existingRating == null && rating > 0) {
+                                                    add(Rating(userId = user.id, rating = rating))
+                                                }
+                                            }
+
+                                            val updatedRestaurant = restaurant.copy(
+                                                comments = updatedComments,
+                                                ratings = updatedRatings
+                                            )
+
+                                            restaurantViewModel.updateRestaurant(updatedRestaurant)
+                                            onUpdate(updatedRestaurant)
+
+
+                                            comment = ""
+                                            rating = 0
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .align(Alignment.End)
+                                        .padding(5.dp)
+                                ) {
+                                    Text("Publicar")
+                                }
+
+                                Spacer(modifier = Modifier.size(10.dp))
+
+                                if (existingRating != null) {
+                                    Text(
+                                        text = "Ya calificaste este restaurante con ${existingRating.rating} estrellas.",
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 16.sp,
+                                        modifier = Modifier.padding(8.dp)
+                                    )
+                                }
+                            }
+
+
+                        } else {
                             Text(
-                                text = "Ya calificaste este restaurante con ${existingRating.rating} estrellas.",
+                                text = "Has sido bloqueado de este restaurante y no puedes dejar opiniones.",
+                                color = Color.Red,
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(8.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                textAlign = TextAlign.Center
                             )
                         }
+                        Divider(modifier = Modifier.padding(vertical = 8.dp))
                     }
-
-
-                } else {
-                    Text(
-                        text = "Has sido bloqueado de este restaurante y no puedes dejar opiniones.",
-                        color = Color.Red,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        textAlign = TextAlign.Center
-                    )
                 }
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
                 Spacer(modifier = Modifier.size(10.dp))
 
                 Column(

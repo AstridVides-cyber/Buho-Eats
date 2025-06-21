@@ -1,9 +1,12 @@
 package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,12 +20,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
+import com.frontend.buhoeats.ui.components.ConfirmationDialog
+import com.frontend.buhoeats.ui.components.DeleteButton
 import com.frontend.buhoeats.ui.components.DeleteFloatingButton
 import com.frontend.buhoeats.ui.components.EditFloatingButton
 import com.frontend.buhoeats.ui.components.TopBar
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.launch
 
@@ -30,15 +37,24 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onRestaurantClick: (Int) -> Unit,
     navController: NavController,
-    userSessionViewModel: UserSessionViewModel
+    userSessionViewModel: UserSessionViewModel,
+    restaurantViewModel: RestaurantViewModel
 ) {
-    val restaurantList = DummyData.getRestaurants()
+    val restaurantList = restaurantViewModel.restaurantList
     var selectedFilter by remember { mutableStateOf<String?>(null) }
     val currentUser by userSessionViewModel.currentUser
 
     val isAdmin = currentUser?.rol == "admin"
     val isSuperAdmin = currentUser?.rol == "superadmin"
     val myRestaurant = restaurantList.find { it.admin == currentUser?.id }
+    var isEditing by remember { mutableStateOf(false) }
+    var isCreatingNewLocal by remember { mutableStateOf(false) }
+    var isDeleting by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    var restaurantToDelete by remember { mutableStateOf<Restaurant?>(null) }
+
+
+
 
     val filteredRestaurants = if (isAdmin) {
         restaurantList.filter { it.admin != currentUser?.id }
@@ -87,9 +103,13 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         horizontalAlignment = Alignment.End
                     ) {
-                        EditFloatingButton(onClick = { /* Acción de editar */ })
-                        DeleteFloatingButton(onClick = { /* Acción de eliminar */ })
-                    }
+
+                        if (!isDeleting) {
+                            EditFloatingButton(onClick = { isEditing = !isEditing })
+                        }
+                        if (!isEditing) {
+                            DeleteFloatingButton(onClick = { isDeleting = !isDeleting })
+                        }                    }
                 }
             }
 
@@ -105,6 +125,20 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
+                if (showDialog && restaurantToDelete != null) {
+                    ConfirmationDialog(
+                        message = "¿Seguro que deseas eliminar el local?",
+                        onConfirm = {
+                            restaurantViewModel.deleteRestaurant(restaurantToDelete!!.id)
+                            showDialog = false
+                            isDeleting = false
+                        },
+                        onDismiss = {
+                            showDialog = false
+                            restaurantToDelete = null
+                        }
+                    )
+                }
 
                 LazyColumn(
                     modifier = Modifier
@@ -141,10 +175,36 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-
+                    if (isEditing) {
+                        item {
+                            AddRestaurantCard(onClick = {
+                                isCreatingNewLocal = true
+                                navController.navigate(Screens.EditLocal.createRoute(-1, true))
+                            })
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
+                    }
                     items(filteredRestaurants) { restaurant ->
-                        RestaurantCard(restaurant = restaurant) {
-                            onRestaurantClick(restaurant.id)
+                        Box {
+                            RestaurantCard(restaurant = restaurant) {
+                                if (isEditing) {
+                                    isCreatingNewLocal = false
+                                    navController.navigate(Screens.EditLocal.createRoute(restaurant.id, false))
+                                } else if (!isDeleting) {
+                                    onRestaurantClick(restaurant.id)
+                                }
+                            }
+                            if (isDeleting) {
+                                DeleteButton(
+                                    onClick = {
+                                        restaurantToDelete = restaurant
+                                        showDialog = true
+                                    },
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .align(Alignment.TopEnd)
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(10.dp))
                     }
@@ -214,3 +274,26 @@ fun FilterSection(
         }
     }
 }
+@Composable
+fun AddRestaurantCard(onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF7C83C5))
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.AddCircleOutline,
+                contentDescription = "Agregar nuevo restaurante",
+                tint = Color.White,
+                modifier = Modifier.size(60.dp)
+            )
+        }
+    }
+}
+

@@ -8,7 +8,7 @@ import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Rating
 
-object DummyData {
+object  DummyData {
 
          private val users = listOf(
         User(
@@ -58,7 +58,17 @@ object DummyData {
             password = "mauri123",
             rol = "usuario",
             favoritos = mutableListOf(1)
-        )
+        ),
+             User(
+                 id = 6,
+                 name = "Dani",
+                 lastName = "Apellidoxd",
+                 imageProfile = "",
+                 email = "dani@hotmail.com",
+                 password = "dani123",
+                 rol = "usuario",
+                 favoritos = mutableListOf(2)
+             )
     )
 
     fun getUsers(): List<User> {
@@ -91,14 +101,14 @@ object DummyData {
                     id = 1,
                     name = "Pupusas revueltas",
                     description = "Pupusas con chicharrón, frijoles y queso.",
-                    imageUrl = "https://images.unsplash.com/photo-1625948137139-d6672c58db6e",
+                    imageUrl = "https://images.unsplash.com/photo-1617902271850-21d560795d60",
                     price = "$5.00"
                 ),
                 Dish(
                     id = 2,
                     name = "Sopa de gallina india",
                     description = "Sopa tradicional con vegetales frescos.",
-                    imageUrl = "https://images.unsplash.com/photo-1605478371437-045aa03f2dc1",
+                    imageUrl = "https://images.unsplash.com/photo-1665594051407-7385d281ad76",
                     price = "$5.00"
                 )
             ),
@@ -107,19 +117,19 @@ object DummyData {
                         id = 1,
                         name = "Pupusas de loroco",
                         description = "Pupusas con chicharrón, frijoles y queso.",
-                        imageUrl = "https://images.unsplash.com/photo-1625948137139-d6672c58db6e",
+                        imageUrl = "https://images.unsplash.com/photo-1617902271850-21d560795d60",
                         price = "$5.00",
                         promprice = "$3.00",
-                        reglas = "Solo de lunes a viernes desde las 12 pm"
+                        reglas = "Solo de lunes a viernes desde las 7 am"
                     ),
                     Promo(
                         id = 2,
                         name = "Sopa de gallina india",
                         description = "Sopa tradicional con vegetales frescos.",
-                        imageUrl = "https://www.honduras.com/wp-content/uploads/2020/09/receta-sopa-de-gallina.jpg",
+                        imageUrl = "https://images.unsplash.com/photo-1665594051407-7385d281ad76",
                         price = "$5.00",
                         promprice = "$3.00",
-                        reglas = "Solo de lunes a viernes desde las 12 pm"
+                        reglas = "Solo de lunes a viernes desde la 1 pm"
                 )
             ),
             latitud = 13.6929,
@@ -131,7 +141,7 @@ object DummyData {
             id = 2,
             name = "La Esquinita Gourmet",
             description = "Fusión de sabores latinos e internacionales.",
-            imageUrl = "https://images.unsplash.com/photo-1600891964190-46e1c7b4cfaf",
+            imageUrl = "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17",
             categories = listOf("Gourmet", "Fusión", "Internacional"),
             contactInfo = ContactInfo(
                 email = "info@laesquinita.com",
@@ -152,14 +162,14 @@ object DummyData {
                     id = 3,
                     name = "Ceviche mixto",
                     description = "Pescado, camarones y calamares en jugo de limón.",
-                    imageUrl = "https://images.unsplash.com/photo-1613145998174-17f89e068e2e",
+                    imageUrl = "https://images.unsplash.com/photo-1626663011519-b42e5ee10056",
                     price = "$5.00"
                 ),
                 Dish(
                     id = 4,
                     name = "Tacos al pastor",
                     description = "Tacos con carne de cerdo marinada al estilo mexicano.",
-                    imageUrl = "https://images.unsplash.com/photo-1601050690094-0cfb389d7e18",
+                    imageUrl = "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85",
                     price = "$5.00"
                 )
             ),
@@ -168,17 +178,17 @@ object DummyData {
                         id = 1,
                         name = "Ceviche mixto",
                         description = "Pescado, camarones y calamares en jugo de limón.",
-                        imageUrl = "https://images.unsplash.com/photo-1613145998174-17f89e068e2e",
+                        imageUrl = "https://images.unsplash.com/photo-1626663011519-b42e5ee10056",
                         price = "$5.00",
                         promprice = "$3.00",
-                        reglas = "Solo de lunes a viernes desde las 12 pm"
+                        reglas = "Solo de lunes a viernes desde las 4 pm"
 
                     ),
                     Promo(
                         id = 2,
                         name = "Tacos al pastor",
                         description = "Tacos con carne de cerdo marinada al estilo mexicano.",
-                        imageUrl = "https://images.unsplash.com/photo-1601050690094-0cfb389d7e18",
+                        imageUrl = "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85",
                         price = "$5.00",
                         promprice = "$3.00",
                         reglas = "Solo de lunes a viernes desde las 12 pm"
@@ -200,4 +210,18 @@ object DummyData {
             restaurants[index] = updatedRestaurant
         }
     }
+    fun getUserEmailById(userId: Int): String {
+        return getUsers().find { it.id == userId }?.email ?: ""
+    }
+    fun addRestaurant(restaurant: Restaurant) {
+        restaurants.add(restaurant)
+    }
+    fun getNextRestaurantId(): Int {
+        return (restaurants.maxOfOrNull { it.id } ?: 0) + 1
+    }
+    fun deleteRestaurant(restaurantId: Int) {
+        restaurants.removeIf { it.id == restaurantId }
+    }
+
+
 }

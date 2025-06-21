@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.GTranslate
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.SupervisorAccount
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -318,9 +320,49 @@ fun SettingSlider(
                     )
                 }
             }
-        }
+
+            if(currentUser.rol == "superadmin")
+            {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .clickable {
+
+                        }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.SupervisorAccount,
+                        contentDescription = "Roles de usuarios",
+                        tint = Color.Black,
+                        modifier = Modifier.size(45.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Asignar roles a un usuario",
+                            fontSize = 25.sp,
+                            color = Color.Black,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.ArrowBackIosNew,
+                        contentDescription = "Roles de usuarios",
+                        modifier = Modifier
+                            .graphicsLayer { rotationY = 180f }
+                            .padding(10.dp)
+                            .size(30.dp)
+                    )
+                }
+            }
+
         }
     }
+}
 
 
 
