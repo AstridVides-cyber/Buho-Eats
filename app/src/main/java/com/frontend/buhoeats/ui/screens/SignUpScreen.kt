@@ -118,7 +118,7 @@ fun SignUp(navController: NavController,
                 label = "Nombre",
                 value = name,
                 onValueChange = {
-                    name = it
+                    name = ValidatorUtils.capitalizeWords(it)
                     if (nameError.isNotEmpty()) nameError = ""
                 },
                 placeholder = "Ingrese su nombre",
@@ -133,7 +133,7 @@ fun SignUp(navController: NavController,
                 label = "Apellido",
                 value = lastname,
                 onValueChange = {
-                    lastname = it
+                    lastname = ValidatorUtils.capitalizeWords(it)
                     if (lastnameError.isNotEmpty()) lastnameError = ""
                 },
                 placeholder = "Ingrese su apellido",
@@ -232,7 +232,10 @@ fun SignUp(navController: NavController,
                         confirmPasswordError = "Las contraseñas no coinciden"
                         hasError = true
                     }
-
+                    if (!ValidatorUtils.isSecurePassword(password)) {
+                        passwordError = "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo"
+                        hasError = true
+                    }
                     if (!hasError) {
                         val newUser = User(
                             id = Random.nextInt(),
