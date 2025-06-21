@@ -68,7 +68,16 @@ object  DummyData {
                  password = "dani123",
                  rol = "usuario",
                  favoritos = mutableListOf(2)
-             )
+             ),
+             User(
+                 id = 7,
+                 name = "spike",
+                 lastName = "maltez",
+                 imageProfile = "",
+                 email = "spike@gmail.com",
+                 password = "spike123",
+                 rol = "admin"
+             ),
     )
 
     fun getUsers(): List<User> {

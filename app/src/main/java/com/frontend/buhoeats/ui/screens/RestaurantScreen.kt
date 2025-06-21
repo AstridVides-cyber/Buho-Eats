@@ -239,14 +239,18 @@
 
                                     RatingBar(rating = rating, onRatingChanged = { rating = it })
 
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(10.dp))
                                 }
-
+                                Text("Escribe tu opinión:", fontSize = 16.sp, color = Color.Black, modifier = Modifier.padding(bottom = 10.dp))
                                 OutlinedTextField(
                                     value = comment,
                                     onValueChange = { comment = it },
-                                    label = { Text("Escribe tu opinión") },
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
+                                        focusedContainerColor = Color.White.copy(alpha = 0.95f)
+                                    )
                                 )
 
                                 Button(
