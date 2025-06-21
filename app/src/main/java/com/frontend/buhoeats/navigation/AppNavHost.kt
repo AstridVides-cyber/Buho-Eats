@@ -28,6 +28,7 @@ import com.frontend.buhoeats.ui.screens.MyAccount
 import com.frontend.buhoeats.ui.screens.MapScreen
 import com.frontend.buhoeats.ui.screens.PromoScreen
 import com.frontend.buhoeats.ui.screens.PromoInfoScreen
+import com.frontend.buhoeats.ui.screens.RolAssign
 import com.frontend.buhoeats.ui.screens.StatisticsScreen
 import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
 import com.frontend.buhoeats.viewmodel.PromoViewModel
@@ -278,6 +279,12 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
+
+        composable (Screens.RolAssign.route){
+            RolAssign(
+                navController = navController
+            )
+        }
 
     }
 }
