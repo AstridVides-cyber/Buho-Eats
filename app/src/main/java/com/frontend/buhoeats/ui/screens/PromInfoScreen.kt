@@ -264,6 +264,24 @@ import androidx.compose.foundation.shape.CircleShape
                         Button(
                             shape = RoundedCornerShape(12.dp),
                             onClick = {
+                                navController.navigate(Screens.Promocion.route)
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFC11D0C),
+                                contentColor = Color.White
+                            ),
+                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
+                            modifier = Modifier
+                                .weight(0.8f)
+                                .height(50.dp)
+                                .padding(end = 10.dp)
+                        ) {
+                            Text("Cancelar", fontSize = 18.sp)
+                        }
+
+                        Button(
+                            shape = RoundedCornerShape(12.dp),
+                            onClick = {
                                 if (name.isBlank() || description.isBlank() || promprice.isBlank() || price.isBlank()) {
                                     showError = true
                                 } else {
@@ -299,28 +317,11 @@ import androidx.compose.foundation.shape.CircleShape
                             modifier = Modifier
                                 .weight(0.8f)
                                 .height(50.dp)
-                                .padding(end = 10.dp)
+                                .padding(start = 10.dp)
                         ) {
                             Text("Guardar", fontSize = 18.sp)
                         }
 
-                        Button(
-                            shape = RoundedCornerShape(12.dp),
-                            onClick = {
-                                navController.navigate(Screens.Promocion.route)
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFC11D0C),
-                                contentColor = Color.White
-                            ),
-                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
-                            modifier = Modifier
-                                .weight(0.8f)
-                                .height(50.dp)
-                                .padding(start = 10.dp)
-                        ) {
-                            Text("Cancelar", fontSize = 18.sp)
-                        }
                     }
 
                 }

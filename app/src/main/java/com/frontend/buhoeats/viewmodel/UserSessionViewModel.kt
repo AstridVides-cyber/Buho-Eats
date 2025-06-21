@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModelProvider
+import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +25,11 @@ class UserSessionViewModel : ViewModel() {
     fun updateCurrentUser(user: User) {
         _currentUser.value = user
     }
+
+    fun getUserById(id: Int): User? {
+        return DummyData.getUsers().find { it.id == id }
+    }
+
 
 }
 
