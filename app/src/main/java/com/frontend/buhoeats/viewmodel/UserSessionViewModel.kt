@@ -39,6 +39,18 @@ class UserSessionViewModel : ViewModel() {
         }
         return false
     }
+    fun registerUser(newUser: User): Boolean {
+        val users = DummyData.getUsers().toMutableList()
+
+        if (users.any { it.email.equals(newUser.email, ignoreCase = true) }) {
+            return false
+        }
+
+        users.add(newUser)
+        DummyData.setUsers(users)
+        return true
+    }
+
 
 
 }

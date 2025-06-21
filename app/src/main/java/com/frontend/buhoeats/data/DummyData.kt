@@ -10,7 +10,7 @@ import com.frontend.buhoeats.models.Rating
 
 object  DummyData {
 
-         private val users = listOf(
+         private var users = listOf(
         User(
             id = 1,
             name = "Astrid",
@@ -221,6 +221,9 @@ object  DummyData {
     }
     fun deleteRestaurant(restaurantId: Int) {
         restaurants.removeIf { it.id == restaurantId }
+    }
+    fun setUsers(updatedUsers: List<User>) {
+        users = updatedUsers.toMutableList()
     }
 
 

@@ -1,6 +1,7 @@
 package com.frontend.buhoeats.ui.screens
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,17 +38,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.CustomTextField
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import kotlin.random.Random
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SignUp(navController: NavController) {
+fun SignUp(navController: NavController,
+           userSessionViewModel: UserSessionViewModel
+) {
 
     var name by remember { mutableStateOf("") }
     var lastname by remember { mutableStateOf("") }
@@ -61,6 +68,7 @@ fun SignUp(navController: NavController) {
     var emailError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
     var confirmPasswordError by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -226,9 +234,26 @@ fun SignUp(navController: NavController) {
                     }
 
                     if (!hasError) {
-                        // Registrar usuario
-                        navController.navigate(Screens.Login.route)
+                        val newUser = User(
+                            id = Random.nextInt(),
+                            name = name,
+                            lastName = lastname,
+                            email = email,
+                            password = password,
+                            imageProfile = "",
+                            rol = "usuario"
+                        )
+
+                        val success = userSessionViewModel.registerUser(newUser)
+
+                        if (success) {
+                            Toast.makeText(context, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show()
+                            navController.navigate(Screens.Login.route)
+                        } else {
+                            Toast.makeText(context, "Este correo ya está en uso", Toast.LENGTH_SHORT).show()
+                        }
                     }
+
                 },
                 modifier = Modifier
                     .width(300.dp)
@@ -294,11 +319,4 @@ fun SignUp(navController: NavController) {
 
         }
     }
-}
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun SignUpPreview() {
-    val navController = rememberNavController()
-    SignUp(navController)
 }

@@ -72,7 +72,8 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable(Screens.SignUp.route) {
-            SignUp(navController = navController)
+            SignUp(navController = navController,
+                userSessionViewModel = userSessionViewModel)
         }
         composable(Screens.Home.route) {
             HomeScreen(
