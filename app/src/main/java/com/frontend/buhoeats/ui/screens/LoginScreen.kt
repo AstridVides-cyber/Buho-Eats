@@ -2,6 +2,7 @@ package com.frontend.buhoeats.ui.screens
 
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +33,11 @@ import com.frontend.buhoeats.utils.ValidatorUtils.isValidEmail
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -38,19 +45,23 @@ fun Login(
     navControl: NavHostController,
     userSessionViewModel: UserSessionViewModel
 ) {
-
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
     var emailError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
+
+    var isLoading by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
 
     val containerColor = Color.White
 
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFF3D405B)
-    ) {
-        Column(
+        ) {
+            Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(32.dp)
@@ -209,17 +220,26 @@ fun Login(
                     }
 
                     if (!hasError) {
-                        val user = DummyData.getUsers().find {
-                            it.email == email && it.password == password
-                        }
+                        isLoading = true
 
-                        if (user != null) {
-                            userSessionViewModel.login(user)
-                            navControl.navigate(Screens.Home.route) {
-                                popUpTo(Screens.Login.route) { inclusive = true }
+                        CoroutineScope(Dispatchers.Main).launch {
+                            delay(2000)
+
+                            val user = DummyData.getUsers().find {
+                                it.email == email && it.password == password
                             }
-                        } else {
-                            passwordError = "Correo o contraseña incorrectos"
+
+                            isLoading = false
+
+                            if (user != null) {
+                                userSessionViewModel.login(user)
+                                Toast.makeText(context, "Sesión iniciada con éxito", Toast.LENGTH_SHORT).show()
+                                navControl.navigate(Screens.Home.route) {
+                                    popUpTo(Screens.Login.route) { inclusive = true }
+                                }
+                            } else {
+                                passwordError = "Correo o contraseña incorrectos"
+                            }
                         }
                     }
                 },
@@ -242,7 +262,12 @@ fun Login(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White)
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+
+                Button(
                 onClick = { /* Sesión con Google */ },
                 modifier = Modifier
                     .width(300.dp)

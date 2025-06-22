@@ -223,6 +223,9 @@ fun SignUp(navController: NavController,
                     if (password.isBlank()) {
                         passwordError = "La contraseña no debe estar vacía"
                         hasError = true
+                    } else if (!ValidatorUtils.isSecurePassword(password)) {
+                        passwordError = "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo"
+                        hasError = true
                     }
 
                     if (confirmPassword.isBlank()) {
@@ -232,10 +235,7 @@ fun SignUp(navController: NavController,
                         confirmPasswordError = "Las contraseñas no coinciden"
                         hasError = true
                     }
-                    if (!ValidatorUtils.isSecurePassword(password)) {
-                        passwordError = "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo"
-                        hasError = true
-                    }
+
                     if (!hasError) {
                         val newUser = User(
                             id = Random.nextInt(),
