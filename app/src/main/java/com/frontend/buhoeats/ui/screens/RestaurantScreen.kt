@@ -1,7 +1,9 @@
     package com.frontend.buhoeats.ui.screens
 
     import android.app.Application
+    import android.os.Build
     import android.util.Log
+    import androidx.annotation.RequiresApi
     import androidx.compose.foundation.Image
     import androidx.compose.material3.Scaffold
     import androidx.compose.runtime.Composable
@@ -26,6 +28,7 @@
     import androidx.compose.material.icons.filled.FavoriteBorder
     import androidx.compose.runtime.collectAsState
     import androidx.compose.runtime.getValue
+    import androidx.compose.runtime.mutableIntStateOf
     import androidx.compose.runtime.mutableStateListOf
     import androidx.compose.runtime.mutableStateOf
     import androidx.compose.runtime.remember
@@ -52,11 +55,13 @@
     import com.frontend.buhoeats.navigation.Screens
     import com.frontend.buhoeats.ui.components.ConfirmationDialog
     import com.frontend.buhoeats.ui.components.EditFloatingButton
+    import com.frontend.buhoeats.ui.components.ValidationMessage
     import com.frontend.buhoeats.viewmodel.FavoritesViewModel
     import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
     import com.frontend.buhoeats.viewmodel.RestaurantViewModel
     import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun RestaurantScreen(
         navController: NavController,
@@ -114,6 +119,7 @@
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun RestaurantContent(
         restaurant: Restaurant,
@@ -134,11 +140,14 @@
         val isSuperAdmin = currentUser?.rol == "superadmin"
         val menuList = remember { mutableStateListOf<Dish>().apply { addAll(restaurant.menu) } }
 
-        var rating by rememberSaveable { mutableStateOf(0) }
+        var rating by rememberSaveable { mutableIntStateOf(0) }
         var comment by remember { mutableStateOf("") }
-        restaurant.ratings.any { it.userId == currentUser?.id }
+        restaurant.ratings.find { it.userId == currentUser?.id }
         var dishToDelete by remember { mutableStateOf<Dish?>(null) }
         var showDialog by remember { mutableStateOf(false) }
+
+        var showRatingErrorMessage by remember { mutableStateOf(false) }
+        var showCommentErrorMessage by remember { mutableStateOf(false) }
 
         val user = DummyData.getUsers().find { it.id == currentUser?.id }
         user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
@@ -253,12 +262,45 @@
                                     )
                                 )
 
+                                Spacer(modifier = Modifier.size(10.dp))
+
+                                if (showRatingErrorMessage) {
+                                    ValidationMessage(
+                                        message = "Por favor, selecciona una calificación (estrellas) antes de publicar.",
+                                        modifier = Modifier.padding(bottom = 8.dp)
+                                    )
+                                }
+
+                                if (showCommentErrorMessage) {
+                                    ValidationMessage(
+                                        message = "Por favor, escribe tu opinión antes de publicar.",
+                                        modifier = Modifier.padding(bottom = 8.dp)
+                                    )
+                                }
+
                                 Button(
                                     onClick = {
+                                        showRatingErrorMessage = false
+                                        showCommentErrorMessage = false
+
                                         val user = DummyData.getUsers().find { it.id == currentUser?.id }
-                                        if (user != null && comment.isNotBlank()) {
+                                        var isValid = true
+
+                                        if (existingRating == null && rating == 0) {
+                                            showRatingErrorMessage = true
+                                            isValid = false
+                                        }
+
+                                        if (comment.isBlank()) {
+                                            showCommentErrorMessage = true
+                                            isValid = false
+                                        }
+
+                                        if (user != null && isValid) {
                                             val updatedComments = restaurant.comments.toMutableList().apply {
-                                                add(Comment(userId = user.id, comment = comment))
+                                                if (comment.isNotBlank()) {
+                                                    add(Comment(userId = user.id, comment = comment))
+                                                }
                                             }
 
                                             val updatedRatings = restaurant.ratings.toMutableList().apply {
@@ -274,7 +316,6 @@
 
                                             restaurantViewModel.updateRestaurant(updatedRestaurant)
                                             onUpdate(updatedRestaurant)
-
 
                                             comment = ""
                                             rating = 0
