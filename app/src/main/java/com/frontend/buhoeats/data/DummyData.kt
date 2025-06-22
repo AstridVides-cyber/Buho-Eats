@@ -90,7 +90,7 @@ object  DummyData {
             name = "Restaurante El Buen Sabor",
             description = "Comida típica salvadoreña con un toque moderno.",
             imageUrl = "https://images.unsplash.com/photo-1600891964599-f61ba0e24092",
-            categories = listOf("Salvadoreña", "Típica", "Familiar"),
+            category = "Desayuno",
             contactInfo = ContactInfo(
                 email = "contacto@elbuen.sv",
                 phone = "2222-3333",
@@ -151,7 +151,7 @@ object  DummyData {
             name = "La Esquinita Gourmet",
             description = "Fusión de sabores latinos e internacionales.",
             imageUrl = "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17",
-            categories = listOf("Gourmet", "Fusión", "Internacional"),
+            category =  "Almuerzo",
             contactInfo = ContactInfo(
                 email = "info@laesquinita.com",
                 phone = "2444-5566",

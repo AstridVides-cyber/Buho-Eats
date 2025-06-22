@@ -9,9 +9,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +35,7 @@ import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.launch
+import kotlin.text.equals
 
 @Composable
 fun HomeScreen(
@@ -53,18 +57,24 @@ fun HomeScreen(
     var showDialog by remember { mutableStateOf(false) }
     var restaurantToDelete by remember { mutableStateOf<Restaurant?>(null) }
 
+    val filteredRestaurants = restaurantList.filter { restaurant ->
+        val isAdminFilter = if (isAdmin) {
+            restaurant.admin != currentUser?.id
+        } else {
+            true
+        }
 
+        val typeFilter = selectedFilter?.let { filter ->
+            restaurant.category.equals(filter, ignoreCase = true)
+        } ?: true
 
-
-    val filteredRestaurants = if (isAdmin) {
-        restaurantList.filter { it.admin != currentUser?.id }
-    } else {
-        restaurantList
+        isAdminFilter && typeFilter
     }
+
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    val adminRestaurant = DummyData.getRestaurants().find { it.admin == currentUser?.id }
+    val adminRestaurant = restaurantList.find { it.admin == currentUser?.id }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -151,7 +161,7 @@ fun HomeScreen(
                         FilterSection(
                             onFilterSelected = { selectedFilter = it },
                             onReset = { selectedFilter = null },
-                            resultCount = restaurantList.size
+                            resultCount = filteredRestaurants.size
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         if (isAdmin && myRestaurant != null) {
@@ -213,14 +223,14 @@ fun HomeScreen(
         }
     }
 }
-
 @Composable
 fun GreetingSection(userName: String) {
     Column {
         Text(
             text = "Bienvenido, $userName",
             fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Card(
@@ -244,9 +254,10 @@ fun FilterSection(
     onReset: () -> Unit,
     resultCount: Int
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
             val buttonColors = ButtonDefaults.buttonColors(
@@ -268,8 +279,11 @@ fun FilterSection(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Resultados: $resultCount", fontSize = 16.sp)
             Spacer(modifier = Modifier.width(8.dp))
-            OutlinedButton(onClick = { onReset() }) {
-                Text("Restablecer")
+            Button(
+                onClick = { onReset() },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF588B8B))
+            ) {
+                Text("Restablecer", color = Color.White)
             }
         }
     }

@@ -27,7 +27,7 @@ data class Restaurant(
     val name: String,
     val description: String,
     val imageUrl: String,
-    val categories: List<String>,
+    val category: String,
     val contactInfo: ContactInfo,
     val ratings: MutableList<Rating>,
     val comments: MutableList<Comment>,

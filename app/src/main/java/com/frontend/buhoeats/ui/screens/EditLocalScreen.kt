@@ -234,7 +234,7 @@ fun EditLocalScreen(
                                 imageUrl = selectedImageUri?.toString()
                                     ?: restaurant?.imageUrl
                                     ?: "https://plus.unsplash.com/premium_photo-1670604211960-82b8d84f6aea",
-                                categories = restaurant?.categories ?: emptyList(),
+                                category = restaurant?.category ?: "",
                                 contactInfo = restaurant?.contactInfo ?: ContactInfo("", "", "", ""),
                                 ratings = restaurant?.ratings?.toMutableList() ?: mutableListOf(),
                                 comments = restaurant?.comments?.toMutableList() ?: mutableListOf(),
