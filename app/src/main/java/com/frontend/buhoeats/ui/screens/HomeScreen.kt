@@ -1,5 +1,6 @@
 package com.frontend.buhoeats.ui.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,7 +15,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.RestaurantCard
@@ -36,6 +35,32 @@ import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.launch
 import kotlin.text.equals
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Card
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.util.lerp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.yield
+import kotlin.math.absoluteValue
+
+
 
 @Composable
 fun HomeScreen(
@@ -156,14 +181,17 @@ fun HomeScreen(
                         .padding(16.dp)
                 ) {
                     item {
-                        GreetingSection(userName = currentUser?.name ?: "Usuario")
+                        GreetingSection(
+                            userName = currentUser?.name ?: "Usuario",
+                            restaurants = restaurantList
+                        )
                         Spacer(modifier = Modifier.height(16.dp))
                         FilterSection(
                             onFilterSelected = { selectedFilter = it },
                             onReset = { selectedFilter = null },
                             resultCount = filteredRestaurants.size
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         if (isAdmin && myRestaurant != null) {
                             Text(
                                 text = "Su local:",
@@ -177,13 +205,13 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.height(16.dp))
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         Text(
                             text = "Restaurantes",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
                     if (isEditing) {
                         item {
@@ -223,31 +251,101 @@ fun HomeScreen(
         }
     }
 }
+
 @Composable
-fun GreetingSection(userName: String) {
+fun GreetingSection(userName: String, restaurants: List<Restaurant>) {
     Column {
         Text(
             text = "Bienvenido, $userName",
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 10.dp, start = 12.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-        ) {
-            // Aquí se debe ingresar las imagenes
-            /*Image(
-                painter = painterResource(id = R.drawable.example_image),
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )*/
+
+        if (restaurants.isNotEmpty()) {
+            val pagerState = rememberPagerState(pageCount = { restaurants.size })
+            val isDragged by pagerState.interactionSource.collectIsDraggedAsState()
+
+            LaunchedEffect(key1 = pagerState.pageCount, key2 = isDragged) {
+                if (!isDragged && pagerState.pageCount > 0) {
+                    while (true) {
+                        delay(5000L)
+
+                        if (!isDragged && pagerState.pageCount > 0) {
+                            val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
+                            try {
+                                pagerState.animateScrollToPage(nextPage)
+                            } catch (e: CancellationException) {
+                                throw e
+                            } catch (e: Exception) {
+                                break
+                            }
+                        } else if (isDragged) {
+                            break
+                        }
+                        yield()
+                    }
+                }
+            }
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                contentPadding = PaddingValues(horizontal = 15.dp),
+                pageSpacing = 12.dp
+            ) { pageIndex ->
+                val restaurant = restaurants[pageIndex]
+                Card(
+                    modifier = Modifier
+                        .graphicsLayer {
+                            val pageOffset = (
+                                    (pagerState.currentPage - pageIndex) + pagerState
+                                        .currentPageOffsetFraction
+                                    ).absoluteValue
+                            alpha = lerp(
+                                start = 0.5f,
+                                stop = 1f,
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            )
+                            scaleY = lerp(
+                                start = 0.8f,
+                                stop = 1f,
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            )
+                            scaleX = lerp(
+                                start = 0.8f,
+                                stop = 1f,
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            )
+                        }
+                        .fillMaxSize(),
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(restaurant.imageUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = restaurant.name,
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+        } else {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(230.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                    Text("No hay imágenes de restaurantes disponibles.")
+                }
+            }
         }
     }
 }
-
 @Composable
 fun FilterSection(
     onFilterSelected: (String) -> Unit,
