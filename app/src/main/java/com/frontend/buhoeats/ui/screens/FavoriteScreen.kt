@@ -29,7 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
@@ -48,7 +48,7 @@ fun FavoriteScreen(
     LaunchedEffect(Unit) {
         favoritesViewModel.refreshFavorites()
     }
-    val allRestaurants = DummyData.getRestaurants()
+    val allRestaurants = InMemoryUserDataSource.getRestaurants()
     val favoriteRestaurants = allRestaurants.filter { restaurant ->
         favoriteIds.contains(restaurant.id)
     }

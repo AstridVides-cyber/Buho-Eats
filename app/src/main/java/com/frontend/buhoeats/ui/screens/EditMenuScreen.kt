@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.FormField
@@ -61,7 +61,7 @@ fun EditMenuScreen(
     userSessionViewModel: UserSessionViewModel
 ) {
     val currentUser = userSessionViewModel.currentUser.value
-    val restaurant = DummyData.getRestaurants().find { it.admin == currentUser?.id }
+    val restaurant = InMemoryUserDataSource.getRestaurants().find { it.admin == currentUser?.id }
 
     if (currentUser?.rol != "admin" || restaurant == null) {
         LaunchedEffect(Unit) {
@@ -209,7 +209,7 @@ fun EditMenuScreen(
                                 val updatedRestaurant = restaurant.copy(
                                     menu = restaurant.menu + newDish
                                 )
-                                DummyData.updateRestaurant(updatedRestaurant)
+                                InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
                                 navController.popBackStack()
                             }
                         },

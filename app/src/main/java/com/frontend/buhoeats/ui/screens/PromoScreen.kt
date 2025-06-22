@@ -7,7 +7,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,8 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
-import com.frontend.buhoeats.models.Promo
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.*
 import com.frontend.buhoeats.viewmodel.PromoViewModel
@@ -31,7 +29,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
         promoViewModel: PromoViewModel = viewModel()
     ) {
         val currentUser by userSessionViewModel.currentUser
-        val restaurants = DummyData.getRestaurants()
+        val restaurants = InMemoryUserDataSource.getRestaurants()
         val isAdmin = currentUser?.rol == "admin"
 
         val adminRestaurant = if (isAdmin) {

@@ -8,9 +8,9 @@ import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Rating
 
-object  DummyData {
+object InMemoryUserDataSource {
 
-         private var users = listOf(
+         private var users = mutableListOf(
         User(
             id = 1,
             name = "Astrid",
@@ -81,7 +81,7 @@ object  DummyData {
     )
 
     fun getUsers(): List<User> {
-        return users
+        return users.toList()
     }
 
     private val restaurants = mutableListOf(
@@ -144,7 +144,7 @@ object  DummyData {
             latitud = 13.6929,
             longitud = -89.2182,
             admin = 1,
-            blockedUsers = listOf(2)
+            blockedUsers = mutableListOf(2)
         ),
         Restaurant(
             id = 2,
@@ -206,11 +206,11 @@ object  DummyData {
             latitud = 13.7929,
             longitud = -89.2182,
             admin = 4,
-            blockedUsers = emptyList()
+            blockedUsers = mutableListOf()
         )
     )
     fun getRestaurants(): List<Restaurant> {
-        return restaurants
+        return restaurants.toList()
     }
 
     fun updateRestaurant(updatedRestaurant: Restaurant) {
@@ -234,6 +234,26 @@ object  DummyData {
     fun setUsers(updatedUsers: List<User>) {
         users = updatedUsers.toMutableList()
     }
-
-
+    fun getRestaurantById(restaurantId: Int): Restaurant? {
+        return restaurants.find { it.id == restaurantId }
+    }
+    fun getUserById(userId: Int): User? {
+        return users.find { it.id == userId }
+    }
+    fun blockUserFromRestaurant(userId: Int, restaurantId: Int) {
+        val restaurant = getRestaurantById(restaurantId)
+        restaurant?.let {
+            val mutableBlockedUsers = it.blockedUsers.toMutableList()
+            mutableBlockedUsers.add(userId)
+            it.blockedUsers = mutableBlockedUsers
+        }
+    }
+    fun unblockUserFromRestaurant(userId: Int, restaurantId: Int) {
+        val restaurant = getRestaurantById(restaurantId)
+        restaurant?.let {
+            val mutableBlockedUsers = it.blockedUsers.toMutableList()
+            mutableBlockedUsers.remove(userId)
+            it.blockedUsers = mutableBlockedUsers
+        }
+    }
 }

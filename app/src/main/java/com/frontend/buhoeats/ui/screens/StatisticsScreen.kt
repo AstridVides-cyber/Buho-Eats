@@ -1,7 +1,6 @@
 package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,11 +35,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
-import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 
 @Composable
 fun StatisticsScreen(
@@ -86,7 +84,7 @@ fun StatisticsScreen(
                 }
 
                 items(nonBlockedComments) { comment ->
-                    val user = DummyData.getUsers().find { it.id == comment.userId }
+                    val user = InMemoryUserDataSource.getUsers().find { it.id == comment.userId }
                     val rating = currentRestaurant.ratings.find { it.userId == comment.userId }
 
                     Card(
@@ -151,12 +149,12 @@ fun StatisticsScreen(
                     onConfirm = {
                         blockedUsersViewModel.blockUser(
                             user = userToBlock!!,
-                            restaurant = currentRestaurant,
                             onUpdate = { updatedRestaurant ->
-                                DummyData.updateRestaurant(updatedRestaurant)
+                                InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
                                 currentRestaurant = updatedRestaurant
-                                blockedUsersViewModel.loadBlockedUsers(updatedRestaurant)
-                            }
+                                blockedUsersViewModel.loadBlockedUsers(updatedRestaurant.id)
+                            },
+                            restaurantId = currentRestaurant.id
                         )
                         showDialog = false
                         userToBlock = null

@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.ContactInfo
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
@@ -224,7 +224,7 @@ fun EditLocalScreen(
                 ConfirmationDialog(
                     message = if (isNewLocal) "¿Estás seguro que deseas agregar un nuevo local?" else "¿Deseas guardar los cambios en el local?",
                     onConfirm = {
-                        val adminUser = DummyData.getUsers().find { it.email == adminEmail && it.rol == "admin" }
+                        val adminUser = InMemoryUserDataSource.getUsers().find { it.email == adminEmail && it.rol == "admin" }
 
                         if (adminUser != null) {
                             val updatedRestaurant = Restaurant(

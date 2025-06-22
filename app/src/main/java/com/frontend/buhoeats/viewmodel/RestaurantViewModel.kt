@@ -2,7 +2,7 @@ package com.frontend.buhoeats.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.User
@@ -18,21 +18,21 @@ class RestaurantViewModel : ViewModel() {
 
     fun loadRestaurants() {
         _restaurantList.clear()
-        _restaurantList.addAll(DummyData.getRestaurants())
+        _restaurantList.addAll(InMemoryUserDataSource.getRestaurants())
     }
 
     fun deleteRestaurant(restaurantId: Int) {
-        DummyData.deleteRestaurant(restaurantId)
+        InMemoryUserDataSource.deleteRestaurant(restaurantId)
         _restaurantList.removeIf { it.id == restaurantId }
     }
 
     fun addRestaurant(restaurant: Restaurant) {
-        DummyData.addRestaurant(restaurant)
+        InMemoryUserDataSource.addRestaurant(restaurant)
         _restaurantList.add(restaurant)
     }
 
     fun updateRestaurant(updatedRestaurant: Restaurant) {
-        DummyData.updateRestaurant(updatedRestaurant)
+        InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
         val index = _restaurantList.indexOfFirst { it.id == updatedRestaurant.id }
         if (index != -1) {
             _restaurantList[index] = updatedRestaurant
@@ -40,11 +40,11 @@ class RestaurantViewModel : ViewModel() {
     }
 
     fun getNextRestaurantId(): Int {
-        return DummyData.getNextRestaurantId()
+        return InMemoryUserDataSource.getNextRestaurantId()
     }
 
     fun getUserEmailById(userId: Int): String {
-        return DummyData.getUserEmailById(userId)
+        return InMemoryUserDataSource.getUserEmailById(userId)
     }
 }
 
@@ -52,34 +52,36 @@ class BlockedUsersViewModel : ViewModel() {
     private val _blockedUsers = mutableStateListOf<User>()
     val blockedUsers: List<User> get() = _blockedUsers
 
-    fun loadBlockedUsers(restaurant: Restaurant) {
+    fun loadBlockedUsers(restaurantId: Int) {
+        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
         _blockedUsers.clear()
-        _blockedUsers.addAll(
-            restaurant.blockedUsers.mapNotNull { userId ->
-                DummyData.getUsers().find { it.id == userId }
-            }
-        )
-    }
-
-    fun unblockUser(user: User) {
-        _blockedUsers.remove(user)
-    }
-
-    fun blockUser(user: User, restaurant: Restaurant, onUpdate: (Restaurant) -> Unit) {
-        if (!_blockedUsers.contains(user)) {
-            _blockedUsers.add(user)
-
-            val updatedComments = restaurant.comments.filterNot { it.userId == user.id }.toMutableList()
-            val updatedRatings = restaurant.ratings.filterNot { it.userId == user.id }.toMutableList()
-
-            val updatedRestaurant = restaurant.copy(
-                comments = updatedComments,
-                ratings = updatedRatings,
-                blockedUsers = restaurant.blockedUsers + user.id
+        restaurant?.let {
+            _blockedUsers.addAll(
+                it.blockedUsers.mapNotNull { userId ->
+                    InMemoryUserDataSource.getUserById(userId)
+                }
             )
+        }
+    }
 
-            onUpdate(updatedRestaurant)
-            loadBlockedUsers(updatedRestaurant)
+    fun unblockUser(user: User, restaurantId: Int, onUpdate: (Restaurant) -> Unit) {
+        InMemoryUserDataSource.unblockUserFromRestaurant(user.id, restaurantId)
+        _blockedUsers.remove(user)
+        InMemoryUserDataSource.getRestaurantById(restaurantId)?.let {
+            onUpdate(it)
+            loadBlockedUsers(restaurantId)
+        }
+    }
+
+    fun blockUser(user: User, restaurantId: Int, onUpdate: (Restaurant) -> Unit) {
+        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
+        restaurant?.let {
+            InMemoryUserDataSource.blockUserFromRestaurant(user.id, restaurantId)
+            _blockedUsers.add(user)
+            InMemoryUserDataSource.getRestaurantById(restaurantId)?.let { updatedRestaurant ->
+                onUpdate(updatedRestaurant)
+                loadBlockedUsers(restaurantId)
+            }
         }
     }
 }

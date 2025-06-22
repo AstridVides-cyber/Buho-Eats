@@ -1,8 +1,6 @@
     package com.frontend.buhoeats.ui.screens
 
-    import android.app.Application
     import android.os.Build
-    import android.util.Log
     import androidx.annotation.RequiresApi
     import androidx.compose.foundation.Image
     import androidx.compose.material3.Scaffold
@@ -35,18 +33,15 @@
     import androidx.compose.runtime.saveable.rememberSaveable
     import androidx.compose.runtime.setValue
     import androidx.compose.ui.graphics.Color
-    import androidx.compose.ui.platform.LocalContext
     import androidx.compose.ui.res.painterResource
     import androidx.compose.ui.text.style.TextAlign
-    import androidx.compose.ui.tooling.preview.Preview
-    import androidx.lifecycle.ViewModelProvider
     import androidx.lifecycle.viewmodel.compose.viewModel
     import coil.compose.AsyncImage
     import com.frontend.buhoeats.R
     import com.frontend.buhoeats.ui.components.ContactCard
     import com.frontend.buhoeats.ui.components.DishCard
     import androidx.navigation.NavController
-    import com.frontend.buhoeats.data.DummyData
+    import com.frontend.buhoeats.data.InMemoryUserDataSource
     import com.frontend.buhoeats.models.Comment
     import com.frontend.buhoeats.models.Dish
     import com.frontend.buhoeats.models.Rating
@@ -149,7 +144,7 @@
         var showRatingErrorMessage by remember { mutableStateOf(false) }
         var showCommentErrorMessage by remember { mutableStateOf(false) }
 
-        val user = DummyData.getUsers().find { it.id == currentUser?.id }
+        val user = InMemoryUserDataSource.getUsers().find { it.id == currentUser?.id }
         user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
 
         Column(
@@ -283,7 +278,7 @@
                                         showRatingErrorMessage = false
                                         showCommentErrorMessage = false
 
-                                        val user = DummyData.getUsers().find { it.id == currentUser?.id }
+                                        val user = InMemoryUserDataSource.getUsers().find { it.id == currentUser?.id }
                                         var isValid = true
 
                                         if (existingRating == null && rating == 0) {
@@ -369,7 +364,7 @@
                     Spacer(modifier = Modifier.size(15.dp))
 
                     restaurant.comments.forEach { comment ->
-                        val user = DummyData.getUsers().find { it.id == comment.userId }
+                        val user = InMemoryUserDataSource.getUsers().find { it.id == comment.userId }
                         val userRating = restaurant.ratings.find { it.userId == comment.userId }
 
                         Box(

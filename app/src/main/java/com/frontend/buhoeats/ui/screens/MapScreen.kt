@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.Map
 import com.frontend.buhoeats.ui.components.RestaurantCard
@@ -31,7 +31,7 @@ fun MapScreen(
     onBack: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
-    val restaurants = DummyData.getRestaurants()
+    val restaurants = InMemoryUserDataSource.getRestaurants()
     val focusedLocation = remember { mutableStateOf<GeoPoint?>(null) }
 
 

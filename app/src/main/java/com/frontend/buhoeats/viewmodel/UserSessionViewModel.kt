@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModelProvider
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,15 +24,25 @@ class UserSessionViewModel : ViewModel() {
 
     fun updateCurrentUser(user: User) {
         _currentUser.value = user
-    }
-    fun assignRoleToUser(email: String, newRole: String): Boolean {
-        val userIndex = DummyData.getUsers().indexOfFirst { it.email.equals(email, ignoreCase = true) }
+
+        val userList = InMemoryUserDataSource.getUsers().toMutableList()
+        val userIndex = InMemoryUserDataSource.getUsers().indexOfFirst { it.id == user.id }
 
         if (userIndex != -1) {
-            val userList = DummyData.getUsers().toMutableList()
+            userList[userIndex] = user
+            InMemoryUserDataSource.setUsers(userList)
+        }
+    }
+
+    fun assignRoleToUser(email: String, newRole: String): Boolean {
+        val userIndex = InMemoryUserDataSource.getUsers().indexOfFirst { it.email.equals(email, ignoreCase = true) }
+
+        if (userIndex != -1) {
+            val userList = InMemoryUserDataSource.getUsers().toMutableList()
             val user = userList[userIndex]
             val updatedUser = user.copy(rol = newRole)
             userList[userIndex] = updatedUser
+            InMemoryUserDataSource.setUsers(userList)
 
             println("Usuario actualizado: ${updatedUser.email} -> ${updatedUser.rol}")
             return true
@@ -40,15 +50,19 @@ class UserSessionViewModel : ViewModel() {
         return false
     }
     fun registerUser(newUser: User): Boolean {
-        val users = DummyData.getUsers().toMutableList()
+        val users = InMemoryUserDataSource.getUsers().toMutableList()
 
         if (users.any { it.email.equals(newUser.email, ignoreCase = true) }) {
             return false
         }
 
         users.add(newUser)
-        DummyData.setUsers(users)
+        InMemoryUserDataSource.setUsers(users)
         return true
+    }
+
+    fun getAllUsers(): List<User> {
+        return InMemoryUserDataSource.getUsers()
     }
 
 

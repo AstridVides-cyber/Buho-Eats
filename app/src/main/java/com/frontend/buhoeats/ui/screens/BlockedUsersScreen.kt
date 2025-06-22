@@ -49,7 +49,7 @@ fun BlockedUsersScreen(
 
     LaunchedEffect(restaurant) {
         if (isAdminOfThisRestaurant) {
-            blockeUsersViewModel.loadBlockedUsers(restaurant)
+            blockeUsersViewModel.loadBlockedUsers(restaurant.id)
         }
     }
 
@@ -108,7 +108,13 @@ fun BlockedUsersScreen(
                                 UserRowOptions(
                                     user = user,
                                     onConfirmAction = {
-                                        blockeUsersViewModel.unblockUser(user)
+                                        blockeUsersViewModel.unblockUser(
+                                            user,
+                                            restaurantId = restaurant.id,
+                                            onUpdate = { updatedRestaurant ->
+                                                blockeUsersViewModel.loadBlockedUsers(updatedRestaurant.id)
+                                            }
+                                        )
                                     }
                                 )
                             }

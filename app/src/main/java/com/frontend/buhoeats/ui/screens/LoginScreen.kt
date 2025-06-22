@@ -25,13 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidEmail
 import com.frontend.buhoeats.ui.components.ValidationMessage
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.CoroutineScope
@@ -225,10 +224,9 @@ fun Login(
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(2000)
 
-                            val user = DummyData.getUsers().find {
+                            val user = InMemoryUserDataSource.getUsers().find {
                                 it.email == email && it.password == password
                             }
-
                             isLoading = false
 
                             if (user != null) {

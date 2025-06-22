@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.FormField
 import com.frontend.buhoeats.ui.components.TopBar
@@ -54,7 +54,7 @@ fun EditInfo(
     val currentUser = userSessionViewModel.currentUser.value
     val scrollState = rememberScrollState()
 
-    val restaurant = DummyData.getRestaurants().find { it.admin == currentUser?.id }
+    val restaurant = InMemoryUserDataSource.getRestaurants().find { it.admin == currentUser?.id }
 
     if (currentUser?.rol != "admin" || restaurant == null) {
         LaunchedEffect(Unit) {

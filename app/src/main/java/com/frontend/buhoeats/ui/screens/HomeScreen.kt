@@ -81,6 +81,10 @@ fun HomeScreen(
     var showDialog by remember { mutableStateOf(false) }
     var restaurantToDelete by remember { mutableStateOf<Restaurant?>(null) }
 
+    LaunchedEffect(Unit) {
+        userSessionViewModel.currentUser
+    }
+
     val filteredRestaurants = restaurantList.filter { restaurant ->
         val isAdminFilter = if (isAdmin) {
             restaurant.admin != currentUser?.id
@@ -182,7 +186,7 @@ fun HomeScreen(
                 ) {
                     item {
                         GreetingSection(
-                            userName = currentUser?.name ?: "Usuario",
+                            userName = currentUser!!.name,
                             restaurants = restaurantList
                         )
                         Spacer(modifier = Modifier.height(16.dp))
