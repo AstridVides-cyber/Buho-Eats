@@ -52,7 +52,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
             topBar = {
                 TopBar(
                     showBackIcon = true,
-                    onNavClick = { navController.popBackStack() }
+                    onNavClick = { navController.navigate(Screens.Home.route) }
                 )
             },
             bottomBar = { BottomNavigationBar(navController) },

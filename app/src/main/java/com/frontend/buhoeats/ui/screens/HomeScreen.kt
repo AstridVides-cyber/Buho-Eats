@@ -1,6 +1,5 @@
 package com.frontend.buhoeats.ui.screens
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -104,7 +103,7 @@ fun HomeScreen(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            if (currentUser != null) {
+            currentUser?.let { user ->
                 Scaffold(
                     topBar = { TopBar(showBackIcon = true) { scope.launch { drawerState.close() } } },
                     bottomBar = { BottomNavigationBar(navController) }
@@ -112,9 +111,10 @@ fun HomeScreen(
                     Box(modifier = Modifier.padding(innerPadding)) {
                         SettingSlider(
                             navController = navController,
-                            currentUser = currentUser!!,
+                            currentUser = user,
                             restaurant = adminRestaurant,
-                            onNavigateToProfile = { navController.navigate(Screens.Profile.route) })
+                            onNavigateToProfile = { navController.navigate(Screens.Profile.route) }
+                        )
                     }
                 }
             }

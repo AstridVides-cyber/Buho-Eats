@@ -118,7 +118,7 @@ fun AppNavHost(navController: NavHostController) {
         }
         composable(Screens.Search.route) {
             Search(
-                onBack = { navController.popBackStack() },
+                onBack = { navController.navigate(Screens.Home.route) },
                 onSearchResultClick = { restaurantName ->
                     val restaurant = DummyData.getRestaurants().find { it.name == restaurantName }
                     restaurant?.let {
@@ -130,7 +130,7 @@ fun AppNavHost(navController: NavHostController) {
         }
         composable(Screens.Map.route) {
             MapScreen(
-                onBack = { navController.popBackStack() }, navController = navController
+                onBack = { navController.navigate(Screens.Home.route) }, navController = navController
             )
         }
 
