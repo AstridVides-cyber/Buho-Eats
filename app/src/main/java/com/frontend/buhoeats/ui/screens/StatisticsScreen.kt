@@ -90,7 +90,7 @@ fun StatisticsScreen(
                     Text(
                         text = "No hay reseñas aun en el restaurante",
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = FontWeight.Medium,
                         color = Color.Gray,
                         textAlign = TextAlign.Center
                     )

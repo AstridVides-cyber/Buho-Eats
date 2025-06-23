@@ -4,6 +4,8 @@ import Search
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -219,6 +221,7 @@ fun AppNavHost(navController: NavHostController) {
         ) { backStackEntry ->
             val promoId = backStackEntry.arguments?.getInt("promoId") ?: -1
             val isNew = backStackEntry.arguments?.getBoolean("isNew") ?: false
+            val promos by promoViewModel.promos.collectAsState()
 
             val promo = if (isNew) {
                 Promo(
@@ -228,10 +231,11 @@ fun AppNavHost(navController: NavHostController) {
                     promprice = "",
                     price = "",
                     imageUrl = "",
-                    reglas = ""
+                    reglas = "",
+                    restaurantId = 0
                 )
             } else {
-                promoViewModel.promos.find { it.id == promoId } ?: return@composable
+                promos.find { it.id == promoId } ?: return@composable
             }
 
             val restaurant =
@@ -249,7 +253,8 @@ fun AppNavHost(navController: NavHostController) {
                     navController = navController,
                     onBackClick = { navController.popBackStack() },
                     isAdmin = isAdmin,
-                    promoViewModel = promoViewModel
+                    promoViewModel = promoViewModel,
+                    userSessionViewModel = userSessionViewModel
                 )
             }
         }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -32,15 +33,20 @@ import com.frontend.buhoeats.ui.components.EditFloatingButton
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.viewmodel.PromoViewModel
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
+import com.frontend.buhoeats.data.InMemoryUserDataSource
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalComposeUiApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun PromoInfoScreen(
         isAdmin: Boolean = false,
@@ -49,7 +55,8 @@ import androidx.compose.foundation.shape.CircleShape
         contactInfo: ContactInfo,
         navController: NavController,
         promoViewModel: PromoViewModel = viewModel(),
-        onBackClick: () -> Unit = {}
+        onBackClick: () -> Unit = {},
+        userSessionViewModel: UserSessionViewModel
     ) {
         val esNuevaPromo = promo.name.isBlank() && promo.description.isBlank()
         var isEditing by remember { mutableStateOf(esNuevaPromo) }
@@ -58,11 +65,15 @@ import androidx.compose.foundation.shape.CircleShape
         var description by remember { mutableStateOf(promo.description) }
         var promprice by remember { mutableStateOf(promo.promprice) }
         var price by remember { mutableStateOf(promo.price) }
-        var reglas by remember { mutableStateOf(promo.reglas ?: "") }
+        var reglas by remember { mutableStateOf(promo.reglas) }
 
         var showError by remember { mutableStateOf(false) }
+        val currentUser = userSessionViewModel.currentUser.value
+        val adminRestaurant = InMemoryUserDataSource.getRestaurants().firstOrNull { it.admin == currentUser?.id }
+        val context = LocalContext.current
 
-        var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
         val imagePickerLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent()
@@ -209,8 +220,8 @@ import androidx.compose.foundation.shape.CircleShape
                                 ))
                         }
                     } else {
-                        Text(promprice, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Green)
-                        Text(price, fontSize = 20.sp, color = Color.Gray, textDecoration = TextDecoration.LineThrough)
+                        Text("$${promprice}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Green)
+                        Text("$${price}", fontSize = 20.sp, color = Color.Gray, textDecoration = TextDecoration.LineThrough)
                     }
                 }
 
@@ -282,33 +293,39 @@ import androidx.compose.foundation.shape.CircleShape
                         Button(
                             shape = RoundedCornerShape(12.dp),
                             onClick = {
-                                if (name.isBlank() || description.isBlank() || promprice.isBlank() || price.isBlank()) {
-                                    showError = true
+                            if (name.isBlank() || description.isBlank() || promprice.isBlank() || price.isBlank()) {
+                                showError = true
+                            } else {
+                                val formattedPromPrice = "%.2f".format(promprice.toDoubleOrNull() ?: 0.0)
+                                val formattedPrice = "%.2f".format(price.toDoubleOrNull() ?: 0.0)
+
+                                val nuevaPromo = Promo(
+                                    id = promo.id,
+                                    name = name,
+                                    description = description,
+                                    promprice = formattedPromPrice,
+                                    price = formattedPrice,
+                                    imageUrl = selectedImageUri?.toString()
+                                        ?: promo.imageUrl.ifBlank {
+                                            "https://plus.unsplash.com/premium_photo-1670604211960-82b8d84f6aea"
+                                        },
+                                    reglas = reglas,
+                                    restaurantId = adminRestaurant?.id ?: promo.restaurantId
+                                )
+
+                                if (esNuevaPromo) {
+                                    promoViewModel.addPromo(nuevaPromo, currentUser)
                                 } else {
-                                    val nuevaPromo = Promo(
-                                        id = promo.id,
-                                        name = name,
-                                        description = description,
-                                        promprice = promprice,
-                                        price = price,
-                                        imageUrl = selectedImageUri?.toString()
-                                            ?: promo.imageUrl.ifBlank {
-                                                "https://plus.unsplash.com/premium_photo-1670604211960-82b8d84f6aea"
-                                            },
-                                        reglas = reglas
-                                    )
-
-                                    if (esNuevaPromo) {
-                                        promoViewModel.addPromo(nuevaPromo)
-                                    } else {
-                                        promoViewModel.updatePromo(nuevaPromo)
-                                    }
-
-                                    showError = false
-                                    isEditing = false
-                                    navController.navigate(Screens.Promocion.route)
+                                    promoViewModel.updatePromo(nuevaPromo, currentUser)
                                 }
-                            },
+                                val message = if (esNuevaPromo) "Promoción creada exitosamente" else "Promoción guardada exitosamente"
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
+                                showError = false
+                                isEditing = false
+                                navController.navigate(Screens.Promocion.route)
+                            }
+                        },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF06BB0C),
                                 contentColor = Color.White

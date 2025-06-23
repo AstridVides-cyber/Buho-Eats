@@ -95,7 +95,7 @@ fun BlockedUsersScreen(
                                 "No hay usuarios bloqueados por ahora",
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color.DarkGray
+                                color = Color.Gray
                             )
                         }
                     } else {

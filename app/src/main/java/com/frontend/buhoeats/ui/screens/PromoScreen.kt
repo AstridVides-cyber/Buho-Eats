@@ -7,15 +7,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.widget.Toast
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.InMemoryUserDataSource
@@ -23,6 +23,9 @@ import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.*
 import com.frontend.buhoeats.viewmodel.PromoViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 
 @Composable
 fun PromoScreen(
@@ -32,24 +35,22 @@ fun PromoScreen(
 ) {
     val currentUser by userSessionViewModel.currentUser
     val allRestaurants = InMemoryUserDataSource.getRestaurants()
-
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     val adminRestaurant = if (currentUser?.rol == "admin") {
         allRestaurants.firstOrNull { it.admin == currentUser!!.id }
     } else null
 
+    val promos by promoViewModel.promos.collectAsState()
+
     val promosToDisplay = when (currentUser?.rol) {
-        "admin" -> adminRestaurant?.promos ?: emptyList()
-        else -> allRestaurants.flatMap { it.promos }
+        "admin" -> promos.filter { it.restaurantId == adminRestaurant?.id }
+        else -> promos
     }
 
-    LaunchedEffect(promosToDisplay) {
-        if (promoViewModel.promos.size != promosToDisplay.size ||
-            !promoViewModel.promos.containsAll(promosToDisplay) ||
-            !promosToDisplay.containsAll(promoViewModel.promos)
-        ) {
-            promoViewModel.loadPromos(promosToDisplay)
-        }
+    LaunchedEffect(currentUser) {
+        promoViewModel.loadPromosForUser(currentUser)
     }
 
     Scaffold(
@@ -63,12 +64,8 @@ fun PromoScreen(
         floatingActionButton = {
             if (adminRestaurant != null) {
                 EditFloatingButton(onClick = {
-                    val maxExistingPromoId = allRestaurants
-                        .flatMap { it.promos }
-                        .maxOfOrNull { it.id } ?: 0
-
+                    val maxExistingPromoId = promos.maxOfOrNull { it.id } ?: 0
                     val newPromoId = maxExistingPromoId + 1
-
                     navController.navigate(Screens.PromoInfo.createRoute(newPromoId, isNew = true))
                 })
             }
@@ -87,11 +84,11 @@ fun PromoScreen(
                 contentScale = ContentScale.Crop
             )
 
-            if (promoViewModel.promos.isEmpty() && promosToDisplay.isNotEmpty()) {
+            if (promos.isEmpty() && promosToDisplay.isNotEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("Cargando promociones...")
                 }
-            } else if (promoViewModel.promos.isEmpty() && promosToDisplay.isEmpty()) {
+            } else if (promos.isEmpty() && promosToDisplay.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         if (adminRestaurant != null) "Tu restaurante aún no tiene promociones."
@@ -114,10 +111,13 @@ fun PromoScreen(
                                 }
                             )
 
-                            if (adminRestaurant != null && adminRestaurant.promos.any { it.id == promo.id }) {
+                            if (adminRestaurant != null && promo.restaurantId == adminRestaurant.id) {
                                 DeleteButton(
                                     onClick = {
-                                        promoViewModel.deletePromo(promo)
+                                        promoViewModel.deletePromo(promo, currentUser)
+                                        scope.launch {
+                                            Toast.makeText(context, "Promoción eliminada", Toast.LENGTH_SHORT).show()
+                                        }
                                     },
                                     modifier = Modifier
                                         .padding(vertical = 16.dp, horizontal = 8.dp)
@@ -128,7 +128,6 @@ fun PromoScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
-
             }
         }
     }

@@ -6,6 +6,8 @@ import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.User
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class RestaurantViewModel : ViewModel() {
 
@@ -85,37 +87,35 @@ class BlockedUsersViewModel : ViewModel() {
         }
     }
 }
-
 class PromoViewModel : ViewModel() {
-    private val _promos = mutableStateListOf<Promo>()
-    val promos: List<Promo> get() = _promos
+    private val _promos = MutableStateFlow<List<Promo>>(emptyList())
+    val promos: StateFlow<List<Promo>> = _promos
 
-    private var isLoaded = false
-
-    fun loadPromos(promos: List<Promo>) {
-        if (!isLoaded) {
-            _promos.clear()
-            _promos.addAll(promos)
-            isLoaded = true
+    fun loadPromosForUser(currentUser: User?) {
+        val promosToDisplay = when (currentUser?.rol) {
+            "admin" -> {
+                val restaurant = InMemoryUserDataSource.getRestaurants()
+                    .firstOrNull { it.admin == currentUser.id }
+                restaurant?.promos ?: emptyList()
+            }
+            else -> InMemoryUserDataSource.getRestaurants().flatMap { it.promos }
         }
-    }
-
-    fun deletePromo(promo: Promo) {
-        _promos.remove(promo)
-    }
-    fun addPromo(promo: Promo) {
-        _promos.add(promo)
-    }
-    fun updatePromo(updatedPromo: Promo) {
-        val index = _promos.indexOfFirst { it.id == updatedPromo.id }
-        if (index != -1) {
-            _promos[index] = updatedPromo
-        }
+        _promos.value = promosToDisplay
     }
 
 
+    fun deletePromo(promo: Promo, user: User?) {
+        InMemoryUserDataSource.removePromo(promo)
+        loadPromosForUser(user)
+    }
 
+    fun updatePromo(updatedPromo: Promo, user: User?) {
+        InMemoryUserDataSource.updatePromo(updatedPromo)
+        loadPromosForUser(user)
+    }
+
+    fun addPromo(promo: Promo, user: User?) {
+        InMemoryUserDataSource.addPromoToRestaurant(promo.restaurantId, promo)
+        loadPromosForUser(user)
+    }
 }
-
-
-

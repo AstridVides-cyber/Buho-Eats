@@ -84,13 +84,13 @@ fun PromoCard(promo: Promo , onClick: () -> Unit) {
                         verticalArrangement = Arrangement.Top
                     ) {
                         Text(
-                            text = promo.promprice,
+                            text = "$${promo.promprice}",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
                         )
                         Text(
-                            text = promo.price,
+                            text = "$${promo.price}",
                             color = Color.LightGray,
                             fontSize = 16.sp,
                             textDecoration = TextDecoration.LineThrough
