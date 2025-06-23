@@ -240,7 +240,7 @@ fun EditAccountScreen(navController: NavController,
 
                         if (newPassword.isNotBlank() || confirmNewPassword.isNotBlank() || attemptingPasswordChange) {
                             if (!ValidatorUtils.isSecurePassword(newPassword)) {
-                                newPasswordError = "La contraseña debe tener al menos 1 minúscula, 1 mayúscula, 1 número, 1 símbolo y mínimo 8 caracteres"
+                                newPasswordError = "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo"
 
                                 hasError = true
                             } else {
@@ -268,7 +268,8 @@ fun EditAccountScreen(navController: NavController,
                                 name = name,
                                 lastName = lastname,
                                 email = email,
-                                password = passwordToSave                            )
+                                password = passwordToSave
+                            )
 
                             if (updatedUser != null) {
                                 userSessionViewModel.updateCurrentUser(updatedUser)

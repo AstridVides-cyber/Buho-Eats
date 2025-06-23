@@ -6,7 +6,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,69 +24,88 @@ import com.frontend.buhoeats.ui.components.*
 import com.frontend.buhoeats.viewmodel.PromoViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
-    @Composable
-    fun PromoScreen(
-        navController: NavHostController,
-        userSessionViewModel: UserSessionViewModel,
-        promoViewModel: PromoViewModel = viewModel()
-    ) {
-        val currentUser by userSessionViewModel.currentUser
-        val restaurants = InMemoryUserDataSource.getRestaurants()
-        val isAdmin = currentUser?.rol == "admin"
+@Composable
+fun PromoScreen(
+    navController: NavHostController,
+    userSessionViewModel: UserSessionViewModel,
+    promoViewModel: PromoViewModel = viewModel()
+) {
+    val currentUser by userSessionViewModel.currentUser
+    val allRestaurants = InMemoryUserDataSource.getRestaurants()
 
-        val adminRestaurant = if (isAdmin) {
-            restaurants.find { it.admin == currentUser?.id }
-        } else null
 
-        val promosToLoad = if (isAdmin && adminRestaurant != null) {
-            adminRestaurant.promos
-        } else {
-            restaurants.flatMap { it.promos }
+    val adminRestaurant = if (currentUser?.rol == "admin") {
+        allRestaurants.firstOrNull { it.admin == currentUser!!.id }
+    } else null
+
+    val promosToDisplay = when (currentUser?.rol) {
+        "admin" -> adminRestaurant?.promos ?: emptyList()
+        else -> allRestaurants.flatMap { it.promos }
+    }
+
+    LaunchedEffect(promosToDisplay) {
+        if (promoViewModel.promos.size != promosToDisplay.size ||
+            !promoViewModel.promos.containsAll(promosToDisplay) ||
+            !promosToDisplay.containsAll(promoViewModel.promos)
+        ) {
+            promoViewModel.loadPromos(promosToDisplay)
         }
+    }
 
-        if (promoViewModel.promos.isEmpty()) {
-            promoViewModel.loadPromos(promosToLoad)
-        }
+    Scaffold(
+        topBar = {
+            TopBar(
+                showBackIcon = true,
+                onNavClick = { navController.navigate(Screens.Home.route) }
+            )
+        },
+        bottomBar = { BottomNavigationBar(navController) },
+        floatingActionButton = {
+            if (adminRestaurant != null) {
+                EditFloatingButton(onClick = {
+                    val maxExistingPromoId = allRestaurants
+                        .flatMap { it.promos }
+                        .maxOfOrNull { it.id } ?: 0
 
-        Scaffold(
-            topBar = {
-                TopBar(
-                    showBackIcon = true,
-                    onNavClick = { navController.navigate(Screens.Home.route) }
-                )
-            },
-            bottomBar = { BottomNavigationBar(navController) },
+                    val newPromoId = maxExistingPromoId + 1
 
-            floatingActionButton = {
-                if (isAdmin && adminRestaurant != null) {
-                    EditFloatingButton(onClick = {
-                        val nuevoId = (adminRestaurant.promos.maxOfOrNull { it.id } ?: 0) + 1
-                        navController.navigate(Screens.PromoInfo.createRoute(nuevoId, isNew = true))
-                    })
-                }
+                    navController.navigate(Screens.PromoInfo.createRoute(newPromoId, isNew = true))
+                })
             }
-            ,
-            floatingActionButtonPosition = FabPosition.End
-        ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.backgroundlighttheme),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+        },
+        floatingActionButtonPosition = FabPosition.End
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
 
+            if (promoViewModel.promos.isEmpty() && promosToDisplay.isNotEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Cargando promociones...")
+                }
+            } else if (promoViewModel.promos.isEmpty() && promosToDisplay.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        if (adminRestaurant != null) "Tu restaurante aún no tiene promociones."
+                        else "No hay promociones disponibles en este momento."
+                    )
+                }
+            } else {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {
-                    promoViewModel.promos.forEach { promo ->
+                    promosToDisplay.forEach { promo ->
                         Box {
                             PromoCard(
                                 promo = promo,
@@ -93,7 +114,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                                 }
                             )
 
-                            if (isAdmin) {
+                            if (adminRestaurant != null && adminRestaurant.promos.any { it.id == promo.id }) {
                                 DeleteButton(
                                     onClick = {
                                         promoViewModel.deletePromo(promo)
@@ -103,10 +124,12 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                                         .align(Alignment.TopEnd)
                                 )
                             }
-
                         }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
+
             }
         }
     }
+}

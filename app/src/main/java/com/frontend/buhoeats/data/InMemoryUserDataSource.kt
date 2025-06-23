@@ -184,7 +184,7 @@ object InMemoryUserDataSource {
             ),
                  promos = listOf(
                     Promo(
-                        id = 1,
+                        id = 3,
                         name = "Ceviche mixto",
                         description = "Pescado, camarones y calamares en jugo de limón.",
                         imageUrl = "https://images.unsplash.com/photo-1626663011519-b42e5ee10056",
@@ -194,7 +194,7 @@ object InMemoryUserDataSource {
 
                     ),
                     Promo(
-                        id = 2,
+                        id = 4,
                         name = "Tacos al pastor",
                         description = "Tacos con carne de cerdo marinada al estilo mexicano.",
                         imageUrl = "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85",
@@ -242,10 +242,25 @@ object InMemoryUserDataSource {
     }
     fun blockUserFromRestaurant(userId: Int, restaurantId: Int) {
         val restaurant = getRestaurantById(restaurantId)
+        val user = getUserById(userId)
+
         restaurant?.let {
-            val mutableBlockedUsers = it.blockedUsers.toMutableList()
-            mutableBlockedUsers.add(userId)
-            it.blockedUsers = mutableBlockedUsers
+            if (!it.blockedUsers.contains(userId)) {
+                val mutableBlockedUsers = it.blockedUsers.toMutableList()
+                mutableBlockedUsers.add(userId)
+                it.blockedUsers = mutableBlockedUsers
+            }
+        }
+
+        user?.let { userToUpdate ->
+            if (userToUpdate.favoritos.contains(restaurantId)) {
+                val mutableFavorites = userToUpdate.favoritos.toMutableList()
+                mutableFavorites.remove(restaurantId)
+                val userIndex = users.indexOfFirst { it.id == userId }
+                if (userIndex != -1) {
+                    users[userIndex] = userToUpdate.copy(favoritos = mutableFavorites)
+                }
+            }
         }
     }
     fun unblockUserFromRestaurant(userId: Int, restaurantId: Int) {

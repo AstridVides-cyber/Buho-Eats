@@ -33,12 +33,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
+import android.widget.Toast
 
 @Composable
 fun StatisticsScreen(
@@ -50,6 +53,7 @@ fun StatisticsScreen(
     var currentRestaurant by remember { mutableStateOf(restaurant) }
     var showDialog by remember { mutableStateOf(false) }
     var userToBlock by remember { mutableStateOf<User?>(null) }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -74,67 +78,82 @@ fun StatisticsScreen(
                 contentScale = ContentScale.Crop
             )
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 16.dp)
-            ) {
-                val nonBlockedComments = currentRestaurant.comments.filter { comment ->
-                    comment.userId !in currentRestaurant.blockedUsers
+            val nonBlockedComments = currentRestaurant.comments.filter { comment ->
+                comment.userId !in currentRestaurant.blockedUsers
+            }
+
+            if (nonBlockedComments.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No hay reseñas aun en el restaurante",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center
+                    )
                 }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 16.dp)
+                ) {
+                    items(nonBlockedComments) { comment ->
+                        val user = InMemoryUserDataSource.getUsers().find { it.id == comment.userId }
+                        val rating = currentRestaurant.ratings.find { it.userId == comment.userId }
 
-                items(nonBlockedComments) { comment ->
-                    val user = InMemoryUserDataSource.getUsers().find { it.id == comment.userId }
-                    val rating = currentRestaurant.ratings.find { it.userId == comment.userId }
+                        Card(
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .fillMaxWidth(),
+                            elevation = CardDefaults.cardElevation(4.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.AccountCircle,
+                                        contentDescription = "Usuario",
+                                        tint = Color.Black,
+                                        modifier = Modifier.size(30.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
 
-                    Card(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(4.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White)
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Outlined.AccountCircle,
-                                    contentDescription = "Usuario",
-                                    tint = Color.Black,
-                                    modifier = Modifier.size(30.dp)
-                                )
+                                    val displayName = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
+
+                                    Text(
+                                        text = displayName,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 18.sp
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+
+                                    IconButton(onClick = {
+                                        userToBlock = user
+                                        showDialog = true
+                                    }) {
+                                        Icon(Icons.Default.Block, contentDescription = null, tint = Color.Red)
+                                    }
+                                }
+
                                 Spacer(modifier = Modifier.width(8.dp))
 
-                                val displayName = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
+                                Text(text = comment.comment, fontSize = 16.sp, color = Color.DarkGray)
+                                Spacer(modifier = Modifier.height(8.dp))
 
-                                Text(
-                                    text = displayName,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
-
-                                IconButton(onClick = {
-                                    userToBlock = user
-                                    showDialog = true
-                                }) {
-                                    Icon(Icons.Default.Block, contentDescription = null, tint = Color.Red)
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(text = comment.comment, fontSize = 16.sp, color = Color.DarkGray)
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            rating?.let {
-                                Row {
-                                    repeat(it.rating) {
-                                        Icon(
-                                            Icons.Default.Star,
-                                            contentDescription = null,
-                                            tint = Color(0xFFFFC107),
-                                            modifier = Modifier.size(20.dp)
-                                        )
+                                rating?.let {
+                                    Row {
+                                        repeat(it.rating) {
+                                            Icon(
+                                                Icons.Default.Star,
+                                                contentDescription = null,
+                                                tint = Color(0xFFFFC107),
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -142,7 +161,6 @@ fun StatisticsScreen(
                     }
                 }
             }
-
             if (showDialog && userToBlock != null) {
                 ConfirmationDialog(
                     message = "¿Estás seguro que deseas bloquear a este usuario?",
@@ -156,6 +174,7 @@ fun StatisticsScreen(
                             },
                             restaurantId = currentRestaurant.id
                         )
+                        Toast.makeText(context, "Usuario bloqueado exitosamente", Toast.LENGTH_SHORT).show()
                         showDialog = false
                         userToBlock = null
                     },

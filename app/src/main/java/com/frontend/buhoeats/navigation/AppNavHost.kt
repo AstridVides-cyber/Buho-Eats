@@ -152,7 +152,7 @@ fun AppNavHost(navController: NavHostController) {
                 BlockedUsersScreen(
                     navController = navController,
                     userSessionViewModel = userSessionViewModel,
-                    blockeUsersViewModel = blockedUsersViewModel,
+                    blockedUsersViewModel = blockedUsersViewModel,
                     restaurant = restaurant
                 )
             }
