@@ -15,6 +15,10 @@ object ValidatorUtils {
         return password.matches(regex)
     }
 
+    fun isOnlyNumbers(text: String): Boolean {
+        return text.matches(Regex("^[0-9]+$"))
+    }
+
 
     fun capitalizeWords(input: String): String {
         return input.split(" ").joinToString(" ") { it.lowercase().replaceFirstChar { c -> c.uppercaseChar() } }

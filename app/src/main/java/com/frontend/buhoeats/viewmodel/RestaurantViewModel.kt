@@ -59,6 +59,18 @@ class RestaurantViewModel : ViewModel() {
             }
         }
     }
+    fun removeDishFromRestaurant(restaurantId: Int, dishId: Int) {
+        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
+        restaurant?.let {
+            val updatedMenu = it.menu.filterNot { dish -> dish.id == dishId }
+            val updatedRestaurant = it.copy(menu = updatedMenu)
+            InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
+            val index = _restaurantList.indexOfFirst { r -> r.id == restaurantId }
+            if (index != -1) {
+                _restaurantList[index] = updatedRestaurant
+            }
+        }
+    }
 }
 
 class BlockedUsersViewModel : ViewModel() {

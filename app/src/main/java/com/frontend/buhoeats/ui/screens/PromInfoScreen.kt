@@ -42,6 +42,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
 import com.frontend.buhoeats.data.InMemoryUserDataSource
+import com.frontend.buhoeats.utils.ValidatorUtils.isOnlyNumbers
+
+
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 
@@ -68,6 +71,8 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
         var reglas by remember { mutableStateOf(promo.reglas) }
 
         var showError by remember { mutableStateOf(false) }
+        var promPriceError by remember { mutableStateOf(false) }
+        var currentPriceError by remember { mutableStateOf(false) }
         val currentUser = userSessionViewModel.currentUser.value
         val adminRestaurant = InMemoryUserDataSource.getRestaurants().firstOrNull { it.admin == currentUser?.id }
         val context = LocalContext.current
@@ -200,24 +205,42 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                             Text("Antes:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
                             OutlinedTextField(
                                 value = promprice,
-                                onValueChange = { promprice = it },
+                                onValueChange = {
+                                    promprice = it
+                                    promPriceError = !isOnlyNumbers(it)
+                                                },
                                 shape = RoundedCornerShape(12.dp),
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = OutlinedTextFieldDefaults.colors(
                                     unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
-                                    focusedContainerColor = Color.White.copy(alpha = 0.95f)
-                                ))
+                                    focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                                    errorContainerColor = Color.White.copy(alpha = 0.8f)
+                                ),
+                                isError = promPriceError,
+                            )
+                            if (promPriceError) {
+                                ValidationMessage("Solo números permitidos")
+                            }
                         }
                         Column(Modifier.weight(1f)) {
                             Text("Ahora:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
                             OutlinedTextField(value = price,
-                                onValueChange = { price = it },
+                                onValueChange = {
+                                    price = it
+                                    currentPriceError = !isOnlyNumbers(it)
+                                                },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(12.dp),
                                 colors = OutlinedTextFieldDefaults.colors(
                                     unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
-                                    focusedContainerColor = Color.White.copy(alpha = 0.95f)
-                                ))
+                                    focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                                    errorContainerColor = Color.White.copy(alpha = 0.8f)
+                                ),
+                                isError = currentPriceError,
+                            )
+                            if (currentPriceError) {
+                                ValidationMessage("Solo números permitidos")
+                            }
                         }
                     } else {
                         Text("$${promprice}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Green)
@@ -265,6 +288,10 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                     Spacer(modifier = Modifier.height(8.dp))
                     ValidationMessage("Por favor completa todos los campos")
                 }
+                if ((promPriceError || currentPriceError) && !showError) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ValidationMessage("Los precios solo deben contener números")
+                }
 
                 if (isEditing) {
                     Spacer(modifier = Modifier.height(16.dp))
@@ -293,7 +320,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                         Button(
                             shape = RoundedCornerShape(12.dp),
                             onClick = {
-                            if (name.isBlank() || description.isBlank() || promprice.isBlank() || price.isBlank()) {
+                            if (name.isBlank() || description.isBlank() || promprice.isBlank() || price.isBlank() || promPriceError || currentPriceError) {
                                 showError = true
                             } else {
                                 val formattedPromPrice = "%.2f".format(promprice.toDoubleOrNull() ?: 0.0)
@@ -307,7 +334,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                                     price = formattedPrice,
                                     imageUrl = selectedImageUri?.toString()
                                         ?: promo.imageUrl.ifBlank {
-                                            "https://plus.unsplash.com/premium_photo-1670604211960-82b8d84f6aea"
+                                            "https://images.unsplash.com/photo-1722639096462-dc586c185186"
                                         },
                                     reglas = reglas,
                                     restaurantId = adminRestaurant?.id ?: promo.restaurantId
