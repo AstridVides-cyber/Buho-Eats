@@ -1,7 +1,7 @@
 package com.frontend.buhoeats.ui.screens
 
-
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,16 +44,18 @@ import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import androidx.compose.runtime.LaunchedEffect
 import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.utils.ValidatorUtils.isValidPhoneNumber
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EditInfo(
+fun EditInfoAdmin(
     navController: NavController,
     userSessionViewModel: UserSessionViewModel,
     restaurantViewModel: RestaurantViewModel
 ) {
     val currentUser = userSessionViewModel.currentUser.value
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     val restaurant = InMemoryUserDataSource.getRestaurants().find { it.admin == currentUser?.id }
 
@@ -116,7 +119,7 @@ fun EditInfo(
                     isError = emailError
                 )
                 if (emailError) {
-                    ValidationMessage("El correo no puede estar vacío")
+                    ValidationMessage(if (email.isBlank()) "El correo no puede estar vacío" else "El formato del correo no es válido")
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -128,7 +131,7 @@ fun EditInfo(
                     isError = phoneError
                 )
                 if (phoneError) {
-                    ValidationMessage("El teléfono no puede estar vacío")
+                    ValidationMessage(if (phone.isBlank()) "El teléfono no puede estar vacío" else "El formato del teléfono no es válido")
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -188,8 +191,8 @@ fun EditInfo(
 
                     Button(
                         onClick = {
-                            emailError = email.isBlank()
-                            phoneError = phone.isBlank()
+                            emailError = email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                            phoneError = phone.isBlank() || !isValidPhoneNumber(phone)
                             scheduleError = schedule.isBlank()
                             addressError = address.isBlank()
 
@@ -203,6 +206,7 @@ fun EditInfo(
                                     )
                                 )
                                 restaurantViewModel.updateRestaurant(updatedRestaurant)
+                                Toast.makeText(context, "Información editada exitosamente", Toast.LENGTH_SHORT).show()
                                 navController.popBackStack()
                             }
                         },

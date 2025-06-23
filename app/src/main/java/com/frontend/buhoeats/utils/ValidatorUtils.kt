@@ -19,6 +19,9 @@ object ValidatorUtils {
         return text.matches(Regex("^[0-9]+$"))
     }
 
+    fun isValidPhoneNumber(phoneNumber: String): Boolean {
+        return phoneNumber.matches(Regex("^[+]?[0-9\\s-]+$"))
+    }
 
     fun capitalizeWords(input: String): String {
         return input.split(" ").joinToString(" ") { it.lowercase().replaceFirstChar { c -> c.uppercaseChar() } }

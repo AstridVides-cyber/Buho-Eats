@@ -15,7 +15,7 @@ import androidx.navigation.navArgument
 import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.ui.screens.BlockedUsersScreen
-import com.frontend.buhoeats.ui.screens.EditInfo
+import com.frontend.buhoeats.ui.screens.EditInfoAdmin
 import com.frontend.buhoeats.ui.screens.EditImageScreen
 import com.frontend.buhoeats.ui.screens.EditLocalScreen
 import com.frontend.buhoeats.ui.screens.EditMenuScreen
@@ -175,7 +175,7 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable(Screens.EditInfo.route) {
-            EditInfo(
+            EditInfoAdmin(
                 navController = navController,
                 userSessionViewModel = userSessionViewModel,
                 restaurantViewModel = restaurantViewModel
