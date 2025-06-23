@@ -43,6 +43,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import com.frontend.buhoeats.models.User
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 
 
 fun isAdminOfRestaurant(user: User?, restaurant: Restaurant): Boolean {
@@ -53,7 +54,8 @@ fun isAdminOfRestaurant(user: User?, restaurant: Restaurant): Boolean {
 fun EditImageScreen(
     navController: NavController,
     restaurant: Restaurant,
-    userSessionViewModel: UserSessionViewModel
+    userSessionViewModel: UserSessionViewModel,
+    restaurantViewModel: RestaurantViewModel
 ) {
     val currentUser = userSessionViewModel.currentUser.value
     val isAdmin = isAdminOfRestaurant(currentUser, restaurant)
@@ -155,8 +157,12 @@ fun EditImageScreen(
                 Button(
                     onClick = {
                         val nuevaImagen = selectedImageUri?.toString() ?: currentImageUrl
-                        println("Guardar imagen: $nuevaImagen")
-
+                        restaurantViewModel.updateRestaurantImage(restaurant.id, nuevaImagen)
+                            android.widget.Toast.makeText(
+                            navController.context,
+                            "Imagen guardada correctamente",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
                         navController.popBackStack()
                     },
                     enabled = selectedImageUri != null || currentImageUrl.isNotBlank(),

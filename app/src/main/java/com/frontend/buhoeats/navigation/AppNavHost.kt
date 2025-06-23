@@ -207,7 +207,8 @@ fun AppNavHost(navController: NavHostController) {
                 EditImageScreen(
                     navController = navController,
                     restaurant = restaurant,
-                    userSessionViewModel = userSessionViewModel
+                    userSessionViewModel = userSessionViewModel,
+                    restaurantViewModel = restaurantViewModel
                 )
             }
         }
