@@ -32,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -49,7 +48,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.ContactInfo
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
@@ -60,7 +58,14 @@ import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.TextField
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import com.frontend.buhoeats.ui.components.DropdownFormField
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditLocalScreen(
@@ -84,6 +89,11 @@ fun EditLocalScreen(
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var showConfirmationDialog by remember { mutableStateOf(false) }
+
+    val categorias = listOf("Desayuno", "Almuerzo", "Cena")
+    var categoria by remember { mutableStateOf(restaurant?.category ?: "") }
+    var expanded by remember { mutableStateOf(false) }
+    var categoriaError by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -112,12 +122,12 @@ fun EditLocalScreen(
                     nameError = name.isBlank()
                     descriptionError = description.isBlank()
                     emailError = !ValidatorUtils.isValidEmail(adminEmail)
+                    categoriaError = categoria.isBlank()
 
-                    if (!nameError && !descriptionError && !emailError) {
+                    if (!nameError && !descriptionError && !emailError && !categoriaError) {
                         showConfirmationDialog = true
                     }
-                }
-                ,
+                },
                 containerColor = Color(0xFF06BB0C),
                 contentColor = Color.White,
                 modifier = Modifier.size(70.dp),
@@ -220,6 +230,21 @@ fun EditLocalScreen(
                 )
                 if (descriptionError) ValidationMessage("La descripción no puede estar vacía")
 
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                DropdownFormField(
+                    label = "Categoría:",
+                    options = categorias,
+                    selectedOption = categoria,
+                    onOptionSelected = {
+                        categoria = it
+                        categoriaError = false
+                    },
+                    isError = categoriaError
+                )
+                if (categoriaError) ValidationMessage("Selecciona una categoría")
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
@@ -248,7 +273,7 @@ fun EditLocalScreen(
                                 imageUrl = selectedImageUri?.toString()
                                     ?: restaurant?.imageUrl
                                     ?: "https://images.unsplash.com/photo-1525610553991-2bede1a236e2",
-                                category = restaurant?.category ?: "",
+                                category = categoria,
                                 contactInfo = restaurant?.contactInfo ?: ContactInfo("", "", "", ""),
                                 ratings = restaurant?.ratings?.toMutableList() ?: mutableListOf(),
                                 comments = restaurant?.comments?.toMutableList() ?: mutableListOf(),
