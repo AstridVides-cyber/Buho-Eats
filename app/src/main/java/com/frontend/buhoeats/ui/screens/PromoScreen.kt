@@ -88,7 +88,7 @@ fun PromoScreen(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("Cargando promociones...")
                 }
-            } else if (promos.isEmpty() && promosToDisplay.isEmpty()) {
+            } else if (promos.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         if (adminRestaurant != null) "Tu restaurante aún no tiene promociones."

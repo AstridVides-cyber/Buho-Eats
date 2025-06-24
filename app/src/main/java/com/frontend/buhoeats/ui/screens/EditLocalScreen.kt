@@ -316,8 +316,6 @@ fun EditLocalScreen(
                                 adminRoleError = true
                                 showConfirmationDialog = false
                                 return@ConfirmationDialog
-
-                                showConfirmationDialog = false
                         }
                     },
                     onDismiss = {

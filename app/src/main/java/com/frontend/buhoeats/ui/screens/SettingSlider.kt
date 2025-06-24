@@ -22,18 +22,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.navigation.Screens
-import com.frontend.buhoeats.ui.components.BottomNavigationBar
-import com.frontend.buhoeats.ui.components.TopBar
 
 @Composable
 fun SettingSlider(
