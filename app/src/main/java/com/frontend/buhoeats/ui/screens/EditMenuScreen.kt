@@ -56,6 +56,7 @@ import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.utils.ValidatorUtils.isOnlyNumbers
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import java.util.UUID
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -214,7 +215,7 @@ fun EditMenuScreen(
                                 val formattedPrice = "%.2f".format(price.toDoubleOrNull() ?: 0.0)
 
                                 val newDish = Dish(
-                                    id = restaurant.menu.size + 1,
+                                    id = UUID.randomUUID().toString(),
                                     name = name,
                                     description = description,
                                     imageUrl = imageUri?.toString() ?: "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22",

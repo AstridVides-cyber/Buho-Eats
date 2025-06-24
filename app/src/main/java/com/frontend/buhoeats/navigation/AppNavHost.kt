@@ -89,10 +89,10 @@ fun AppNavHost(navController: NavHostController) {
 
         composable(
             route = Screens.Restaurant.route,
-            arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })
+            arguments = listOf(navArgument("restaurantId") { type = NavType.StringType })
         ) { backStackEntry ->
-            val restaurantId = backStackEntry.arguments?.getInt("restaurantId")
-            val restaurant = InMemoryUserDataSource.getRestaurants().find { it.id == restaurantId }
+            val restaurantId = backStackEntry.arguments?.getString("restaurantId")
+            val restaurant = restaurantViewModel.restaurantList.find { it.id == restaurantId }
 
             if (restaurant != null) {
                 RestaurantScreen(
@@ -121,8 +121,8 @@ fun AppNavHost(navController: NavHostController) {
             Search(
                 onBack = { navController.navigate(Screens.Home.route) },
                 onSearchResultClick = { restaurantName ->
-                    val restaurant = InMemoryUserDataSource.getRestaurants().find { it.name == restaurantName }
-                    restaurant?.let {
+                    val searchedRestaurant = restaurantViewModel.restaurantList.find { it.name == restaurantName }
+                    searchedRestaurant?.let {
                         navController.navigate(Screens.Restaurant.createRoute(it.id))
                     }
                 },
@@ -147,10 +147,10 @@ fun AppNavHost(navController: NavHostController) {
 
         composable(
             route = Screens.BlockedUser.route,
-            arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })
+            arguments = listOf(navArgument("restaurantId") { type = NavType.StringType })
         ) { backStackEntry ->
-            val restaurantId = backStackEntry.arguments?.getInt("restaurantId")
-            val restaurant = InMemoryUserDataSource.getRestaurants().find { it.id == restaurantId }
+            val restaurantId = backStackEntry.arguments?.getString("restaurantId")
+            val restaurant = restaurantViewModel.restaurantList.find { it.id == restaurantId }
 
             if (restaurant != null) {
                 BlockedUsersScreen(
@@ -191,7 +191,7 @@ fun AppNavHost(navController: NavHostController) {
 
         composable(Screens.Statistics.route) {
             currentUser?.let { user ->
-                val restaurant = InMemoryUserDataSource.getRestaurants().find { it.admin == user.id }
+                val restaurant = restaurantViewModel.restaurantList.find { it.admin == user.id }
                 if (restaurant != null) {
                     StatisticsScreen(
                         navController = navController,
@@ -204,9 +204,9 @@ fun AppNavHost(navController: NavHostController) {
 
         composable(
             route = Screens.ImagesRestaurant.route,
-            arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })
+            arguments = listOf(navArgument("restaurantId") { type = NavType.StringType })
         ) { backStackEntry ->
-            val restaurantId = backStackEntry.arguments?.getInt("restaurantId")
+            val restaurantId = backStackEntry.arguments?.getString("restaurantId")
             val restaurant = restaurantViewModel.restaurantList.find { it.id == restaurantId }
 
             if (restaurant != null) {
@@ -222,33 +222,32 @@ fun AppNavHost(navController: NavHostController) {
         composable(
             route = Screens.PromoInfo.route,
             arguments = listOf(
-                navArgument("promoId") { type = NavType.IntType },
+                navArgument("promoId") { type = NavType.StringType },
                 navArgument("isNew") { type = NavType.BoolType; defaultValue = false }
             )
         ) { backStackEntry ->
-            val promoId = backStackEntry.arguments?.getInt("promoId") ?: -1
+            val promoId = backStackEntry.arguments?.getString("promoId") ?: "-1"
             val isNew = backStackEntry.arguments?.getBoolean("isNew") ?: false
             val promos by promoViewModel.promos.collectAsState()
 
             val promo = if (isNew) {
                 Promo(
-                    id = promoId,
+                    id = "-1", // Placeholder for new promo
                     name = "",
                     description = "",
                     promprice = "",
                     price = "",
                     imageUrl = "",
                     reglas = "",
-                    restaurantId = 0
+                    restaurantId = ""
                 )
             } else {
                 promos.find { it.id == promoId } ?: return@composable
             }
 
             val restaurant =
-                InMemoryUserDataSource.getRestaurants().find { it.promos.any { it.id == promoId } }
-                    ?: InMemoryUserDataSource.getRestaurants()
-                        .find { it.admin == userSessionViewModel.currentUser.value?.id }
+                restaurantViewModel.restaurantList.find { it.promos.any { promo -> promo.id == promoId } }
+                    ?: restaurantViewModel.restaurantList.find { it.admin == userSessionViewModel.currentUser.value?.id }
 
             val isAdmin = userSessionViewModel.currentUser.value?.rol == "admin"
 
@@ -275,13 +274,13 @@ fun AppNavHost(navController: NavHostController) {
         composable(
             route = Screens.EditLocal.route,
             arguments = listOf(
-                navArgument("restaurantId") { type = NavType.IntType },
+                navArgument("restaurantId") { type = NavType.StringType },
                 navArgument("isNew") { type = NavType.BoolType; defaultValue = false }
             )
         ) { backStackEntry ->
-            val restaurantId = backStackEntry.arguments?.getInt("restaurantId") ?: -1
+            val restaurantId = backStackEntry.arguments?.getString("restaurantId") ?: "-1"
             val isNew = backStackEntry.arguments?.getBoolean("isNew") ?: false
-            val restaurant = InMemoryUserDataSource.getRestaurants().find { it.id == restaurantId }
+            val restaurant = restaurantViewModel.restaurantList.find { it.id == restaurantId }
 
             EditLocalScreen(
                 isNewLocal = isNew,

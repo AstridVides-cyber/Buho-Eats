@@ -75,8 +75,8 @@ class FavoritesViewModel(
     private val userSessionViewModel: UserSessionViewModel
 ) : ViewModel() {
 
-    private val _favoriteRestaurantIds = MutableStateFlow<Set<Int>>(emptySet())
-    val favoriteRestaurantIds: StateFlow<Set<Int>> = _favoriteRestaurantIds.asStateFlow()
+    private val _favoriteRestaurantIds = MutableStateFlow<Set<String>>(emptySet())
+    val favoriteRestaurantIds: StateFlow<Set<String>> = _favoriteRestaurantIds.asStateFlow()
 
     init {
         userSessionViewModel.currentUser.value?.favoritos?.let { favs ->
@@ -90,7 +90,7 @@ class FavoritesViewModel(
         }
     }
 
-    fun toggleFavorite(restaurantId: Int) {
+    fun toggleFavorite(restaurantId: String) {
         val currentUser = userSessionViewModel.currentUser.value ?: return
         val current = _favoriteRestaurantIds.value.toMutableSet()
 

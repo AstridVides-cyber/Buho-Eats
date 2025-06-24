@@ -297,7 +297,7 @@ fun SettingSlider(
                         .padding(15.dp)
                         .clickable {
                             navController.navigate(
-                                Screens.BlockedUser.createRoute(restaurant.id)
+                                Screens.BlockedUser.createRoute(restaurant.id.toString())
                             )
                         }
                 ) {

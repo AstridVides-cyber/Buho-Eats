@@ -23,7 +23,7 @@ class RestaurantViewModel : ViewModel() {
         _restaurantList.addAll(InMemoryUserDataSource.getRestaurants())
     }
 
-    fun deleteRestaurant(restaurantId: Int) {
+    fun deleteRestaurant(restaurantId: String) {
         InMemoryUserDataSource.deleteRestaurant(restaurantId)
         _restaurantList.removeIf { it.id == restaurantId }
     }
@@ -41,14 +41,14 @@ class RestaurantViewModel : ViewModel() {
         }
     }
 
-    fun getNextRestaurantId(): Int {
+    fun getNextRestaurantId(): String {
         return InMemoryUserDataSource.getNextRestaurantId()
     }
 
-    fun getUserEmailById(userId: Int): String {
+    fun getUserEmailById(userId: String): String {
         return InMemoryUserDataSource.getUserEmailById(userId)
     }
-    fun updateRestaurantImage(restaurantId: Int, newImageUrl: String) {
+    fun updateRestaurantImage(restaurantId: String, newImageUrl: String) {
         val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
         restaurant?.let {
             val updatedRestaurant = it.copy(imageUrl = newImageUrl)
@@ -59,7 +59,7 @@ class RestaurantViewModel : ViewModel() {
             }
         }
     }
-    fun removeDishFromRestaurant(restaurantId: Int, dishId: Int) {
+    fun removeDishFromRestaurant(restaurantId: String, dishId: String) {
         val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
         restaurant?.let {
             val updatedMenu = it.menu.filterNot { dish -> dish.id == dishId }
@@ -77,7 +77,7 @@ class BlockedUsersViewModel : ViewModel() {
     private val _blockedUsers = mutableStateListOf<User>()
     val blockedUsers: List<User> get() = _blockedUsers
 
-    fun loadBlockedUsers(restaurantId: Int) {
+    fun loadBlockedUsers(restaurantId: String) {
         val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
         _blockedUsers.clear()
         restaurant?.let {
@@ -89,7 +89,7 @@ class BlockedUsersViewModel : ViewModel() {
         }
     }
 
-    fun unblockUser(user: User, restaurantId: Int, onUpdate: (Restaurant) -> Unit) {
+    fun unblockUser(user: User, restaurantId: String, onUpdate: (Restaurant) -> Unit) {
         InMemoryUserDataSource.unblockUserFromRestaurant(user.id, restaurantId)
         _blockedUsers.remove(user)
         InMemoryUserDataSource.getRestaurantById(restaurantId)?.let {
@@ -98,7 +98,7 @@ class BlockedUsersViewModel : ViewModel() {
         }
     }
 
-    fun blockUser(user: User, restaurantId: Int, onUpdate: (Restaurant) -> Unit) {
+    fun blockUser(user: User, restaurantId: String, onUpdate: (Restaurant) -> Unit) {
         val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
         restaurant?.let {
             InMemoryUserDataSource.blockUserFromRestaurant(user.id, restaurantId)

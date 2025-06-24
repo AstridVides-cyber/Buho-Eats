@@ -26,6 +26,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
+import java.util.UUID
 
 @Composable
 fun PromoScreen(
@@ -64,8 +65,7 @@ fun PromoScreen(
         floatingActionButton = {
             if (adminRestaurant != null) {
                 EditFloatingButton(onClick = {
-                    val maxExistingPromoId = promos.maxOfOrNull { it.id } ?: 0
-                    val newPromoId = maxExistingPromoId + 1
+                    val newPromoId = UUID.randomUUID().toString()
                     navController.navigate(Screens.PromoInfo.createRoute(newPromoId, isNew = true))
                 })
             }

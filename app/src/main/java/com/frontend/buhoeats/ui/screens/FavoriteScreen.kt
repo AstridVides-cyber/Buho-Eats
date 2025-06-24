@@ -36,7 +36,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 @Composable
 fun FavoriteScreen(
-    onRestaurantClick: (Int) -> Unit,
+    onRestaurantClick: (String) -> Unit,
     onBack: () -> Unit = {},
     navController: NavController,
     userSessionViewModel: UserSessionViewModel,

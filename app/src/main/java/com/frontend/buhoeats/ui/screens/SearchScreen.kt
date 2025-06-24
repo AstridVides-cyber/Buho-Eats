@@ -47,7 +47,7 @@ fun Search(
 
     val searchViewModel: SearchViewModel = viewModel(
         factory = SearchViewModelFactory(
-            userId = currentUser?.id ?: 0,
+            userId = currentUser?.id ?: "",
             context = context
         )
     )

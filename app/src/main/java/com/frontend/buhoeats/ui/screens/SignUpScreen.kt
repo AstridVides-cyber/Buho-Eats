@@ -48,7 +48,7 @@ import com.frontend.buhoeats.ui.components.CustomTextField
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
-import kotlin.random.Random
+import java.util.UUID
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -238,7 +238,7 @@ fun SignUp(navController: NavController,
 
                     if (!hasError) {
                         val newUser = User(
-                            id = Random.nextInt(),
+                            id = UUID.randomUUID().toString(),
                             name = name,
                             lastName = lastname,
                             email = email,

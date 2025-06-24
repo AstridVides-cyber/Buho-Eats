@@ -44,7 +44,7 @@ fun BlockedUsersScreen(
     val context = LocalContext.current
 
     LaunchedEffect(restaurant) {
-        if (isAdminOfThisRestaurant) {
+        if (isAdminOfThisRestaurant && restaurant.id.isNotBlank()) {
             blockedUsersViewModel.loadBlockedUsers(restaurant.id)
         }
     }
@@ -105,12 +105,20 @@ fun BlockedUsersScreen(
                                     user = user,
                                     onConfirmAction = {
                                         blockedUsersViewModel.unblockUser(
-                                            user,
                                             restaurantId = restaurant.id,
                                             onUpdate = { updatedRestaurant ->
-                                                Toast.makeText(context, "Usuario desbloqueado exitosamente", Toast.LENGTH_SHORT).show()
-                                                blockedUsersViewModel.loadBlockedUsers(updatedRestaurant.id)
-                                            }
+                                                Toast.makeText(
+                                                    context,
+                                                    "Usuario desbloqueado exitosamente",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                if (updatedRestaurant.id.isNotBlank()) {
+                                                    blockedUsersViewModel.loadBlockedUsers(
+                                                        updatedRestaurant.id
+                                                    )
+                                                }
+                                            },
+                                            user = user
                                         )
                                     }
                                 )

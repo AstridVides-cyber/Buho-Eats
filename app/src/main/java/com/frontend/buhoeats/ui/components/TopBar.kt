@@ -80,8 +80,3 @@ fun TopBar(
         }
     )
 }
-@Preview
-@Composable
-fun Topprev(){
-    TopBar(showBackIcon = true )
-}

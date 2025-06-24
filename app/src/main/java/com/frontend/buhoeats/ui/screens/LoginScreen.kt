@@ -83,9 +83,8 @@ fun Login(
                                 Pair(parts.firstOrNull() ?: "", parts.drop(1).joinToString(" "))
                             }
 
-
                             val newUser = User(
-                                id = user.uid.hashCode(),
+                                id = user.uid,
                                 name = name,
                                 lastName = lastName,
                                 email = user.email ?: "",
@@ -93,7 +92,6 @@ fun Login(
                                 imageProfile = user.photoUrl?.toString() ?: "",
                                 rol = "usuario"
                             )
-
 
                             if (userSessionViewModel.getUserByEmail(newUser.email) == null) {
                                 userSessionViewModel.registerUser(newUser)

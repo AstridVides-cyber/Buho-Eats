@@ -43,7 +43,6 @@ import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.password
 
 val montserratFontFamily = FontFamily(
     Font(R.font.montserrat_bold)

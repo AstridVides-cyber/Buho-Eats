@@ -284,7 +284,7 @@ fun EditLocalScreen(
                         }
                         if (adminUser != null) {
                             val updatedRestaurant = Restaurant(
-                                id = restaurant?.id ?: restaurantViewModel.getNextRestaurantId(),
+                                id = restaurant?.id ?: restaurantViewModel.getNextRestaurantId().toString(),
                                 name = name,
                                 description = description,
                                 imageUrl = selectedImageUri?.toString()

@@ -262,7 +262,7 @@ fun RolAssign(
                                 return@Button
                             }
 
-                            val success = userSessionViewModel.assignRoleToUser(email, roleValue)
+                            val success = userSessionViewModel.assignRoleToUser(email.toString(), roleValue.toString())
 
                             if (success) {
                                 Toast.makeText(context, "Rol asignado exitosamente", Toast.LENGTH_SHORT).show()

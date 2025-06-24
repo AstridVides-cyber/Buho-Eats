@@ -64,7 +64,7 @@ import kotlin.math.absoluteValue
 
 @Composable
 fun HomeScreen(
-    onRestaurantClick: (Int) -> Unit,
+    onRestaurantClick: (String) -> Unit,
     navController: NavController,
     userSessionViewModel: UserSessionViewModel,
     restaurantViewModel: RestaurantViewModel
@@ -225,7 +225,7 @@ fun HomeScreen(
                         item {
                             AddRestaurantCard(onClick = {
                                 isCreatingNewLocal = true
-                                navController.navigate(Screens.EditLocal.createRoute(-1, true))
+                                navController.navigate(Screens.EditLocal.createRoute("-1", true))
                             })
                             Spacer(modifier = Modifier.height(10.dp))
                         }

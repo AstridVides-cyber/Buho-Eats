@@ -53,7 +53,7 @@ import com.frontend.buhoeats.ui.components.TopBar
 fun EditRestaurantScreen(
     navController: NavHostController,
     onBack: () -> Unit = {},
-    onEditImages: (Int) -> Unit = {},
+    onEditImages: (String) -> Unit = {},
     onEditMenu: () -> Unit = {},
     onEditInfo: () -> Unit = {},
     restaurant: Restaurant

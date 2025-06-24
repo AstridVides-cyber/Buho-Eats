@@ -3,19 +3,19 @@ package com.frontend.buhoeats.models
 import java.io.Serializable
 
 data class User(
-    val id: Int,
+    val id: String,
     val name: String,
     val lastName: String,
     val email: String,
     val password: String,
     val imageProfile: String,
     val rol: String,
-    var favoritos: MutableList<Int> = mutableListOf()
+    var favoritos: MutableList<String> = mutableListOf()
 )
 : Serializable
 
 data class Dish(
-    val id: Int,
+    val id: String,
     val name: String,
     val description: String,
     val imageUrl: String,
@@ -23,7 +23,7 @@ data class Dish(
 ) : Serializable
 
 data class Restaurant(
-    val id: Int,
+    val id: String,
     val name: String,
     val description: String,
     val imageUrl: String,
@@ -35,8 +35,8 @@ data class Restaurant(
     var promos: List<Promo>,
     val latitud: Double,
     val longitud: Double,
-    val admin : Int,
-    var blockedUsers: List<Int> = emptyList()
+    val admin : String,
+    var blockedUsers: List<String> = emptyList()
 ) : Serializable
 
 data class ContactInfo(
@@ -47,22 +47,22 @@ data class ContactInfo(
 ) : Serializable
 
 data class Rating(
-    val userId: Int,
+    val userId: String,
     val rating: Int
 ) : Serializable
 
 data class Comment(
-    val userId: Int,
+    val userId: String,
     val comment: String
 ) : Serializable
 
 data class Promo (
-    val id: Int,
+    val id: String,
     val name: String,
     val description: String,
     val imageUrl: String,
     val price: String,
     val promprice :String,
     val reglas : String,
-    val restaurantId: Int
+    val restaurantId: String
 )

@@ -74,7 +74,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
         var promPriceError by remember { mutableStateOf(false) }
         var currentPriceError by remember { mutableStateOf(false) }
         val currentUser = userSessionViewModel.currentUser.value
-        val adminRestaurant = InMemoryUserDataSource.getRestaurants().firstOrNull { it.admin == currentUser?.id }
+        val adminRestaurant = InMemoryUserDataSource.getRestaurants().firstOrNull { it.admin == currentUser?.id.toString() }
         val context = LocalContext.current
 
 
@@ -337,7 +337,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                                             "https://images.unsplash.com/photo-1722639096462-dc586c185186"
                                         },
                                     reglas = reglas,
-                                    restaurantId = adminRestaurant?.id ?: promo.restaurantId
+                                    restaurantId = adminRestaurant?.id?.toString() ?: promo.restaurantId
                                 )
 
                                 if (esNuevaPromo) {

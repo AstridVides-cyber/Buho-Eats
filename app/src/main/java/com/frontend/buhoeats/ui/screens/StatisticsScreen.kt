@@ -79,7 +79,7 @@ fun StatisticsScreen(
             )
 
             val nonBlockedComments = currentRestaurant.comments.filter { comment ->
-                comment.userId !in currentRestaurant.blockedUsers
+                !currentRestaurant.blockedUsers.contains(comment.userId)
             }
 
             if (nonBlockedComments.isEmpty()) {
