@@ -38,9 +38,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun PromoInfoScreen(
         isAdmin: Boolean = false,
@@ -70,7 +72,10 @@ import androidx.compose.foundation.shape.CircleShape
             selectedImageUri = uri
         }
 
-
+        val backgroundImage = if (ThemeManager.isDarkTheme)
+            painterResource(id = R.drawable.backgrounddark)
+        else
+            painterResource(id = R.drawable.backgroundlighttheme)
 
         Scaffold(
             topBar = {
@@ -94,7 +99,7 @@ import androidx.compose.foundation.shape.CircleShape
                     .padding(paddingValues)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.backgroundlighttheme),
+                    painter = backgroundImage,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -106,10 +111,10 @@ import androidx.compose.foundation.shape.CircleShape
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {
-                    Text("Promoción", fontSize = 26.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+                    Text("Promoción", fontSize = 26.sp, fontWeight = FontWeight.ExtraBold, color = AppColors.texto)
 
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(restaurantName, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    Text(restaurantName, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = AppColors.texto)
                     Spacer(modifier = Modifier.height(12.dp))
                     Box(
                         modifier = Modifier
@@ -151,7 +156,7 @@ import androidx.compose.foundation.shape.CircleShape
                                 modifier = Modifier
                                     .offset(x = (-8).dp, y = (-8).dp)
                                     .size(48.dp)
-                                    .background(Color.White, CircleShape)
+                                    .background(AppColors.text, CircleShape)
                                     .border(1.dp, Color.Gray, CircleShape)
                             ) {
                                 Image(
@@ -165,17 +170,21 @@ import androidx.compose.foundation.shape.CircleShape
                     Spacer(modifier = Modifier.height(8.dp))
 
                 if (isEditing) {
-                    Text("Titulo:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                    Text("Titulo:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = AppColors.texto)
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
-                        focusedContainerColor = Color.White.copy(alpha = 0.95f)))
+                            unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
+                            focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
+                        )
+                    )
                 } else {
-                    Text(name, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    Text(name, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = AppColors.texto)
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -186,7 +195,7 @@ import androidx.compose.foundation.shape.CircleShape
                 ) {
                     if (isEditing) {
                         Column(Modifier.weight(1f)) {
-                            Text("Antes:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                            Text("Antes:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = AppColors.texto)
                             OutlinedTextField(
                                 value = promprice,
                                 onValueChange = { promprice = it },
@@ -194,19 +203,25 @@ import androidx.compose.foundation.shape.CircleShape
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = OutlinedTextFieldDefaults.colors(
                                     unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
-                                    focusedContainerColor = Color.White.copy(alpha = 0.95f)
-                                ))
+                                    focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                                    focusedTextColor = Color.Black,
+                                    unfocusedTextColor = Color.Black
+                                )
+                            )
                         }
                         Column(Modifier.weight(1f)) {
-                            Text("Ahora:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                            Text("Ahora:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = AppColors.texto)
                             OutlinedTextField(value = price,
                                 onValueChange = { price = it },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(12.dp),
                                 colors = OutlinedTextFieldDefaults.colors(
                                     unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
-                                    focusedContainerColor = Color.White.copy(alpha = 0.95f)
-                                ))
+                                    focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                                    focusedTextColor = Color.Black,
+                                    unfocusedTextColor = Color.Black
+                                )
+                            )
                         }
                     } else {
                         Text(promprice, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Green)
@@ -217,21 +232,25 @@ import androidx.compose.foundation.shape.CircleShape
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (isEditing) {
-                    Text("Descripción:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                    Text("Descripción:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = AppColors.texto)
                     OutlinedTextField(value = description,
                         onValueChange = { description = it },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
-                            focusedContainerColor = Color.White.copy(alpha = 0.95f)
-                        ))
+                            focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
+                        )
+                    )
+
                 } else {
-                    Text(description, fontSize = 16.sp, color = Color.Black)
+                    Text(description, fontSize = 16.sp, color = AppColors.texto)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("Reglas:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                Text("Reglas:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = AppColors.texto)
                 Spacer(modifier = Modifier.height(4.dp))
 
                 if (isEditing) {
@@ -241,10 +260,13 @@ import androidx.compose.foundation.shape.CircleShape
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
-                            focusedContainerColor = Color.White.copy(alpha = 0.95f)
-                        ))
+                            focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
+                        )
+                    )
                 } else {
-                    Text(text = if (reglas.isNotBlank()) reglas else "Sin reglas específicas", fontSize = 15.sp, color = Color.Black)
+                    Text(text = if (reglas.isNotBlank()) reglas else "Sin reglas específicas", fontSize = 15.sp, color = AppColors.texto)
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))

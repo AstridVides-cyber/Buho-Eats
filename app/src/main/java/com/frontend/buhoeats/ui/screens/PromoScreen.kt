@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -13,7 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
@@ -21,6 +24,8 @@ import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.*
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.PromoViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
@@ -48,6 +53,11 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
             promoViewModel.loadPromos(promosToLoad)
         }
 
+        val backgroundImage = if (ThemeManager.isDarkTheme)
+            painterResource(id = R.drawable.backgrounddark)
+        else
+            painterResource(id = R.drawable.backgroundlighttheme)
+
         Scaffold(
             topBar = {
                 TopBar(
@@ -74,7 +84,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                     .padding(paddingValues)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.backgroundlighttheme),
+                    painter = backgroundImage,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -86,6 +96,15 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {
+
+                    Text(
+                        text = "Promociones",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AppColors.texto,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
                     promoViewModel.promos.forEach { promo ->
                         Box {
                             PromoCard(
