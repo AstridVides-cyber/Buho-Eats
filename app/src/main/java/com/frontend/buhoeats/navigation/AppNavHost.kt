@@ -126,7 +126,8 @@ fun AppNavHost(navController: NavHostController) {
                         navController.navigate(Screens.Restaurant.createRoute(it.id))
                     }
                 },
-                navController = navController
+                navController = navController,
+                userSessionViewModel = userSessionViewModel,
             )
         }
         composable(Screens.Map.route) {

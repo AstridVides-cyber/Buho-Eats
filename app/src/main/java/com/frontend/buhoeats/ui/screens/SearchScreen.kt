@@ -38,7 +38,7 @@ fun Search(
     onBack: () -> Unit = {},
     onSearchResultClick: (String) -> Unit,
     navController: NavController,
-    userSessionViewModel: UserSessionViewModel = viewModel()
+    userSessionViewModel: UserSessionViewModel
 ) {
     val context = LocalContext.current
     val currentUser = userSessionViewModel.currentUser.value
