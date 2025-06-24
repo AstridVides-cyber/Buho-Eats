@@ -32,6 +32,7 @@ import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidEmail
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.CoroutineScope
@@ -59,7 +60,7 @@ fun Login(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFF3D405B)
+        color = AppColors.primary
         ) {
             Column(
             modifier = Modifier

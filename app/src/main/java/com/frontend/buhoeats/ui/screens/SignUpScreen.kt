@@ -47,6 +47,7 @@ import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.CustomTextField
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlin.random.Random
 
@@ -72,7 +73,7 @@ fun SignUp(navController: NavController,
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFF3D405B)
+        color = AppColors.primary
     ) {
         Column(
             modifier = Modifier
