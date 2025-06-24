@@ -36,6 +36,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import com.frontend.buhoeats.auth.getGoogleSignInClient
+import com.frontend.buhoeats.models.User
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -51,7 +60,63 @@ fun Login(
     var passwordError by remember { mutableStateOf("") }
 
     var isLoading by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
+    val googleSignInClient = remember { getGoogleSignInClient(context) }
+    val firebaseAuth = remember { FirebaseAuth.getInstance() }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.result
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener { authResult ->
+                    if (authResult.isSuccessful) {
+                        val firebaseUser = firebaseAuth.currentUser
+                        firebaseUser?.let { user ->
+                            val displayName = user.displayName ?: ""
+                            val (name, lastName) = run {
+                                val parts = displayName.split(" ")
+                                Pair(parts.firstOrNull() ?: "", parts.drop(1).joinToString(" "))
+                            }
+
+
+                            val newUser = User(
+                                id = user.uid.hashCode(),
+                                name = name,
+                                lastName = lastName,
+                                email = user.email ?: "",
+                                password = "",
+                                imageProfile = user.photoUrl?.toString() ?: "",
+                                rol = "usuario"
+                            )
+
+
+                            if (userSessionViewModel.getUserByEmail(newUser.email) == null) {
+                                userSessionViewModel.registerUser(newUser)
+                            }
+
+                            userSessionViewModel.login(newUser)
+
+                            navControl.navigate(Screens.Home.route) {
+                                popUpTo(Screens.Login.route) { inclusive = true }
+                            }
+                        }
+
+                        navControl.navigate(Screens.Home.route) {
+                            popUpTo(Screens.Login.route) { inclusive = true }
+                        }
+                    } else {
+                        Toast.makeText(context, "Error al iniciar sesión con Google", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error al autenticar con Google", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 
     val containerColor = Color.White
@@ -266,7 +331,8 @@ fun Login(
                 }
 
                 Button(
-                onClick = { /* Sesión con Google */ },
+                onClick = { val signInIntent = googleSignInClient.signInIntent
+                    launcher.launch(signInIntent) },
                 modifier = Modifier
                     .width(300.dp)
                     .height(56.dp)

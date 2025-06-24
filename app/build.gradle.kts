@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 
 
@@ -72,6 +73,10 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
 
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+    implementation("androidx.activity:activity-ktx:1.9.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
 
 
     implementation(libs.androidx.core.ktx)
@@ -89,6 +94,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.play.services.location)
     implementation(libs.androidx.foundation)
+    implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -96,4 +102,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
 }
