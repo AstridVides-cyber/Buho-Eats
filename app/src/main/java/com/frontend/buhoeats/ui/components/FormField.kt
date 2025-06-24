@@ -44,7 +44,7 @@ fun FormField(
             shape = RoundedCornerShape(12.dp),
             placeholder = {
                 if (placeholderText.isNotBlank()) {
-                    Text(text = placeholderText, color = AppColors.texto)
+                    Text(text = placeholderText, color = Color.Gray)
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(
@@ -53,6 +53,7 @@ fun FormField(
                 disabledTextColor = Color.Black,
                 errorTextColor = Color.Black,
                 cursorColor = Color.Black,
+
                 focusedContainerColor = Color.White.copy(alpha = 0.95f),
                 unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
                 disabledContainerColor = Color.White.copy(alpha = 0.8f),
