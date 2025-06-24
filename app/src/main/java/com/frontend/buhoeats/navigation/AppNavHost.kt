@@ -160,18 +160,22 @@ fun AppNavHost(navController: NavHostController) {
             }
         }
         composable(Screens.EditRestaurant.route) {
-            val restaurant = InMemoryUserDataSource.getRestaurants().first()
+            val currentUser = userSessionViewModel.currentUser.value
+            val restaurant = restaurantViewModel.restaurantList
+                .find { it.admin == currentUser?.id }
 
-            EditRestaurantScreen(
-                navController = navController,
-                restaurant = restaurant,
-                onBack = { navController.popBackStack() },
-                onEditImages = { restaurantId ->
-                    navController.navigate(Screens.ImagesRestaurant.createRoute(restaurantId))
-                },
-                onEditInfo = { navController.navigate(Screens.EditInfo.route)  },
-                onEditMenu = { navController.navigate(Screens.EditMenu.route) }
-            )
+            if (restaurant != null) {
+                EditRestaurantScreen(
+                    navController = navController,
+                    restaurant = restaurant,
+                    onBack = { navController.popBackStack() },
+                    onEditImages = { restaurantId ->
+                        navController.navigate(Screens.ImagesRestaurant.createRoute(restaurantId))
+                    },
+                    onEditInfo = { navController.navigate(Screens.EditInfo.route) },
+                    onEditMenu = { navController.navigate(Screens.EditMenu.route) }
+                )
+            }
         }
 
         composable(Screens.EditInfo.route) {
