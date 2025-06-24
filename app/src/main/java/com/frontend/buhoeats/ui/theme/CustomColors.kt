@@ -9,6 +9,8 @@ object CustomLightColors {
     val fondo = Color(0xFFFFFFFF)
     val texto = Color(0xFF000000)
 
+    val text = Color(0xFFFFFFFF)
+
     val accent = Color(0xFF747BB8)
 }
 
@@ -17,6 +19,8 @@ object CustomDarkColors {
     val secondary = Color(0xFFA3D9A5)
     val fondo = Color(0xFF121212)
     val texto = Color(0xFFFFFFFF)
+    val text = Color(0xFF000000)
+
 
     val accent = Color(0xFF6272FB)
 }
@@ -33,6 +37,9 @@ object AppColors {
 
     val texto: Color
         @Composable get() = if (ThemeManager.isDarkTheme) CustomDarkColors.texto else CustomLightColors.texto
+
+    val text: Color
+        @Composable get() = if (ThemeManager.isDarkTheme) CustomDarkColors.text else CustomLightColors.text
 
     val accent : Color
         @Composable get() = if (ThemeManager.isDarkTheme) CustomDarkColors.accent else CustomLightColors.accent

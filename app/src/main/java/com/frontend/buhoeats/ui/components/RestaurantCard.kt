@@ -36,12 +36,13 @@ import androidx.compose.material.icons.filled.*
 import com.frontend.buhoeats.models.Comment
 import com.frontend.buhoeats.models.Rating
 import com.frontend.buhoeats.models.User
+import com.frontend.buhoeats.ui.theme.AppColors
 
 @Composable
 fun ContactCard(contactInfo: ContactInfo) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF588B8B),
+            containerColor = AppColors.secondary,
             contentColor = Color.White
         ),
         modifier = Modifier
@@ -50,7 +51,7 @@ fun ContactCard(contactInfo: ContactInfo) {
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Email, contentDescription = "Correo", tint = Color.White)
+                Icon(Icons.Default.Email, contentDescription = "Correo",  tint = AppColors.texto)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Correo: ${contactInfo.email}")
             }
@@ -58,7 +59,7 @@ fun ContactCard(contactInfo: ContactInfo) {
             Spacer(modifier = Modifier.height(6.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Phone, contentDescription = "Teléfono", tint = Color.White)
+                Icon(Icons.Default.Phone, contentDescription = "Teléfono",  tint = AppColors.texto)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Teléfono: ${contactInfo.phone}")
             }
@@ -66,7 +67,7 @@ fun ContactCard(contactInfo: ContactInfo) {
             Spacer(modifier = Modifier.height(6.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.AccessTime, contentDescription = "Horario", tint = Color.White)
+                Icon(Icons.Default.AccessTime, contentDescription = "Horario",  tint = AppColors.texto)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Horario: ${contactInfo.hours}")
             }
@@ -74,7 +75,7 @@ fun ContactCard(contactInfo: ContactInfo) {
             Spacer(modifier = Modifier.height(6.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.LocationOn, contentDescription = "Dirección", tint = Color.White)
+                Icon(Icons.Default.LocationOn, contentDescription = "Dirección",  tint = AppColors.texto)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Dirección: ${contactInfo.address}")
             }
@@ -118,7 +119,7 @@ fun DishCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomStart)
-                    .background(Color(0xFF588B8B).copy(alpha = 0.9f))
+                    .background(AppColors.secondary.copy(alpha = 0.9f))
                     .padding(12.dp)
             ) {
                 Row(
@@ -127,20 +128,20 @@ fun DishCard(
                 ) {
                     Text(
                         dish.name,
-                        color = Color.White,
+                        color = AppColors.texto,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
                     Text(
                         dish.price,
-                        color = Color.White,
+                        color = AppColors.texto,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
                 }
                 Text(
                     dish.description,
-                    color = Color.White,
+                    color = AppColors.texto,
                     fontSize = 14.sp
                 )
             }
