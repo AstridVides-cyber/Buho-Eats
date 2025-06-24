@@ -49,7 +49,7 @@ fun PromoScreen(
         else -> promos
     }
 
-    LaunchedEffect(currentUser) {
+    LaunchedEffect(currentUser, allRestaurants) {
         promoViewModel.loadPromosForUser(currentUser)
     }
 

@@ -1,6 +1,7 @@
 package com.frontend.buhoeats.ui.screens
 
 import android.net.Uri
+import android.widget.Toast
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,7 +30,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,6 +59,7 @@ import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -63,7 +68,8 @@ fun EditLocalScreen(
     restaurant: Restaurant? = null,
     navController: NavController,
     onBackClick: () -> Unit = {},
-    restaurantViewModel: RestaurantViewModel
+    restaurantViewModel: RestaurantViewModel,
+    userSessionViewModel: UserSessionViewModel
 ) {
     var name by remember { mutableStateOf(restaurant?.name ?: "") }
     var description by remember { mutableStateOf(restaurant?.description ?: "") }
@@ -79,6 +85,13 @@ fun EditLocalScreen(
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+
+    val allUsers by userSessionViewModel.users
+
+    LaunchedEffect(Unit) {
+        userSessionViewModel.loadUsers()
+    }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -224,8 +237,9 @@ fun EditLocalScreen(
                 ConfirmationDialog(
                     message = if (isNewLocal) "¿Estás seguro que deseas agregar un nuevo local?" else "¿Deseas guardar los cambios en el local?",
                     onConfirm = {
-                        val adminUser = InMemoryUserDataSource.getUsers().find { it.email == adminEmail && it.rol == "admin" }
-
+                        val adminUser = allUsers.find {
+                            it.email.trim().equals(adminEmail.trim(), ignoreCase = true) && it.rol == "admin"
+                        }
                         if (adminUser != null) {
                             val updatedRestaurant = Restaurant(
                                 id = restaurant?.id ?: restaurantViewModel.getNextRestaurantId(),
@@ -233,7 +247,7 @@ fun EditLocalScreen(
                                 description = description,
                                 imageUrl = selectedImageUri?.toString()
                                     ?: restaurant?.imageUrl
-                                    ?: "https://plus.unsplash.com/premium_photo-1670604211960-82b8d84f6aea",
+                                    ?: "https://images.unsplash.com/photo-1525610553991-2bede1a236e2",
                                 category = restaurant?.category ?: "",
                                 contactInfo = restaurant?.contactInfo ?: ContactInfo("", "", "", ""),
                                 ratings = restaurant?.ratings?.toMutableList() ?: mutableListOf(),
@@ -248,6 +262,7 @@ fun EditLocalScreen(
 
                             if (isNewLocal) {
                                 restaurantViewModel.addRestaurant(updatedRestaurant)
+                                Toast.makeText(context, "Local creado exitosamente", Toast.LENGTH_SHORT).show()
                             } else {
                                 restaurantViewModel.updateRestaurant(updatedRestaurant)
                             }
@@ -255,13 +270,12 @@ fun EditLocalScreen(
                             showConfirmationDialog = false
                             navController.popBackStack()
                         } else {
-                            if (adminUser == null || adminUser.rol != "admin") {
                                 emailError = true
                                 adminRoleError = true
                                 showConfirmationDialog = false
                                 return@ConfirmationDialog
-                            }
-                            showConfirmationDialog = false
+
+                                showConfirmationDialog = false
                         }
                     },
                     onDismiss = {

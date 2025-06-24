@@ -33,22 +33,27 @@ class UserSessionViewModel : ViewModel() {
             InMemoryUserDataSource.setUsers(userList)
         }
     }
+    private val _users = mutableStateOf<List<User>>(emptyList())
+    val users: State<List<User>> get() = _users
+
+    fun loadUsers() {
+        _users.value = InMemoryUserDataSource.getUsers()
+    }
 
     fun assignRoleToUser(email: String, newRole: String): Boolean {
-        val userIndex = InMemoryUserDataSource.getUsers().indexOfFirst { it.email.equals(email, ignoreCase = true) }
-
-        if (userIndex != -1) {
-            val userList = InMemoryUserDataSource.getUsers().toMutableList()
-            val user = userList[userIndex]
-            val updatedUser = user.copy(rol = newRole)
-            userList[userIndex] = updatedUser
-            InMemoryUserDataSource.setUsers(userList)
-
-            println("Usuario actualizado: ${updatedUser.email} -> ${updatedUser.rol}")
+        loadUsers()
+        val index = _users.value.indexOfFirst { it.email.trim().equals(email.trim(), ignoreCase = true) }
+        if (index != -1) {
+            val updatedUser = _users.value[index].copy(rol = newRole)
+            val updatedList = _users.value.toMutableList().apply { this[index] = updatedUser }
+            _users.value = updatedList
+            InMemoryUserDataSource.setUsers(updatedList)
             return true
         }
         return false
     }
+
+
     fun registerUser(newUser: User): Boolean {
         val users = InMemoryUserDataSource.getUsers().toMutableList()
 
@@ -60,12 +65,6 @@ class UserSessionViewModel : ViewModel() {
         InMemoryUserDataSource.setUsers(users)
         return true
     }
-
-    fun getAllUsers(): List<User> {
-        return InMemoryUserDataSource.getUsers()
-    }
-
-
 
 }
 

@@ -33,6 +33,13 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
 
+fun getRoleValue(label: String): String = when (label) {
+    "Super Administrador" -> "superadmin"
+    "Administrador de Local" -> "admin"
+    "Usuario" -> "usuario"
+    else -> "usuario"
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RolAssign(
@@ -45,6 +52,7 @@ fun RolAssign(
     var showMenu by remember { mutableStateOf(false) }
     var selectedRole by remember { mutableStateOf<RoleOption?>(null) }
     var showValidationErrors by remember { mutableStateOf(false) }
+
 
     val roleOptions = listOf(
         RoleOption("Super Administrador", R.drawable.super_admin),
@@ -237,6 +245,8 @@ fun RolAssign(
 
                 Button(
                     onClick = {
+                        val roleValue = getRoleValue(selectedRole?.label ?: "")
+
                         showValidationErrors = true
 
                         emailError = if (!isEmailValid) {
@@ -252,16 +262,16 @@ fun RolAssign(
                                 return@Button
                             }
 
-                            val success = userSessionViewModel.assignRoleToUser(
-                                email.trim(),
-                                selectedRole?.label ?: ""
-                            )
+                            val success = userSessionViewModel.assignRoleToUser(email, roleValue)
 
                             if (success) {
                                 Toast.makeText(context, "Rol asignado exitosamente", Toast.LENGTH_SHORT).show()
                                 email = ""
                                 selectedRole = null
                                 showValidationErrors = false
+                                userSessionViewModel.loadUsers()
+                                navController.popBackStack()
+
                             } else {
                                 emailError = "No se encontró ningún usuario con ese correo"
                             }

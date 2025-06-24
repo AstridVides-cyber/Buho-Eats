@@ -201,7 +201,7 @@ fun AppNavHost(navController: NavHostController) {
             arguments = listOf(navArgument("restaurantId") { type = NavType.IntType })
         ) { backStackEntry ->
             val restaurantId = backStackEntry.arguments?.getInt("restaurantId")
-            val restaurant = InMemoryUserDataSource.getRestaurants().find { it.id == restaurantId }
+            val restaurant = restaurantViewModel.restaurantList.find { it.id == restaurantId }
 
             if (restaurant != null) {
                 EditImageScreen(
@@ -282,7 +282,8 @@ fun AppNavHost(navController: NavHostController) {
                 restaurant = restaurant,
                 navController = navController,
                 onBackClick = { navController.popBackStack() },
-                restaurantViewModel = restaurantViewModel
+                restaurantViewModel = restaurantViewModel,
+                userSessionViewModel = userSessionViewModel
             )
         }
 
