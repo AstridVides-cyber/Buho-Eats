@@ -23,15 +23,17 @@ import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.Map
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.TopBar
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import org.osmdroid.util.GeoPoint
 
 @Composable
 fun MapScreen(
     navController: NavController,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    restaurantViewModel: RestaurantViewModel
 ) {
     val scrollState = rememberScrollState()
-    val restaurants = InMemoryUserDataSource.getRestaurants()
+    val restaurants = restaurantViewModel.restaurantList
     val focusedLocation = remember { mutableStateOf<GeoPoint?>(null) }
 
 

@@ -132,7 +132,8 @@ fun AppNavHost(navController: NavHostController) {
         }
         composable(Screens.Map.route) {
             MapScreen(
-                onBack = { navController.navigate(Screens.Home.route) }, navController = navController
+                onBack = { navController.navigate(Screens.Home.route) }, navController = navController,
+                restaurantViewModel = restaurantViewModel,
             )
         }
 

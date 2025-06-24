@@ -58,14 +58,9 @@ import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.TextField
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import com.frontend.buhoeats.ui.components.DropdownFormField
+import com.frontend.buhoeats.ui.components.LocationPickerMap
 
-@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditLocalScreen(
@@ -90,9 +85,13 @@ fun EditLocalScreen(
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
+
+    var latitud by remember { mutableStateOf(restaurant?.latitud ?: 0.0) }
+    var longitud by remember { mutableStateOf(restaurant?.longitud ?: 0.0) }
+    var locationError by remember { mutableStateOf(false) }
+
     val categorias = listOf("Desayuno", "Almuerzo", "Cena")
     var categoria by remember { mutableStateOf(restaurant?.category ?: "") }
-    var expanded by remember { mutableStateOf(false) }
     var categoriaError by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -123,8 +122,11 @@ fun EditLocalScreen(
                     descriptionError = description.isBlank()
                     emailError = !ValidatorUtils.isValidEmail(adminEmail)
                     categoriaError = categoria.isBlank()
+                    locationError = latitud == 0.0 && longitud == 0.0
 
-                    if (!nameError && !descriptionError && !emailError && !categoriaError) {
+
+
+                    if (!nameError && !descriptionError && !emailError && !categoriaError && !locationError) {
                         showConfirmationDialog = true
                     }
                 },
@@ -257,6 +259,21 @@ fun EditLocalScreen(
                 if (emailError) ValidationMessage("Correo no válido")
                 if (adminRoleError) ValidationMessage("El correo debe pertenecer a un administrador")
 
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                LocationPickerMap(
+                    lat = latitud,
+                    lon = longitud,
+                    onLocationChange = { lat, lon ->
+                        latitud = lat
+                        longitud = lon
+                        locationError = false
+                    }
+                )
+                if (locationError) ValidationMessage("Selecciona una ubicación válida")
+
+
             }
             if (showConfirmationDialog) {
                 ConfirmationDialog(
@@ -279,8 +296,8 @@ fun EditLocalScreen(
                                 comments = restaurant?.comments?.toMutableList() ?: mutableListOf(),
                                 menu = restaurant?.menu ?: emptyList(),
                                 promos = restaurant?.promos ?: emptyList(),
-                                latitud = restaurant?.latitud ?: 0.0,
-                                longitud = restaurant?.longitud ?: 0.0,
+                                latitud = latitud,
+                                longitud = longitud,
                                 admin = adminUser.id,
                                 blockedUsers = restaurant?.blockedUsers ?: emptyList()
                             )
