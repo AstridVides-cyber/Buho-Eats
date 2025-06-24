@@ -65,6 +65,7 @@ class UserSessionViewModel : ViewModel() {
         InMemoryUserDataSource.setUsers(users)
         return true
     }
+
     fun getUserByEmail(email: String): User? {
         return InMemoryUserDataSource.getUsers().find { it.email.equals(email, ignoreCase = true) }
     }

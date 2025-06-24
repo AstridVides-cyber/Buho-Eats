@@ -69,6 +69,9 @@ fun EditAccountScreen(navController: NavController,
     var newPasswordError by remember { mutableStateOf("") }
     var confirmNewPasswordError by remember { mutableStateOf("") }
 
+    val isGoogleUser = userSessionViewModel.currentUser.value?.password.isNullOrEmpty()
+
+
     Scaffold(
         topBar = { TopBar(showBackIcon = true , onNavClick = onBack
         ) },
@@ -103,10 +106,17 @@ fun EditAccountScreen(navController: NavController,
             }
                 Spacer(modifier = Modifier.width(14.dp))
 
-                ProfileImage(
-                    userImageUrl = userSessionViewModel.currentUser.value?.imageProfile?: "",
-                    onImageSelected = { }
-                )
+            ProfileImage(
+                userImageUrl = userSessionViewModel.currentUser.value?.imageProfile ?: "",
+                onImageSelected = { newImageUrl ->
+                    val updatedUser = userSessionViewModel.currentUser.value?.copy(
+                        imageProfile = newImageUrl.toString()
+                    )
+                    if (updatedUser != null) {
+                        userSessionViewModel.updateCurrentUser(updatedUser)
+                    }
+                }
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -149,7 +159,8 @@ fun EditAccountScreen(navController: NavController,
                 },
                 placeholder = "Ingrese su correo",
                 textColor = Color.Black,
-                containerColor = Color.White
+                containerColor = Color.White,
+                enabled = !isGoogleUser
             )
             if (emailError.isNotEmpty()) ValidationMessage(message = emailError)
 
@@ -167,7 +178,8 @@ fun EditAccountScreen(navController: NavController,
                 placeholder = "Ingrese su contraseña",
                 textColor = Color.Black,
                 containerColor = Color.White,
-                isPassword = true
+                isPassword = true,
+                enabled = !isGoogleUser
             )
             if (newPasswordError.isNotEmpty()) ValidationMessage(message = newPasswordError)
             Spacer(modifier = Modifier.height(12.dp))
@@ -182,7 +194,9 @@ fun EditAccountScreen(navController: NavController,
                 placeholder = "Repita su contraseña",
                 textColor = Color.Black,
                 containerColor = Color.White,
-                isPassword = true)
+                isPassword = true,
+                enabled = !isGoogleUser
+            )
             if (confirmNewPasswordError.isNotEmpty()) ValidationMessage(message = confirmNewPasswordError)
 
             Spacer(modifier = Modifier.height(24.dp))

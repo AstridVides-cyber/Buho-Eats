@@ -1,7 +1,10 @@
 package com.frontend.buhoeats.ui.screens
 
+import android.util.Log
 import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,12 +45,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.frontend.buhoeats.auth.getGoogleSignInClient
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.CustomTextField
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import java.util.UUID
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -69,7 +74,6 @@ fun SignUp(navController: NavController,
     var passwordError by remember { mutableStateOf("") }
     var confirmPasswordError by remember { mutableStateOf("") }
     val context = LocalContext.current
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFF3D405B)
@@ -79,7 +83,7 @@ fun SignUp(navController: NavController,
                 .fillMaxSize()
                 .padding(32.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -270,8 +274,40 @@ fun SignUp(navController: NavController,
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            val googleSignInClient = getGoogleSignInClient(context)
+            val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                if (task.isSuccessful) {
+                    val account = task.result
+                    val email = account?.email ?: ""
+                    val name = account?.givenName ?: ""
+                    val lastName = account?.familyName ?: ""
+                    val imageProfile = account?.photoUrl?.toString() ?: ""
+
+                    val newUser = User(
+                        id = account?.id ?: UUID.randomUUID().toString(),
+                        name = name,
+                        lastName = lastName,
+                        email = email,
+                        password = "",
+                        imageProfile = imageProfile,
+                        rol = "usuario"
+                    )
+
+                    val existingUser = userSessionViewModel.getUserByEmail(email)
+                    if (existingUser == null) {
+                        userSessionViewModel.registerUser(newUser)
+                        Toast.makeText(context, "Cuenta Google registrada con éxito", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Ya existe una cuenta con este correo", Toast.LENGTH_SHORT).show()
+                    }
+                    navController.navigate(Screens.Login.route)
+                } else {
+                    Toast.makeText(context, "Error al iniciar sesión con Google", Toast.LENGTH_SHORT).show()
+                }
+            }
             Button(
-                onClick = { /*sesión con Google */ },
+                onClick = { launcher.launch(googleSignInClient.signInIntent) },
                 modifier = Modifier
                     .width(300.dp)
                     .height(56.dp)
@@ -294,7 +330,7 @@ fun SignUp(navController: NavController,
                             .size(32.dp)
                     )
                     Text(
-                        text = "Inicia Sesión con Google",
+                        text = "Registrate con Google",
                         color = Color.White,
                         fontSize = 16.sp
                     )

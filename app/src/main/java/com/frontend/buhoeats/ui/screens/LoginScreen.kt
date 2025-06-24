@@ -58,62 +58,30 @@ fun Login(
     var passwordError by remember { mutableStateOf("") }
 
     var isLoading by remember { mutableStateOf(false) }
-
     val context = LocalContext.current
-    val googleSignInClient = remember { getGoogleSignInClient(context) }
-    val firebaseAuth = remember { FirebaseAuth.getInstance() }
 
-    val launcher = rememberLauncherForActivityResult(
+    val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         try {
             val account = task.result
-            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-            firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener { authResult ->
-                    if (authResult.isSuccessful) {
-                        val firebaseUser = firebaseAuth.currentUser
-                        firebaseUser?.let { user ->
-                            val displayName = user.displayName ?: ""
-                            val (name, lastName) = run {
-                                val parts = displayName.split(" ")
-                                Pair(parts.firstOrNull() ?: "", parts.drop(1).joinToString(" "))
-                            }
-
-                            val newUser = User(
-                                id = user.uid,
-                                name = name,
-                                lastName = lastName,
-                                email = user.email ?: "",
-                                password = "",
-                                imageProfile = user.photoUrl?.toString() ?: "",
-                                rol = "usuario"
-                            )
-
-                            if (userSessionViewModel.getUserByEmail(newUser.email) == null) {
-                                userSessionViewModel.registerUser(newUser)
-                            }
-
-                            userSessionViewModel.login(newUser)
-
-                            navControl.navigate(Screens.Home.route) {
-                                popUpTo(Screens.Login.route) { inclusive = true }
-                            }
-                        }
-
-                        navControl.navigate(Screens.Home.route) {
-                            popUpTo(Screens.Login.route) { inclusive = true }
-                        }
-                    } else {
-                        Toast.makeText(context, "Error al iniciar sesión con Google", Toast.LENGTH_SHORT).show()
-                    }
+            val email = account.email ?: ""
+            val user = userSessionViewModel.getUserByEmail(email)
+            if (user != null) {
+                userSessionViewModel.login(user)
+                Toast.makeText(context, "Sesión iniciada con Google", Toast.LENGTH_SHORT).show()
+                navControl.navigate(Screens.Home.route) {
+                    popUpTo(Screens.Login.route) { inclusive = true }
                 }
+            } else {
+                navControl.navigate(Screens.SignUp.route)
+                Toast.makeText(context, "Usuario no encontrado, por favor regístrate", Toast.LENGTH_SHORT).show()
+            }
         } catch (e: Exception) {
-            Toast.makeText(context, "Error al autenticar con Google", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Error en Google Sign-In", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     val containerColor = Color.White
 
@@ -126,11 +94,9 @@ fun Login(
                 .fillMaxSize()
                 .padding(32.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
-
             Text(
                 text = "BÚHO EATS",
                 style = TextStyle(
@@ -327,8 +293,11 @@ fun Login(
                 }
 
                 Button(
-                onClick = { val signInIntent = googleSignInClient.signInIntent
-                    launcher.launch(signInIntent) },
+                onClick = {
+                    val signInClient = getGoogleSignInClient(context)
+                    val signInIntent = signInClient.signInIntent
+                    googleSignInLauncher.launch(signInIntent)
+                },
                 modifier = Modifier
                     .width(300.dp)
                     .height(56.dp)

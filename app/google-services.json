@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "771124326139-q0dmt5s0ckbh7ir9f2kie15nlniuqa7k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.frontend.buhoeats",
+            "certificate_hash": "d67bbe5b73052ec4cfc4e387603c4754a1f28a89"
+          }
+        },
+        {
           "client_id": "771124326139-feu0ls3n9qa807brso2ri9da35mjagpk.apps.googleusercontent.com",
           "client_type": 3
         }

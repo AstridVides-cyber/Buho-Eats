@@ -12,6 +12,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -38,9 +39,11 @@ fun CustomTextField(
     isPassword: Boolean = false,
     modifier: Modifier = Modifier,
     validateDigits: Boolean = false,
-    contextMessage: String = ""
+    contextMessage: String = "",
+    enabled: Boolean = true
 ) {
     val context = LocalContext.current
+    val finalContainerColor = if (enabled) containerColor else containerColor.copy(alpha = 0.7f)
 
     Column(modifier = modifier) {
         Text(
@@ -80,14 +83,16 @@ fun CustomTextField(
                 fontFamily = montserratFontFamily
             ),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            enabled = enabled,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
+                .height(50.dp)
+                .alpha(if (enabled) 1f else 0.5f),
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = containerColor,
-                unfocusedContainerColor = containerColor,
-                disabledContainerColor = containerColor,
+                focusedContainerColor = finalContainerColor,
+                unfocusedContainerColor = finalContainerColor,
+                disabledContainerColor = finalContainerColor,
                 errorContainerColor = containerColor,
                 focusedIndicatorColor = Color.Black,
                 unfocusedIndicatorColor = Color.Black,
