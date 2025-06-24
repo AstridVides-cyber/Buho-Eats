@@ -65,14 +65,13 @@ fun LocationPickerMap(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
     ) {
         Text(
             text = "Selecciona la ubicación en el mapa",
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             color = Color.Black,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 10.dp)
         )
 
         Box(
