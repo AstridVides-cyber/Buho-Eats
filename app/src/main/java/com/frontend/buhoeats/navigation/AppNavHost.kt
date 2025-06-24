@@ -169,7 +169,7 @@ fun AppNavHost(navController: NavHostController) {
                     navController.navigate(Screens.ImagesRestaurant.createRoute(restaurantId))
                 },
                 onEditInfo = { navController.navigate(Screens.EditInfo.route)  },
-                onEditMenu = { navController.navigate(Screens.EditMenu.route) }
+                onEditMenu = { navController.navigate(Screens.EditMenu.route) },
             )
         }
 

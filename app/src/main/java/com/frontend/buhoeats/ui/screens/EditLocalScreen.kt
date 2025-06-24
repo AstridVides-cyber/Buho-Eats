@@ -53,6 +53,8 @@ import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.components.FormField
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 
@@ -119,8 +121,14 @@ fun EditLocalScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+
+            val backgroundImage = if (ThemeManager.isDarkTheme)
+                painterResource(R.drawable.backgrounddark)
+            else
+                painterResource(R.drawable.backgroundlighttheme)
+
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -137,7 +145,7 @@ fun EditLocalScreen(
                     text = if (isNewLocal) "Agregar local" else "Editar local",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color.Black,
+                    color = AppColors.texto,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
 
@@ -165,7 +173,7 @@ fun EditLocalScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(Color.LightGray)
+                                .background(AppColors.accent)
                         )
                     }
 

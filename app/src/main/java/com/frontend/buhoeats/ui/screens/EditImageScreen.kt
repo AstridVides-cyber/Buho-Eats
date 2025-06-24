@@ -43,6 +43,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import com.frontend.buhoeats.models.User
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 
 
 fun isAdminOfRestaurant(user: User?, restaurant: Restaurant): Boolean {
@@ -83,8 +85,14 @@ fun EditImageScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+
+            val backgroundImage = if (ThemeManager.isDarkTheme)
+                painterResource(R.drawable.defaultfoto)
+            else
+                painterResource(R.drawable.backgroundlighttheme)
+
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -100,7 +108,7 @@ fun EditImageScreen(
                     "Editar Imagen del Restaurante",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = AppColors.texto,
 
                 )
 
