@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.viewmodel.SearchViewModel
@@ -40,7 +40,7 @@ fun Search(
     onBack: () -> Unit = {},
     onSearchResultClick: (String) -> Unit,
     navController: NavController,
-    userSessionViewModel: UserSessionViewModel = viewModel()
+    userSessionViewModel: UserSessionViewModel
 ) {
     val context = LocalContext.current
     val currentUser = userSessionViewModel.currentUser.value
@@ -49,7 +49,7 @@ fun Search(
 
     val searchViewModel: SearchViewModel = viewModel(
         factory = SearchViewModelFactory(
-            userId = currentUser?.id ?: 0,
+            userId = currentUser?.id ?: "",
             context = context
         )
     )
@@ -57,7 +57,7 @@ fun Search(
     val searchHistory by searchViewModel.searchHistory.collectAsState()
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
-    val allRestaurants = DummyData.getRestaurants()
+    val allRestaurants = InMemoryUserDataSource.getRestaurants()
     val searchResults by remember(searchQuery, allRestaurants) {
         derivedStateOf {
             if (searchQuery.text.isBlank()) emptyList()

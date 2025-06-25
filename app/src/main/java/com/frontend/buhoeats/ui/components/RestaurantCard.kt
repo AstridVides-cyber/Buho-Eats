@@ -134,7 +134,7 @@ fun DishCard(
                         fontSize = 16.sp
                     )
                     Text(
-                        dish.price,
+                        "$${dish.price}",
                         color = AppColors.text,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp

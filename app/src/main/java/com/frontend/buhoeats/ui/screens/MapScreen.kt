@@ -18,22 +18,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.Map
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import org.osmdroid.util.GeoPoint
 
 @Composable
 fun MapScreen(
     navController: NavController,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    restaurantViewModel: RestaurantViewModel
 ) {
     val scrollState = rememberScrollState()
-    val restaurants = DummyData.getRestaurants()
+    val restaurants = restaurantViewModel.restaurantList
     val focusedLocation = remember { mutableStateOf<GeoPoint?>(null) }
 
     Scaffold(

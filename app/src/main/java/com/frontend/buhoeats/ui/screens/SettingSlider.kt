@@ -37,8 +37,6 @@ fun SettingSlider(
         .fillMaxSize()
         .background(AppColors.fondo)) {
 
-        // Si quieres fondo con imagen, hazlo dinámico con ThemeManager
-
         val backgroundImage = if (ThemeManager.isDarkTheme)
             painterResource(R.drawable.backgrounddark)
         else
@@ -226,7 +224,7 @@ fun SettingSlider(
                     navController.navigate(Screens.Statistics.route)
                 }
                 SettingItem("Clientes bloqueados", Icons.Outlined.Block) {
-                    navController.navigate(Screens.BlockedUser.createRoute(restaurant.id))
+                    navController.navigate(Screens.BlockedUser.createRoute(restaurant.id.toString()))
                 }
             }
 

@@ -10,93 +10,111 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.widget.Toast
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
-import com.frontend.buhoeats.models.Promo
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.*
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.PromoViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
+import java.util.UUID
 
-    @Composable
-    fun PromoScreen(
-        navController: NavHostController,
-        userSessionViewModel: UserSessionViewModel,
-        promoViewModel: PromoViewModel = viewModel()
-    ) {
-        val currentUser by userSessionViewModel.currentUser
-        val restaurants = DummyData.getRestaurants()
-        val isAdmin = currentUser?.rol == "admin"
+@Composable
+fun PromoScreen(
+    navController: NavHostController,
+    userSessionViewModel: UserSessionViewModel,
+    promoViewModel: PromoViewModel = viewModel()
+) {
+    val currentUser by userSessionViewModel.currentUser
+    val allRestaurants = InMemoryUserDataSource.getRestaurants()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
-        val adminRestaurant = if (isAdmin) {
-            restaurants.find { it.admin == currentUser?.id }
-        } else null
+    val adminRestaurant = if (currentUser?.rol == "admin") {
+        allRestaurants.firstOrNull { it.admin == currentUser!!.id }
+    } else null
 
-        val promosToLoad = if (isAdmin && adminRestaurant != null) {
-            adminRestaurant.promos
-        } else {
-            restaurants.flatMap { it.promos }
-        }
+    val promos by promoViewModel.promos.collectAsState()
 
-        if (promoViewModel.promos.isEmpty()) {
-            promoViewModel.loadPromos(promosToLoad)
-        }
+    val promosToDisplay = when (currentUser?.rol) {
+        "admin" -> promos.filter { it.restaurantId == adminRestaurant?.id }
+        else -> promos
+    }
 
         val backgroundImage = if (ThemeManager.isDarkTheme)
             painterResource(id = R.drawable.backgrounddark)
         else
             painterResource(id = R.drawable.backgroundlighttheme)
 
-        Scaffold(
-            topBar = {
-                TopBar(
-                    showBackIcon = true,
-                    onNavClick = { navController.navigate(Screens.Home.route) }
-                )
-            },
-            bottomBar = { BottomNavigationBar(navController) },
+    LaunchedEffect(currentUser, allRestaurants) {
+        promoViewModel.loadPromosForUser(currentUser)
+    }
 
-            floatingActionButton = {
-                if (isAdmin && adminRestaurant != null) {
-                    EditFloatingButton(onClick = {
-                        val nuevoId = (adminRestaurant.promos.maxOfOrNull { it.id } ?: 0) + 1
-                        navController.navigate(Screens.PromoInfo.createRoute(nuevoId, isNew = true))
-                    })
-                }
+    Scaffold(
+        topBar = {
+            TopBar(
+                showBackIcon = true,
+                onNavClick = { navController.navigate(Screens.Home.route) }
+            )
+        },
+        bottomBar = { BottomNavigationBar(navController) },
+        floatingActionButton = {
+            if (adminRestaurant != null) {
+                EditFloatingButton(onClick = {
+                    val newPromoId = UUID.randomUUID().toString()
+                    navController.navigate(Screens.PromoInfo.createRoute(newPromoId, isNew = true))
+                })
             }
-            ,
-            floatingActionButtonPosition = FabPosition.End
-        ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                Image(
-                    painter = backgroundImage,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
 
+        },
+        floatingActionButtonPosition = FabPosition.End
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            if (promos.isEmpty() && promosToDisplay.isNotEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Cargando promociones...")
+                }
+            } else if (promos.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        if (adminRestaurant != null) "Tu restaurante aún no tiene promociones."
+                        else "No hay promociones disponibles en este momento."
+                    )
+                }
+            } else {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {
-
                     Text(
                         text = "Promociones",
                         fontSize = 24.sp,
@@ -104,8 +122,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                         color = AppColors.texto,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
-
-                    promoViewModel.promos.forEach { promo ->
+                    promosToDisplay.forEach { promo ->
                         Box {
                             PromoCard(
                                 promo = promo,
@@ -114,20 +131,24 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                                 }
                             )
 
-                            if (isAdmin) {
+                            if (adminRestaurant != null && promo.restaurantId == adminRestaurant.id) {
                                 DeleteButton(
                                     onClick = {
-                                        promoViewModel.deletePromo(promo)
+                                        promoViewModel.deletePromo(promo, currentUser)
+                                        scope.launch {
+                                            Toast.makeText(context, "Promoción eliminada", Toast.LENGTH_SHORT).show()
+                                        }
                                     },
                                     modifier = Modifier
                                         .padding(vertical = 16.dp, horizontal = 8.dp)
                                         .align(Alignment.TopEnd)
                                 )
                             }
-
                         }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
         }
     }
+}

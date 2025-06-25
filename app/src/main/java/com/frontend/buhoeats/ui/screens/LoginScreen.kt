@@ -25,19 +25,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidEmail
 import com.frontend.buhoeats.ui.components.ValidationMessage
-import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import com.frontend.buhoeats.auth.getGoogleSignInClient
+import com.frontend.buhoeats.models.User
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -55,6 +61,28 @@ fun Login(
     var isLoading by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try {
+            val account = task.result
+            val email = account.email ?: ""
+            val user = userSessionViewModel.getUserByEmail(email)
+            if (user != null) {
+                userSessionViewModel.login(user)
+                Toast.makeText(context, "Sesión iniciada con Google", Toast.LENGTH_SHORT).show()
+                navControl.navigate(Screens.Home.route) {
+                    popUpTo(Screens.Login.route) { inclusive = true }
+                }
+            } else {
+                navControl.navigate(Screens.SignUp.route)
+                Toast.makeText(context, "Usuario no encontrado, por favor regístrate", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error en Google Sign-In", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     val containerColor = Color.White
 
@@ -67,11 +95,9 @@ fun Login(
                 .fillMaxSize()
                 .padding(32.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
-
             Text(
                 text = "BÚHO EATS",
                 style = TextStyle(
@@ -226,10 +252,9 @@ fun Login(
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(2000)
 
-                            val user = DummyData.getUsers().find {
+                            val user = InMemoryUserDataSource.getUsers().find {
                                 it.email == email && it.password == password
                             }
-
                             isLoading = false
 
                             if (user != null) {
@@ -269,7 +294,11 @@ fun Login(
                 }
 
                 Button(
-                onClick = { /* Sesión con Google */ },
+                onClick = {
+                    val signInClient = getGoogleSignInClient(context)
+                    val signInIntent = signInClient.signInIntent
+                    googleSignInLauncher.launch(signInIntent)
+                },
                 modifier = Modifier
                     .width(300.dp)
                     .height(56.dp)

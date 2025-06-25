@@ -55,7 +55,7 @@ import com.frontend.buhoeats.ui.theme.ThemeManager
 fun EditRestaurantScreen(
     navController: NavHostController,
     onBack: () -> Unit = {},
-    onEditImages: (Int) -> Unit = {},
+    onEditImages: (String) -> Unit = {},
     onEditMenu: () -> Unit = {},
     onEditInfo: () -> Unit = {},
     restaurant: Restaurant

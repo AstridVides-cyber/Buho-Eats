@@ -2,10 +2,12 @@ package com.frontend.buhoeats.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.User
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class RestaurantViewModel : ViewModel() {
 
@@ -18,33 +20,56 @@ class RestaurantViewModel : ViewModel() {
 
     fun loadRestaurants() {
         _restaurantList.clear()
-        _restaurantList.addAll(DummyData.getRestaurants())
+        _restaurantList.addAll(InMemoryUserDataSource.getRestaurants())
     }
 
-    fun deleteRestaurant(restaurantId: Int) {
-        DummyData.deleteRestaurant(restaurantId)
+    fun deleteRestaurant(restaurantId: String) {
+        InMemoryUserDataSource.deleteRestaurant(restaurantId)
         _restaurantList.removeIf { it.id == restaurantId }
     }
 
     fun addRestaurant(restaurant: Restaurant) {
-        DummyData.addRestaurant(restaurant)
+        InMemoryUserDataSource.addRestaurant(restaurant)
         _restaurantList.add(restaurant)
     }
 
     fun updateRestaurant(updatedRestaurant: Restaurant) {
-        DummyData.updateRestaurant(updatedRestaurant)
+        InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
         val index = _restaurantList.indexOfFirst { it.id == updatedRestaurant.id }
         if (index != -1) {
             _restaurantList[index] = updatedRestaurant
         }
     }
 
-    fun getNextRestaurantId(): Int {
-        return DummyData.getNextRestaurantId()
+    fun getNextRestaurantId(): String {
+        return InMemoryUserDataSource.getNextRestaurantId()
     }
 
-    fun getUserEmailById(userId: Int): String {
-        return DummyData.getUserEmailById(userId)
+    fun getUserEmailById(userId: String): String {
+        return InMemoryUserDataSource.getUserEmailById(userId)
+    }
+    fun updateRestaurantImage(restaurantId: String, newImageUrl: String) {
+        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
+        restaurant?.let {
+            val updatedRestaurant = it.copy(imageUrl = newImageUrl)
+            InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
+            val index = _restaurantList.indexOfFirst { r -> r.id == restaurantId }
+            if (index != -1) {
+                _restaurantList[index] = updatedRestaurant
+            }
+        }
+    }
+    fun removeDishFromRestaurant(restaurantId: String, dishId: String) {
+        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
+        restaurant?.let {
+            val updatedMenu = it.menu.filterNot { dish -> dish.id == dishId }
+            val updatedRestaurant = it.copy(menu = updatedMenu)
+            InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
+            val index = _restaurantList.indexOfFirst { r -> r.id == restaurantId }
+            if (index != -1) {
+                _restaurantList[index] = updatedRestaurant
+            }
+        }
     }
 }
 
@@ -52,68 +77,68 @@ class BlockedUsersViewModel : ViewModel() {
     private val _blockedUsers = mutableStateListOf<User>()
     val blockedUsers: List<User> get() = _blockedUsers
 
-    fun loadBlockedUsers(restaurant: Restaurant) {
+    fun loadBlockedUsers(restaurantId: String) {
+        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
         _blockedUsers.clear()
-        _blockedUsers.addAll(
-            restaurant.blockedUsers.mapNotNull { userId ->
-                DummyData.getUsers().find { it.id == userId }
-            }
-        )
-    }
-
-    fun unblockUser(user: User) {
-        _blockedUsers.remove(user)
-    }
-
-    fun blockUser(user: User, restaurant: Restaurant, onUpdate: (Restaurant) -> Unit) {
-        if (!_blockedUsers.contains(user)) {
-            _blockedUsers.add(user)
-
-            val updatedComments = restaurant.comments.filterNot { it.userId == user.id }.toMutableList()
-            val updatedRatings = restaurant.ratings.filterNot { it.userId == user.id }.toMutableList()
-
-            val updatedRestaurant = restaurant.copy(
-                comments = updatedComments,
-                ratings = updatedRatings,
-                blockedUsers = restaurant.blockedUsers + user.id
+        restaurant?.let {
+            _blockedUsers.addAll(
+                it.blockedUsers.mapNotNull { userId ->
+                    InMemoryUserDataSource.getUserById(userId)
+                }
             )
+        }
+    }
 
-            onUpdate(updatedRestaurant)
-            loadBlockedUsers(updatedRestaurant)
+    fun unblockUser(user: User, restaurantId: String, onUpdate: (Restaurant) -> Unit) {
+        InMemoryUserDataSource.unblockUserFromRestaurant(user.id, restaurantId)
+        _blockedUsers.remove(user)
+        InMemoryUserDataSource.getRestaurantById(restaurantId)?.let {
+            onUpdate(it)
+            loadBlockedUsers(restaurantId)
+        }
+    }
+
+    fun blockUser(user: User, restaurantId: String, onUpdate: (Restaurant) -> Unit) {
+        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
+        restaurant?.let {
+            InMemoryUserDataSource.blockUserFromRestaurant(user.id, restaurantId)
+            _blockedUsers.add(user)
+            InMemoryUserDataSource.getRestaurantById(restaurantId)?.let { updatedRestaurant ->
+                onUpdate(updatedRestaurant)
+                loadBlockedUsers(restaurantId)
+            }
         }
     }
 }
-
 class PromoViewModel : ViewModel() {
-    private val _promos = mutableStateListOf<Promo>()
-    val promos: List<Promo> get() = _promos
+    private val _promos = MutableStateFlow<List<Promo>>(emptyList())
+    val promos: StateFlow<List<Promo>> = _promos
 
-    private var isLoaded = false
-
-    fun loadPromos(promos: List<Promo>) {
-        if (!isLoaded) {
-            _promos.clear()
-            _promos.addAll(promos)
-            isLoaded = true
+    fun loadPromosForUser(currentUser: User?) {
+        val promosToDisplay = when (currentUser?.rol) {
+            "admin" -> {
+                val restaurant = InMemoryUserDataSource.getRestaurants()
+                    .firstOrNull { it.admin == currentUser.id }
+                restaurant?.promos ?: emptyList()
+            }
+            else -> InMemoryUserDataSource.getRestaurants().flatMap { it.promos }
         }
-    }
-
-    fun deletePromo(promo: Promo) {
-        _promos.remove(promo)
-    }
-    fun addPromo(promo: Promo) {
-        _promos.add(promo)
-    }
-    fun updatePromo(updatedPromo: Promo) {
-        val index = _promos.indexOfFirst { it.id == updatedPromo.id }
-        if (index != -1) {
-            _promos[index] = updatedPromo
-        }
+        _promos.value = promosToDisplay
     }
 
 
+    fun deletePromo(promo: Promo, user: User?) {
+        InMemoryUserDataSource.removePromo(promo)
+        loadPromosForUser(user)
+    }
 
+    fun updatePromo(updatedPromo: Promo, user: User?) {
+        InMemoryUserDataSource.updatePromo(updatedPromo)
+        loadPromosForUser(user)
+    }
+
+    fun addPromo(promo: Promo, user: User?) {
+        InMemoryUserDataSource.addPromoToRestaurant(promo.restaurantId, promo)
+        loadPromosForUser(user)
+    }
 }
-
-
-

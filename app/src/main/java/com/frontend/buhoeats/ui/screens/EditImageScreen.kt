@@ -1,5 +1,6 @@
 package com.frontend.buhoeats.ui.screens
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,6 +47,8 @@ import androidx.compose.material3.ButtonDefaults
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import android.widget.Toast
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 
 
 fun isAdminOfRestaurant(user: User?, restaurant: Restaurant): Boolean {
@@ -55,11 +59,13 @@ fun isAdminOfRestaurant(user: User?, restaurant: Restaurant): Boolean {
 fun EditImageScreen(
     navController: NavController,
     restaurant: Restaurant,
-    userSessionViewModel: UserSessionViewModel
+    userSessionViewModel: UserSessionViewModel,
+    restaurantViewModel: RestaurantViewModel
 ) {
     val currentUser = userSessionViewModel.currentUser.value
     val isAdmin = isAdminOfRestaurant(currentUser, restaurant)
 
+    val context = LocalContext.current
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val currentImageUrl = restaurant.imageUrl
 
@@ -163,7 +169,8 @@ fun EditImageScreen(
                 Button(
                     onClick = {
                         val nuevaImagen = selectedImageUri?.toString() ?: currentImageUrl
-                        println("Guardar imagen: $nuevaImagen")
+                        restaurantViewModel.updateRestaurantImage(restaurant.id, nuevaImagen)
+                        Toast.makeText(context, "Imagen guardada correctamente", Toast.LENGTH_SHORT).show()
 
                         navController.popBackStack()
                     },

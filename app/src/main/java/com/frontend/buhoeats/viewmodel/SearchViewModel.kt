@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchHistoryManager: SearchHistoryManager,
-    private val userId: Int
+    private val userId: String
 ) : ViewModel() {
 
     private val _searchHistory = MutableStateFlow<List<String>>(emptyList())
@@ -49,7 +49,7 @@ class SearchViewModel(
 }
 
 class SearchViewModelFactory(
-    private val userId: Int,
+    private val userId: String,
     private val context: Context
 ) : ViewModelProvider.Factory {
 

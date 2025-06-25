@@ -34,7 +34,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
-import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.CustomTextField
 import com.frontend.buhoeats.ui.components.ProfileImage
@@ -43,7 +42,8 @@ import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
-
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 
 val montserratFontFamily = FontFamily(
     Font(R.font.montserrat_bold)
@@ -51,24 +51,27 @@ val montserratFontFamily = FontFamily(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditAccountScreen(navController: NavController,
-                      user: User
-                      , onBack: () -> Unit = {},
-                      userSessionViewModel: UserSessionViewModel
+    onBack: () -> Unit = {}, userSessionViewModel: UserSessionViewModel
 ) {
 
-    var name by remember { mutableStateOf(user.name) }
-    var lastname by remember { mutableStateOf(user.lastName) }
-    var email by remember { mutableStateOf(user.email) }
-    var password by remember { mutableStateOf(user.password) }
-    var confirmPassword by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf(userSessionViewModel.currentUser.value?.name ?: "") }
+    var lastname by remember { mutableStateOf(userSessionViewModel.currentUser.value?.lastName ?: "") }
+    var email by remember { mutableStateOf(userSessionViewModel.currentUser.value?.email ?: "") }
+    var newPassword by remember { mutableStateOf("") }
+    var confirmNewPassword by remember { mutableStateOf("") }
 
     var triedToSubmit by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    var attemptingPasswordChange by remember { mutableStateOf(false) }
 
     var nameError by remember { mutableStateOf("") }
     var lastnameError by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf("") }
-    var confirmPasswordError by remember { mutableStateOf("") }
+    var newPasswordError by remember { mutableStateOf("") }
+    var confirmNewPasswordError by remember { mutableStateOf("") }
+
+    val isGoogleUser = userSessionViewModel.currentUser.value?.password.isNullOrEmpty()
+
 
     Scaffold(
         topBar = { TopBar(showBackIcon = true , onNavClick = onBack
@@ -101,15 +104,20 @@ fun EditAccountScreen(navController: NavController,
                     fontWeight = FontWeight.ExtraBold
                 )
 
-
             }
                 Spacer(modifier = Modifier.width(14.dp))
 
-                ProfileImage(
-                    userImageUrl = user.imageProfile,
-                    onImageSelected = { }
-                )
-
+            ProfileImage(
+                userImageUrl = userSessionViewModel.currentUser.value?.imageProfile ?: "",
+                onImageSelected = { newImageUrl ->
+                    val updatedUser = userSessionViewModel.currentUser.value?.copy(
+                        imageProfile = newImageUrl.toString()
+                    )
+                    if (updatedUser != null) {
+                        userSessionViewModel.updateCurrentUser(updatedUser)
+                    }
+                }
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -152,7 +160,8 @@ fun EditAccountScreen(navController: NavController,
                 },
                 placeholder = "Ingrese su correo",
                 textColor = Color.Black,
-                containerColor = Color.White
+                containerColor = Color.White,
+                enabled = !isGoogleUser
             )
             if (emailError.isNotEmpty()) ValidationMessage(message = emailError)
 
@@ -160,33 +169,36 @@ fun EditAccountScreen(navController: NavController,
 
             CustomTextField(
                 label = "Contraseña",
-                value = password,
+                value = newPassword,
                 onValueChange = {
-                    password = it
-                    if (passwordError.isNotEmpty()) passwordError = ""
+                    newPassword = it
+                    attemptingPasswordChange = it.isNotBlank() // El usuario está intentando cambiarla si escribe algo
+                    if (newPasswordError.isNotEmpty()) newPasswordError = ""
+                    if (confirmNewPasswordError.isNotEmpty() && newPassword == confirmNewPassword) confirmNewPasswordError = ""
                 },
                 placeholder = "Ingrese su contraseña",
                 textColor = Color.Black,
                 containerColor = Color.White,
-                isPassword = true
+                isPassword = true,
+                enabled = !isGoogleUser
             )
-            if (passwordError.isNotEmpty()) ValidationMessage(message = passwordError)
-
+            if (newPasswordError.isNotEmpty()) ValidationMessage(message = newPasswordError)
             Spacer(modifier = Modifier.height(12.dp))
 
             CustomTextField(
                 label = "Confirmar contraseña",
-                value = confirmPassword,
+                value = confirmNewPassword,
                 onValueChange = {
-                    confirmPassword = it
-                    if (confirmPasswordError.isNotEmpty()) confirmPasswordError = ""
+                    confirmNewPassword = it
+                    if (confirmNewPasswordError.isNotEmpty()) confirmNewPasswordError = ""
                 },
                 placeholder = "Repita su contraseña",
                 textColor = Color.Black,
                 containerColor = Color.White,
-                isPassword = true
+                isPassword = true,
+                enabled = !isGoogleUser
             )
-            if (confirmPasswordError.isNotEmpty()) ValidationMessage(message = confirmPasswordError)
+            if (confirmNewPasswordError.isNotEmpty()) ValidationMessage(message = confirmNewPasswordError)
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -240,28 +252,47 @@ fun EditAccountScreen(navController: NavController,
                             hasError = true
                         }
 
-                        if (password.isBlank()) {
-                            passwordError = "La contraseña no debe estar vacía"
-                            hasError = true
-                        }
+                        if (newPassword.isNotBlank() || confirmNewPassword.isNotBlank() || attemptingPasswordChange) {
+                            if (!ValidatorUtils.isSecurePassword(newPassword)) {
+                                newPasswordError = "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo"
 
-                        if (confirmPassword.isBlank()) {
-                            confirmPasswordError = "Debe confirmar la contraseña"
-                            hasError = true
-                        } else if (password != confirmPassword) {
-                            confirmPasswordError = "Las contraseñas no coinciden"
-                            hasError = true
+                                hasError = true
+                            } else {
+                                newPasswordError = ""
+                            }
+
+                            if (newPassword != confirmNewPassword) {
+                                confirmNewPasswordError = "La contraseñas no coinciden"
+                                hasError = true
+                            } else {
+                                confirmNewPasswordError = ""
+                            }
+                        } else {
+                            newPasswordError = ""
+                            confirmNewPasswordError = ""
                         }
 
                         if (!hasError) {
-                            val updatedUser = user.copy(
+                            val passwordToSave = if (newPassword.isNotBlank() && attemptingPasswordChange) {
+                                newPassword
+                            } else {
+                                userSessionViewModel.currentUser.value!!.password
+                            }
+                            val updatedUser = userSessionViewModel.currentUser.value?.copy(
                                 name = name,
                                 lastName = lastname,
                                 email = email,
-                                password = password
+                                password = passwordToSave
                             )
 
-                            userSessionViewModel.updateCurrentUser(updatedUser)
+                            if (updatedUser != null) {
+                                userSessionViewModel.updateCurrentUser(updatedUser)
+                            }
+                            Toast.makeText(
+                                context,
+                                "Usuario actualizado correctamente",
+                                Toast.LENGTH_LONG
+                            ).show()
                             navController.popBackStack()
                         }
                     },

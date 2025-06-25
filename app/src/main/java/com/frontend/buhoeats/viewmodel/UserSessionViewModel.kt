@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModelProvider
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,34 +24,51 @@ class UserSessionViewModel : ViewModel() {
 
     fun updateCurrentUser(user: User) {
         _currentUser.value = user
-    }
-    fun assignRoleToUser(email: String, newRole: String): Boolean {
-        val userIndex = DummyData.getUsers().indexOfFirst { it.email.equals(email, ignoreCase = true) }
+
+        val userList = InMemoryUserDataSource.getUsers().toMutableList()
+        val userIndex = InMemoryUserDataSource.getUsers().indexOfFirst { it.id == user.id }
 
         if (userIndex != -1) {
-            val userList = DummyData.getUsers().toMutableList()
-            val user = userList[userIndex]
-            val updatedUser = user.copy(rol = newRole)
-            userList[userIndex] = updatedUser
+            userList[userIndex] = user
+            InMemoryUserDataSource.setUsers(userList)
+        }
+    }
+    private val _users = mutableStateOf<List<User>>(emptyList())
+    val users: State<List<User>> get() = _users
 
-            println("Usuario actualizado: ${updatedUser.email} -> ${updatedUser.rol}")
+    fun loadUsers() {
+        _users.value = InMemoryUserDataSource.getUsers()
+    }
+
+    fun assignRoleToUser(email: String, newRole: String): Boolean {
+        loadUsers()
+        val index = _users.value.indexOfFirst { it.email.trim().equals(email.trim(), ignoreCase = true) }
+        if (index != -1) {
+            val updatedUser = _users.value[index].copy(rol = newRole)
+            val updatedList = _users.value.toMutableList().apply { this[index] = updatedUser }
+            _users.value = updatedList
+            InMemoryUserDataSource.setUsers(updatedList)
             return true
         }
         return false
     }
+
+
     fun registerUser(newUser: User): Boolean {
-        val users = DummyData.getUsers().toMutableList()
+        val users = InMemoryUserDataSource.getUsers().toMutableList()
 
         if (users.any { it.email.equals(newUser.email, ignoreCase = true) }) {
             return false
         }
 
         users.add(newUser)
-        DummyData.setUsers(users)
+        InMemoryUserDataSource.setUsers(users)
         return true
     }
 
-
+    fun getUserByEmail(email: String): User? {
+        return InMemoryUserDataSource.getUsers().find { it.email.equals(email, ignoreCase = true) }
+    }
 
 }
 
@@ -59,8 +76,8 @@ class FavoritesViewModel(
     private val userSessionViewModel: UserSessionViewModel
 ) : ViewModel() {
 
-    private val _favoriteRestaurantIds = MutableStateFlow<Set<Int>>(emptySet())
-    val favoriteRestaurantIds: StateFlow<Set<Int>> = _favoriteRestaurantIds.asStateFlow()
+    private val _favoriteRestaurantIds = MutableStateFlow<Set<String>>(emptySet())
+    val favoriteRestaurantIds: StateFlow<Set<String>> = _favoriteRestaurantIds.asStateFlow()
 
     init {
         userSessionViewModel.currentUser.value?.favoritos?.let { favs ->
@@ -74,7 +91,7 @@ class FavoritesViewModel(
         }
     }
 
-    fun toggleFavorite(restaurantId: Int) {
+    fun toggleFavorite(restaurantId: String) {
         val currentUser = userSessionViewModel.currentUser.value ?: return
         val current = _favoriteRestaurantIds.value.toMutableSet()
 

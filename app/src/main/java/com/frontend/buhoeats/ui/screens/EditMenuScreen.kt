@@ -2,6 +2,7 @@ package com.frontend.buhoeats.ui.screens
 
 import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -39,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -46,7 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
+import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.FormField
@@ -54,7 +56,9 @@ import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.ValidatorUtils.isOnlyNumbers
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import java.util.UUID
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -63,7 +67,8 @@ fun EditMenuScreen(
     userSessionViewModel: UserSessionViewModel
 ) {
     val currentUser = userSessionViewModel.currentUser.value
-    val restaurant = DummyData.getRestaurants().find { it.admin == currentUser?.id }
+    val restaurant = InMemoryUserDataSource.getRestaurants().find { it.admin == currentUser?.id }
+    val context = LocalContext.current
 
     if (currentUser?.rol != "admin" || restaurant == null) {
         LaunchedEffect(Unit) {
@@ -84,6 +89,7 @@ fun EditMenuScreen(
     var nameError by remember { mutableStateOf(false) }
     var descriptionError by remember { mutableStateOf(false) }
     var priceError by remember { mutableStateOf(false) }
+    var priceFormatError by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = { TopBar(showBackIcon = true) { navController.popBackStack() } },
@@ -174,11 +180,17 @@ fun EditMenuScreen(
                 FormField(
                     label = "Precio:",
                     value = price,
-                    onValueChange = { price = it; priceError = false },
-                    isError = priceError,
+                    onValueChange = {
+                        price = it
+                        priceError = false
+                        priceFormatError = !isOnlyNumbers(it)
+                    },
+                    isError = priceError || priceFormatError,
                     placeholderText = "Ej. 2.50"
                 )
-                if (priceError) ValidationMessage("El precio no puede estar vacío")
+                if (priceError) ValidationMessage("El precio no puede estar vacío.")
+                else if (priceFormatError) ValidationMessage("El precio solo debe contener números")
+
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -204,19 +216,23 @@ fun EditMenuScreen(
                             nameError = name.isBlank()
                             descriptionError = description.isBlank()
                             priceError = price.isBlank()
+                            priceFormatError = !isOnlyNumbers(price)
 
-                            if (!nameError && !descriptionError && !priceError) {
+                            if (!nameError && !descriptionError && !priceError && !priceFormatError) {
+                                val formattedPrice = "%.2f".format(price.toDoubleOrNull() ?: 0.0)
+
                                 val newDish = Dish(
-                                    id = restaurant.menu.size + 1,
+                                    id = UUID.randomUUID().toString(),
                                     name = name,
                                     description = description,
-                                    imageUrl = imageUri?.toString() ?: "https://plus.unsplash.com/premium_photo-1670604211960-82b8d84f6aea",
-                                    price = "$$price"
+                                    imageUrl = imageUri?.toString() ?: "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22",
+                                    price = formattedPrice
                                 )
                                 val updatedRestaurant = restaurant.copy(
                                     menu = restaurant.menu + newDish
                                 )
-                                DummyData.updateRestaurant(updatedRestaurant)
+                                InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
+                                Toast.makeText(context, "Plato agregado exitosamente", Toast.LENGTH_SHORT).show()
                                 navController.popBackStack()
                             }
                         },

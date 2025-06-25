@@ -92,13 +92,3 @@ fun ConfirmationDialog(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewConfirmationDialog() {
-    ConfirmationDialog(
-        message = "¿Estás seguro que deseas cerrar sesión?",
-        onConfirm = {},
-        onDismiss = {}
-    )
-}

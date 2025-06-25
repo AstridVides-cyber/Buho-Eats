@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import android.util.Log
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -65,7 +66,7 @@ import kotlin.math.absoluteValue
 
 @Composable
 fun HomeScreen(
-    onRestaurantClick: (Int) -> Unit,
+    onRestaurantClick: (String) -> Unit,
     navController: NavController,
     userSessionViewModel: UserSessionViewModel,
     restaurantViewModel: RestaurantViewModel
@@ -82,6 +83,10 @@ fun HomeScreen(
     var isDeleting by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     var restaurantToDelete by remember { mutableStateOf<Restaurant?>(null) }
+
+    LaunchedEffect(Unit) {
+        userSessionViewModel.currentUser
+    }
 
     val filteredRestaurants = restaurantList.filter { restaurant ->
         val isAdminFilter = if (isAdmin) {
@@ -127,7 +132,10 @@ fun HomeScreen(
                 TopBar(
                     showMenuIcon = true,
                     onNavClick = {
-                        scope.launch { drawerState.open() }
+                        scope.launch {
+                            drawerState.open()
+                            Log.d("HomeScreen", "Slider opened by user: ${currentUser?.email}")
+                        }
                     }
                 )
             },
@@ -190,7 +198,7 @@ fun HomeScreen(
                 ) {
                     item {
                         GreetingSection(
-                            userName = currentUser?.name ?: "Usuario",
+                            userName = currentUser!!.name,
                             restaurants = restaurantList
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -229,7 +237,7 @@ fun HomeScreen(
                         item {
                             AddRestaurantCard(onClick = {
                                 isCreatingNewLocal = true
-                                navController.navigate(Screens.EditLocal.createRoute(-1, true))
+                                navController.navigate(Screens.EditLocal.createRoute("-1", true))
                             })
                             Spacer(modifier = Modifier.height(10.dp))
                         }

@@ -7,10 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.navigation.compose.rememberNavController
-import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.navigation.AppNavHost
-import com.frontend.buhoeats.ui.screens.StatisticsScreen
-
 import com.frontend.buhoeats.ui.theme.BuhoEatsTheme
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel

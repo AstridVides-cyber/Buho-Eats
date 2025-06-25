@@ -1,6 +1,7 @@
 package com.frontend.buhoeats.ui.screens
 
 import android.net.Uri
+import android.widget.Toast
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,7 +48,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.DummyData
 import com.frontend.buhoeats.models.ContactInfo
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
@@ -57,6 +59,9 @@ import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import com.frontend.buhoeats.ui.components.DropdownFormField
+import com.frontend.buhoeats.ui.components.LocationPickerMap
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -65,7 +70,8 @@ fun EditLocalScreen(
     restaurant: Restaurant? = null,
     navController: NavController,
     onBackClick: () -> Unit = {},
-    restaurantViewModel: RestaurantViewModel
+    restaurantViewModel: RestaurantViewModel,
+    userSessionViewModel: UserSessionViewModel
 ) {
     var name by remember { mutableStateOf(restaurant?.name ?: "") }
     var description by remember { mutableStateOf(restaurant?.description ?: "") }
@@ -81,6 +87,22 @@ fun EditLocalScreen(
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
+
+    var latitud by remember { mutableStateOf(restaurant?.latitud ?: 0.0) }
+    var longitud by remember { mutableStateOf(restaurant?.longitud ?: 0.0) }
+    var locationError by remember { mutableStateOf(false) }
+
+    val categorias = listOf("Desayuno", "Almuerzo", "Cena")
+    var categoria by remember { mutableStateOf(restaurant?.category ?: "") }
+    var categoriaError by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    val allUsers by userSessionViewModel.users
+
+    LaunchedEffect(Unit) {
+        userSessionViewModel.loadUsers()
+    }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -101,12 +123,15 @@ fun EditLocalScreen(
                     nameError = name.isBlank()
                     descriptionError = description.isBlank()
                     emailError = !ValidatorUtils.isValidEmail(adminEmail)
+                    categoriaError = categoria.isBlank()
+                    locationError = latitud == 0.0 && longitud == 0.0
 
-                    if (!nameError && !descriptionError && !emailError) {
+
+
+                    if (!nameError && !descriptionError && !emailError && !categoriaError && !locationError) {
                         showConfirmationDialog = true
                     }
-                }
-                ,
+                },
                 containerColor = Color(0xFF06BB0C),
                 contentColor = Color.White,
                 modifier = Modifier.size(70.dp),
@@ -215,6 +240,21 @@ fun EditLocalScreen(
                 )
                 if (descriptionError) ValidationMessage("La descripción no puede estar vacía")
 
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                DropdownFormField(
+                    label = "Categoría:",
+                    options = categorias,
+                    selectedOption = categoria,
+                    onOptionSelected = {
+                        categoria = it
+                        categoriaError = false
+                    },
+                    isError = categoriaError
+                )
+                if (categoriaError) ValidationMessage("Selecciona una categoría")
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
@@ -227,35 +267,52 @@ fun EditLocalScreen(
                 if (emailError) ValidationMessage("Correo no válido")
                 if (adminRoleError) ValidationMessage("El correo debe pertenecer a un administrador")
 
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                LocationPickerMap(
+                    lat = latitud,
+                    lon = longitud,
+                    onLocationChange = { lat, lon ->
+                        latitud = lat
+                        longitud = lon
+                        locationError = false
+                    }
+                )
+                if (locationError) ValidationMessage("Selecciona una ubicación válida")
+
+
             }
             if (showConfirmationDialog) {
                 ConfirmationDialog(
                     message = if (isNewLocal) "¿Estás seguro que deseas agregar un nuevo local?" else "¿Deseas guardar los cambios en el local?",
                     onConfirm = {
-                        val adminUser = DummyData.getUsers().find { it.email == adminEmail && it.rol == "admin" }
-
+                        val adminUser = allUsers.find {
+                            it.email.trim().equals(adminEmail.trim(), ignoreCase = true) && it.rol == "admin"
+                        }
                         if (adminUser != null) {
                             val updatedRestaurant = Restaurant(
-                                id = restaurant?.id ?: restaurantViewModel.getNextRestaurantId(),
+                                id = restaurant?.id ?: restaurantViewModel.getNextRestaurantId().toString(),
                                 name = name,
                                 description = description,
                                 imageUrl = selectedImageUri?.toString()
                                     ?: restaurant?.imageUrl
-                                    ?: "https://plus.unsplash.com/premium_photo-1670604211960-82b8d84f6aea",
-                                category = restaurant?.category ?: "",
+                                    ?: "https://images.unsplash.com/photo-1525610553991-2bede1a236e2",
+                                category = categoria,
                                 contactInfo = restaurant?.contactInfo ?: ContactInfo("", "", "", ""),
                                 ratings = restaurant?.ratings?.toMutableList() ?: mutableListOf(),
                                 comments = restaurant?.comments?.toMutableList() ?: mutableListOf(),
                                 menu = restaurant?.menu ?: emptyList(),
                                 promos = restaurant?.promos ?: emptyList(),
-                                latitud = restaurant?.latitud ?: 0.0,
-                                longitud = restaurant?.longitud ?: 0.0,
+                                latitud = latitud,
+                                longitud = longitud,
                                 admin = adminUser.id,
                                 blockedUsers = restaurant?.blockedUsers ?: emptyList()
                             )
 
                             if (isNewLocal) {
                                 restaurantViewModel.addRestaurant(updatedRestaurant)
+                                Toast.makeText(context, "Local creado exitosamente", Toast.LENGTH_SHORT).show()
                             } else {
                                 restaurantViewModel.updateRestaurant(updatedRestaurant)
                             }
@@ -263,13 +320,10 @@ fun EditLocalScreen(
                             showConfirmationDialog = false
                             navController.popBackStack()
                         } else {
-                            if (adminUser == null || adminUser.rol != "admin") {
                                 emailError = true
                                 adminRoleError = true
                                 showConfirmationDialog = false
                                 return@ConfirmationDialog
-                            }
-                            showConfirmationDialog = false
                         }
                     },
                     onDismiss = {
