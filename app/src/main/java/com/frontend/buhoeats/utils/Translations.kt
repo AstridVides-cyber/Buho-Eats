@@ -143,11 +143,37 @@ object Translations {
             Language.ES to "No has añadido ningún restaurante a favoritos.",
             Language.EN to "You haven't added any restaurants to favorites yet."
         ),
-
-
-
-
+        "welcome_user" to mapOf(
+            Language.ES to "Bienvenido,",
+            Language.EN to "Welcome,"
+        ),
+        "your_location" to mapOf(
+            Language.ES to "Su local:",
+            Language.EN to "Your location:"
+        ),
+        "restaurants_title" to mapOf(
+            Language.ES to "Restaurantes",
+            Language.EN to "Restaurants"
+        ),
+        "no_restaurant_images" to mapOf(
+            Language.ES to "No hay imágenes de restaurantes disponibles.",
+            Language.EN to "No restaurant images available."
+        ),
+        "breakfast" to mapOf(Language.ES to "Desayuno", Language.EN to "Breakfast"),
+        "lunch" to mapOf(Language.ES to "Almuerzo", Language.EN to "Lunch"),
+        "dinner" to mapOf(Language.ES to "Cena", Language.EN to "Dinner"),
+        "results" to mapOf(Language.ES to "Resultados:", Language.EN to "Results:"),
+        "reset" to mapOf(Language.ES to "Restablecer", Language.EN to "Reset"),
+        "confirm_delete_restaurant" to mapOf(
+            Language.ES to "¿Seguro que deseas eliminar el local?",
+            Language.EN to "Are you sure you want to delete this location?"
+        ),
+        "add_restaurant" to mapOf(
+            Language.ES to "Agregar nuevo restaurante",
+            Language.EN to "Add new restaurant"
         )
+
+    )
 
     fun t(key: String): String {
         return strings[key]?.get(currentLanguage) ?: key
