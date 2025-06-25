@@ -251,7 +251,7 @@ fun EditLocalScreen(
                         categoria = it
                         categoriaError = false
                     },
-                    isError = categoriaError
+                    isError = categoriaError,
                 )
                 if (categoriaError) ValidationMessage("Selecciona una categoría")
 

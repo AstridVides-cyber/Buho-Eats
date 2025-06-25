@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.frontend.buhoeats.ui.theme.AppColors
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -70,7 +71,7 @@ fun LocationPickerMap(
             text = "Selecciona la ubicación en el mapa",
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Color.Black,
+            color = AppColors.texto,
             modifier = Modifier.padding(bottom = 10.dp)
         )
 

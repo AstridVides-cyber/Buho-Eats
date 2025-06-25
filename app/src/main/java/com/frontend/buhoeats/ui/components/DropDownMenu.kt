@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.setValue
+import com.frontend.buhoeats.ui.theme.AppColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +38,7 @@ fun DropdownFormField(
         Text(
             label,
             fontWeight = FontWeight.SemiBold,
-            color = Color.Black,
+            color = AppColors.texto,
             fontSize = 16.sp,
             modifier = Modifier.padding(bottom = 4.dp)
         )

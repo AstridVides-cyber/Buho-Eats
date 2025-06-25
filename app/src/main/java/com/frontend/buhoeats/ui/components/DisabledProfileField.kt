@@ -40,6 +40,6 @@ fun DisabledProfileField(label: String, value: String) {
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
+            .height(55.dp)
     )
 }
