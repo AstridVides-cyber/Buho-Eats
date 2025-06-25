@@ -4,25 +4,12 @@ import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,18 +22,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.InMemoryUserDataSource
-import com.frontend.buhoeats.ui.components.BottomNavigationBar
-import com.frontend.buhoeats.ui.components.FormField
-import com.frontend.buhoeats.ui.components.TopBar
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import com.frontend.buhoeats.viewmodel.RestaurantViewModel
-import com.frontend.buhoeats.viewmodel.UserSessionViewModel
-import androidx.compose.runtime.LaunchedEffect
-import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.ui.components.*
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidPhoneNumber
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -79,25 +61,18 @@ fun EditInfoAdmin(
     var addressError by remember { mutableStateOf(false) }
 
     Scaffold(
-        topBar = {
-            TopBar(showBackIcon = true) { navController.popBackStack() }
-        },
-        bottomBar = {
-            BottomNavigationBar(navController)
-        }
+        topBar = { TopBar(showBackIcon = true) { navController.popBackStack() } },
+        bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-
-
             val backgroundImage = if (ThemeManager.isDarkTheme)
                 painterResource(id = R.drawable.backgrounddark)
             else
                 painterResource(id = R.drawable.backgroundlighttheme)
-
 
             Image(
                 painter = backgroundImage,
@@ -113,7 +88,7 @@ fun EditInfoAdmin(
                     .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
                 Text(
-                    text = "Editar Información del Restaurante",
+                    text = Translations.t("edit_restaurant_info"),
                     fontSize = 23.sp,
                     fontWeight = FontWeight.Bold,
                     color = AppColors.texto,
@@ -123,50 +98,56 @@ fun EditInfoAdmin(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 FormField(
-                    label = "Correo:",
+                    label = Translations.t("email") + ":",
                     value = email,
                     onValueChange = { email = it; emailError = false },
                     isError = emailError
                 )
                 if (emailError) {
-                    ValidationMessage(if (email.isBlank()) "El correo no puede estar vacío" else "El formato del correo no es válido")
+                    ValidationMessage(
+                        if (email.isBlank()) Translations.t("error_email_required")
+                        else Translations.t("error_email_invalid")
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
-                    label = "Teléfono:",
+                    label = Translations.t("phone") + ":",
                     value = phone,
                     onValueChange = { phone = it; phoneError = false },
                     isError = phoneError
                 )
                 if (phoneError) {
-                    ValidationMessage(if (phone.isBlank()) "El teléfono no puede estar vacío" else "El formato del teléfono no es válido")
+                    ValidationMessage(
+                        if (phone.isBlank()) Translations.t("error_phone_required")
+                        else Translations.t("error_phone_invalid")
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
-                    label = "Horario:",
+                    label = Translations.t("schedule") + ":",
                     value = schedule,
                     onValueChange = { schedule = it; scheduleError = false },
                     isError = scheduleError
                 )
                 if (scheduleError) {
-                    ValidationMessage("El horario no puede estar vacío")
+                    ValidationMessage(Translations.t("error_schedule_required"))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
-                    label = "Dirección:",
+                    label = Translations.t("address") + ":",
                     value = address,
                     onValueChange = { address = it; addressError = false },
                     isMultiline = true,
                     isError = addressError
                 )
                 if (addressError) {
-                    ValidationMessage("La dirección no puede estar vacía")
+                    ValidationMessage(Translations.t("error_address_required"))
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -186,6 +167,7 @@ fun EditInfoAdmin(
                             phoneError = false
                             scheduleError = false
                             addressError = false
+
                             navController.popBackStack()
                         },
                         shape = RoundedCornerShape(16.dp),
@@ -196,7 +178,7 @@ fun EditInfoAdmin(
                             .height(50.dp),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                     ) {
-                        Text("Cancelar", color = Color.White, fontSize = 16.sp)
+                        Text(Translations.t("cancel"), color = Color.White, fontSize = 16.sp)
                     }
 
                     Button(
@@ -216,7 +198,11 @@ fun EditInfoAdmin(
                                     )
                                 )
                                 restaurantViewModel.updateRestaurant(updatedRestaurant)
-                                Toast.makeText(context, "Información editada exitosamente", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    Translations.t("info_updated_success"),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 navController.popBackStack()
                             }
                         },
@@ -228,7 +214,7 @@ fun EditInfoAdmin(
                             .height(50.dp),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                     ) {
-                        Text("Confirmar", color = Color.White, fontSize = 16.sp)
+                        Text(Translations.t("confirm"), color = Color.White, fontSize = 16.sp)
                     }
                 }
             }

@@ -49,7 +49,22 @@ object Translations {
         "error_email_required" to mapOf(Language.ES to "El correo no debe estar vacío", Language.EN to "Email cannot be empty"),
         "error_email_invalid" to mapOf(Language.ES to "Correo inválido", Language.EN to "Invalid email"),
         "error_password_security" to mapOf(Language.ES to "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo", Language.EN to "Password must be at least 8 characters long and include uppercase, lowercase, number, and symbol"),
-        "error_password_mismatch" to mapOf(Language.ES to "Las contraseñas no coinciden", Language.EN to "Passwords do not match")
+        "error_password_mismatch" to mapOf(Language.ES to "Las contraseñas no coinciden", Language.EN to "Passwords do not match"),
+        "edit_restaurant_info" to mapOf(Language.ES to "Editar Información del Restaurante", Language.EN to "Edit Restaurant Info"),
+        "email" to mapOf(Language.ES to "Correo", Language.EN to "Email"),
+        "phone" to mapOf(Language.ES to "Teléfono", Language.EN to "Phone"),
+        "schedule" to mapOf(Language.ES to "Horario", Language.EN to "Schedule"),
+        "address" to mapOf(Language.ES to "Dirección", Language.EN to "Address"),
+        "error_email_required" to mapOf(Language.ES to "El correo no puede estar vacío", Language.EN to "Email cannot be empty"),
+        "error_email_invalid" to mapOf(Language.ES to "El formato del correo no es válido", Language.EN to "Invalid email format"),
+        "error_phone_required" to mapOf(Language.ES to "El teléfono no puede estar vacío", Language.EN to "Phone number cannot be empty"),
+        "error_phone_invalid" to mapOf(Language.ES to "El formato del teléfono no es válido", Language.EN to "Invalid phone number format"),
+        "error_schedule_required" to mapOf(Language.ES to "El horario no puede estar vacío", Language.EN to "Schedule cannot be empty"),
+        "error_address_required" to mapOf(Language.ES to "La dirección no puede estar vacía", Language.EN to "Address cannot be empty"),
+        "cancel" to mapOf(Language.ES to "Cancelar", Language.EN to "Cancel"),
+        "confirm" to mapOf(Language.ES to "Confirmar", Language.EN to "Confirm"),
+        "info_updated_success" to mapOf(Language.ES to "Información editada exitosamente", Language.EN to "Information successfully updated")
+
 
 
     )
