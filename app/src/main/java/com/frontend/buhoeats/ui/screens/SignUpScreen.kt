@@ -1,6 +1,6 @@
 package com.frontend.buhoeats.ui.screens
 
-import android.util.Log
+import com.frontend.buhoeats.ui.theme.AppColors
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -43,8 +43,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.auth.getGoogleSignInClient
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.navigation.Screens
@@ -74,9 +72,11 @@ fun SignUp(navController: NavController,
     var passwordError by remember { mutableStateOf("") }
     var confirmPasswordError by remember { mutableStateOf("") }
     val context = LocalContext.current
+
+
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFF3D405B)
+        color = AppColors.primary
     ) {
         Column(
             modifier = Modifier

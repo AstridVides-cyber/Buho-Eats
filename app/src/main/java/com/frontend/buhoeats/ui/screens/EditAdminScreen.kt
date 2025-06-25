@@ -44,6 +44,8 @@ import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import androidx.compose.runtime.LaunchedEffect
 import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidPhoneNumber
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -89,8 +91,16 @@ fun EditInfoAdmin(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+
+
+            val backgroundImage = if (ThemeManager.isDarkTheme)
+                painterResource(id = R.drawable.backgrounddark)
+            else
+                painterResource(id = R.drawable.backgroundlighttheme)
+
+
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -106,7 +116,7 @@ fun EditInfoAdmin(
                     text = "Editar Información del Restaurante",
                     fontSize = 23.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = AppColors.texto,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
 

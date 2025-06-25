@@ -1,6 +1,7 @@
 package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -29,6 +30,10 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.navigation.Screens
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
+
+
 
 @Composable
 fun SettingSlider(
@@ -37,10 +42,15 @@ fun SettingSlider(
     currentUser: User,
     restaurant: Restaurant? = null,
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(AppColors.fondo)) {
+
+        val backgroundImage = if (ThemeManager.isDarkTheme)
+        painterResource(R.drawable.backgrounddark)
+        else
+        painterResource(R.drawable.backgroundlighttheme)
 
         Image(
-            painter = painterResource(id = R.drawable.backgroundlighttheme),
+            painter = backgroundImage,
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -55,11 +65,11 @@ fun SettingSlider(
                 Icon(
                     imageVector = Icons.Outlined.Person,
                     contentDescription = "Mi cuenta",
-                    tint = Color.Black,
+                    tint = AppColors.texto,
                     modifier = Modifier.size(45.dp)
                 )
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Mi cuenta", fontSize = 25.sp, color = Color.Black)
+                Text("Mi cuenta", fontSize = 25.sp, color = AppColors.texto)
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = Icons.Default.ArrowBackIosNew,
@@ -72,7 +82,7 @@ fun SettingSlider(
             }
 
             var expandedTheme by remember { mutableStateOf(false) }
-            var selectedTheme by remember { mutableStateOf("Claro") }
+            var selectedTheme by remember { mutableStateOf(if (ThemeManager.isDarkTheme) "Oscuro" else "Claro") }
 
             Column {
                 Row(
@@ -88,16 +98,16 @@ fun SettingSlider(
                     Icon(
                         imageVector = themeIcon,
                         contentDescription = "Modo",
-                        tint = Color.Black,
+                        tint = AppColors.texto,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Modo $selectedTheme", fontSize = 25.sp, color = Color.Black)
+                    Text("Modo $selectedTheme", fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = "Expandir tema",
-                        tint = Color.Black,
+                        tint = AppColors.texto,
                         modifier = Modifier
                             .graphicsLayer { rotationZ = -90f }
                             .padding(10.dp)
@@ -121,13 +131,14 @@ fun SettingSlider(
                                     modifier = Modifier.size(30.dp)
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
-                                Text("Claro", fontSize = 22.sp)
+                                Text("Claro", fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
                                 RadioButton(selected = selectedTheme == "Claro", onClick = null)
                             }
                         },
                         onClick = {
                             selectedTheme = "Claro"
+                            ThemeManager.toggleTheme(false)
                             expandedTheme = false
                         }
                     )
@@ -135,18 +146,27 @@ fun SettingSlider(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = Icons.Outlined.DarkMode,
-                                    contentDescription = "luna",
+                                    imageVector = Icons.Outlined.DarkMode,"Oscuro",
                                     modifier = Modifier.size(30.dp)
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
-                                Text("Oscuro", fontSize = 22.sp)
+                                Text("Oscuro", fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
-                                RadioButton(selected = selectedTheme == "Oscuro", onClick = null)
+                                RadioButton(
+                                    selected = selectedTheme == "Oscuro",
+                                    onClick = null,
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = AppColors.secondary,
+                                        unselectedColor = AppColors.texto,
+                                        disabledSelectedColor = AppColors.secondary,
+                                        disabledUnselectedColor = AppColors.texto
+                                    )
+                                )
                             }
                         },
                         onClick = {
                             selectedTheme = "Oscuro"
+                            ThemeManager.toggleTheme(true)
                             expandedTheme = false
                         }
                     )
@@ -167,16 +187,16 @@ fun SettingSlider(
                     Icon(
                         imageVector = Icons.Outlined.GTranslate,
                         contentDescription = "Idioma",
-                        tint = Color.Black,
+                        tint = AppColors.texto,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Idioma", fontSize = 25.sp, color = Color.Black)
+                    Text("Idioma", fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = "Expandir idioma",
-                        tint = Color.Black,
+                        tint = AppColors.texto,
                         modifier = Modifier
                             .graphicsLayer { rotationZ = -90f }
                             .padding(10.dp)
@@ -195,11 +215,18 @@ fun SettingSlider(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Spacer(modifier = Modifier.size(45.dp))
-                                Text("Español", fontSize = 22.sp)
+                                Text("Español", fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
                                 RadioButton(
                                     selected = selectedLang == "Español",
-                                    onClick = null
+                                    onClick = null,
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = AppColors.secondary,
+                                        unselectedColor = AppColors.texto,
+                                        disabledSelectedColor = AppColors.secondary,
+                                        disabledUnselectedColor = AppColors.texto
+                                    )
+
                                 )
                             }
                         },
@@ -212,11 +239,17 @@ fun SettingSlider(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Spacer(modifier = Modifier.size(45.dp))
-                                Text("Inglés", fontSize = 22.sp)
+                                Text("Inglés", fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
                                 RadioButton(
                                     selected = selectedLang == "Inglés",
-                                    onClick = null
+                                    onClick = null,
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = AppColors.secondary,
+                                        unselectedColor = AppColors.texto,
+                                        disabledSelectedColor = AppColors.secondary,
+                                        disabledUnselectedColor = AppColors.texto
+                                    )
                                 )
                             }
                         },
@@ -240,15 +273,16 @@ fun SettingSlider(
                     Icon(
                         imageVector = Icons.Outlined.FavoriteBorder,
                         contentDescription = "Favoritos",
-                        tint = Color.Black,
+                        tint = AppColors.texto,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Favoritos", fontSize = 25.sp, color = Color.Black)
+                    Text("Favoritos", fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = "Cuenta",
+                        tint = AppColors.texto,
                         modifier = Modifier
                             .graphicsLayer { rotationY = 180f }
                             .padding(10.dp)
@@ -270,15 +304,16 @@ fun SettingSlider(
                     Icon(
                         imageVector = Icons.Outlined.BarChart,
                         contentDescription = "Estadísticas",
-                        tint = Color.Black,
+                        tint = AppColors.texto,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Ver estadísticas", fontSize = 25.sp, color = Color.Black)
+                    Text("Ver estadísticas", fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = "Estadísticas",
+                        tint = AppColors.texto,
                         modifier = Modifier
                             .graphicsLayer { rotationY = 180f }
                             .padding(10.dp)
@@ -299,14 +334,15 @@ fun SettingSlider(
                     Icon(
                         imageVector = Icons.Outlined.Block,
                         contentDescription = "Clientes bloqueados",
-                        tint = Color.Black,
+                        tint = AppColors.texto,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Clientes bloqueados", fontSize = 25.sp, color = Color.Black)
+                    Text("Clientes bloqueados", fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
+                        tint = AppColors.texto,
                         contentDescription = "Clientes bloqueados",
                         modifier = Modifier
                             .graphicsLayer { rotationY = 180f }
@@ -329,7 +365,7 @@ fun SettingSlider(
                     Icon(
                         imageVector = Icons.Outlined.SupervisorAccount,
                         contentDescription = "Roles de usuarios",
-                        tint = Color.Black,
+                        tint = AppColors.texto,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
@@ -339,7 +375,7 @@ fun SettingSlider(
                         Text(
                             text = "Asignar roles a un usuario",
                             fontSize = 25.sp,
-                            color = Color.Black,
+                            color = AppColors.texto,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -347,6 +383,7 @@ fun SettingSlider(
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = "Roles de usuarios",
+                        tint = AppColors.texto,
                         modifier = Modifier
                             .graphicsLayer { rotationY = 180f }
                             .padding(10.dp)

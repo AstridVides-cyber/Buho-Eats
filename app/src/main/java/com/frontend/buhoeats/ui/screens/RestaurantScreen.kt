@@ -53,6 +53,7 @@
     import com.frontend.buhoeats.ui.components.ConfirmationDialog
     import com.frontend.buhoeats.ui.components.EditFloatingButton
     import com.frontend.buhoeats.ui.components.ValidationMessage
+    import com.frontend.buhoeats.ui.theme.ThemeManager
     import com.frontend.buhoeats.viewmodel.FavoritesViewModel
     import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
     import com.frontend.buhoeats.viewmodel.RestaurantViewModel
@@ -68,6 +69,13 @@
     ) {
         val currentUser = userSessionViewModel.currentUser.value
         val isAdminOfThisRestaurant = currentUser?.rol == "admin" && restaurant.admin == currentUser.id
+
+
+        val backgroundImage = if (ThemeManager.isDarkTheme)
+            painterResource(id = R.drawable.backgrounddark)
+        else
+            painterResource(id = R.drawable.backgroundlighttheme)
+
         Scaffold(
             topBar = {
                 TopBar(
@@ -92,7 +100,7 @@
                     .padding(paddingValues)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.backgroundlighttheme),
+                    painter = backgroundImage,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop

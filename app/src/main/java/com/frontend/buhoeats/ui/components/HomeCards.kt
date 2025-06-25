@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.models.Restaurant
+import com.frontend.buhoeats.ui.theme.AppColors
 
 @Composable
 fun RestaurantCard(restaurant: Restaurant, onClick: () -> Unit) {
@@ -39,13 +40,13 @@ fun RestaurantCard(restaurant: Restaurant, onClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomStart)
-                    .background(Color(0xFF588B8B))
+                    .background(AppColors.secondary)
                     .padding(12.dp)
             ) {
                 Text(
                     text = restaurant.name,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
+                    color = AppColors.text,
                     fontSize = 24.sp
                 )
             }

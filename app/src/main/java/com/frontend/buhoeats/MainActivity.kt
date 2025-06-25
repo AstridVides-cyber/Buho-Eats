@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.navigation.AppNavHost
 
 import com.frontend.buhoeats.ui.theme.BuhoEatsTheme
+import com.frontend.buhoeats.ui.theme.ThemeManager
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -17,12 +18,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BuhoEatsTheme {
-                setContent {
-                    val navController = rememberNavController()
-                    AppNavHost(navController = navController)
-                }
-            }
+            BuhoEatsTheme(darkTheme = ThemeManager.isDarkTheme) {
+                val navController = rememberNavController()
+                AppNavHost(navController = navController)
         }
+    }
+
     }
 }

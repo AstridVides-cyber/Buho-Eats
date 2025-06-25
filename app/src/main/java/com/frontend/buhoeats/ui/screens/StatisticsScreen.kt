@@ -42,6 +42,8 @@ import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
 import android.widget.Toast
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 
 @Composable
 fun StatisticsScreen(
@@ -54,6 +56,11 @@ fun StatisticsScreen(
     var showDialog by remember { mutableStateOf(false) }
     var userToBlock by remember { mutableStateOf<User?>(null) }
     val context = LocalContext.current
+
+    val backgroundImage = if (ThemeManager.isDarkTheme)
+    painterResource(id = R.drawable.backgrounddark)
+    else
+    painterResource(id = R.drawable.backgroundlighttheme)
 
     Scaffold(
         topBar = {
@@ -72,7 +79,7 @@ fun StatisticsScreen(
                 .padding(innerPadding)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -110,14 +117,14 @@ fun StatisticsScreen(
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                                 .fillMaxWidth(),
                             elevation = CardDefaults.cardElevation(4.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(
                                         imageVector = Icons.Outlined.AccountCircle,
                                         contentDescription = "Usuario",
-                                        tint = Color.Black,
+                                        tint = MaterialTheme.colorScheme.onSurface,
                                         modifier = Modifier.size(30.dp)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
@@ -141,7 +148,7 @@ fun StatisticsScreen(
 
                                 Spacer(modifier = Modifier.width(8.dp))
 
-                                Text(text = comment.comment, fontSize = 16.sp, color = Color.DarkGray)
+                                Text(text = comment.comment, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Spacer(modifier = Modifier.height(8.dp))
 
                                 rating?.let {

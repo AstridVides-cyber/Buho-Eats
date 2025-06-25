@@ -29,6 +29,8 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
 
 
@@ -65,8 +67,14 @@ fun BlockedUsersScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+
+            val backgroundImage = if (ThemeManager.isDarkTheme)
+                painterResource(id = R.drawable.backgrounddark)
+            else
+                painterResource(id = R.drawable.backgroundlighttheme)
+
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
@@ -82,7 +90,8 @@ fun BlockedUsersScreen(
                         text = "Usuarios bloqueados:",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        color = AppColors.texto
                     )
 
                     if (blockedUsers.isEmpty()) {
@@ -95,7 +104,7 @@ fun BlockedUsersScreen(
                                 "No hay usuarios bloqueados por ahora",
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color.Gray
+                                color = AppColors.texto
                             )
                         }
                     } else {

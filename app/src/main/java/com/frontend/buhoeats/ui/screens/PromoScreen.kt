@@ -26,6 +26,10 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import java.util.UUID
 
 @Composable
@@ -49,6 +53,11 @@ fun PromoScreen(
         "admin" -> promos.filter { it.restaurantId == adminRestaurant?.id }
         else -> promos
     }
+
+    val backgroundImage = if (ThemeManager.isDarkTheme)
+    painterResource(id = R.drawable.backgrounddark)
+    else
+    painterResource(id = R.drawable.backgroundlighttheme)
 
     LaunchedEffect(currentUser, allRestaurants) {
         promoViewModel.loadPromosForUser(currentUser)
@@ -78,7 +87,7 @@ fun PromoScreen(
                 .padding(paddingValues)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -102,6 +111,13 @@ fun PromoScreen(
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {
+                    Text(
+                        text = "Promociones",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AppColors.texto,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
                     promosToDisplay.forEach { promo ->
                         Box {
                             PromoCard(

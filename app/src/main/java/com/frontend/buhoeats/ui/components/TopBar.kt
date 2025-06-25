@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.frontend.buhoeats.R
+import com.frontend.buhoeats.ui.theme.AppColors
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +41,7 @@ fun TopBar(
     onNavClick: (() -> Unit)? = null
 ) {
     TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF3D405B)
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.primary
         ),
         title = {
             Row(

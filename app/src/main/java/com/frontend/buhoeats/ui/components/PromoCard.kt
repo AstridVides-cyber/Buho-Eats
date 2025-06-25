@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.models.Promo
+import com.frontend.buhoeats.ui.theme.AppColors
+
 @Composable
 fun PromoCard(promo: Promo , onClick: () -> Unit) {
     Card(
@@ -50,7 +52,7 @@ fun PromoCard(promo: Promo , onClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomStart)
-                    .background(Color(0xFF49726D).copy(alpha = 0.9f))
+                    .background(AppColors.secondary.copy(alpha = 0.9f))
                     .padding(12.dp)
             ) {
                 Row(
@@ -64,7 +66,7 @@ fun PromoCard(promo: Promo , onClick: () -> Unit) {
                     ) {
                         Text(
                             text = promo.name,
-                            color = Color.White,
+                            color = AppColors.text,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
                             maxLines = 1,
@@ -72,7 +74,7 @@ fun PromoCard(promo: Promo , onClick: () -> Unit) {
                         )
                         Text(
                             text = promo.description,
-                            color = Color.White,
+                            color = AppColors.text,
                             fontSize = 14.sp,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
@@ -85,13 +87,13 @@ fun PromoCard(promo: Promo , onClick: () -> Unit) {
                     ) {
                         Text(
                             text = "$${promo.promprice}",
-                            color = Color.White,
+                            color = AppColors.text,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
                         )
                         Text(
                             text = "$${promo.price}",
-                            color = Color.LightGray,
+                            color = AppColors.text.copy(alpha = 0.7f),
                             fontSize = 16.sp,
                             textDecoration = TextDecoration.LineThrough
                         )

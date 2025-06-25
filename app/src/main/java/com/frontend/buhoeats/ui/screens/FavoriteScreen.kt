@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.frontend.buhoeats.data.InMemoryUserDataSource
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
@@ -53,6 +54,11 @@ fun FavoriteScreen(
         favoriteIds.contains(restaurant.id)
     }
 
+    val backgroundImage = if (ThemeManager.isDarkTheme)
+        painterResource(id = R.drawable.backgrounddark)
+    else
+        painterResource(id = R.drawable.backgroundlighttheme)
+
     Scaffold(
         topBar = {
             TopBar(
@@ -68,7 +74,7 @@ fun FavoriteScreen(
                 .padding(innerPadding)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop

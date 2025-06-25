@@ -40,6 +40,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.frontend.buhoeats.auth.getGoogleSignInClient
 import com.frontend.buhoeats.models.User
+import com.frontend.buhoeats.ui.theme.AppColors
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -87,7 +88,7 @@ fun Login(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFF3D405B)
+        color = AppColors.primary
         ) {
             Column(
             modifier = Modifier

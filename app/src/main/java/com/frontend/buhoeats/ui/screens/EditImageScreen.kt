@@ -46,6 +46,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import com.frontend.buhoeats.models.User
 import android.widget.Toast
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 
 
@@ -89,8 +91,14 @@ fun EditImageScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+
+            val backgroundImage = if (ThemeManager.isDarkTheme)
+                painterResource(id = R.drawable.backgrounddark)
+            else
+                painterResource(id = R.drawable.backgroundlighttheme)
+
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -106,7 +114,7 @@ fun EditImageScreen(
                     "Editar Imagen del Restaurante",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = AppColors.texto,
 
                 )
 

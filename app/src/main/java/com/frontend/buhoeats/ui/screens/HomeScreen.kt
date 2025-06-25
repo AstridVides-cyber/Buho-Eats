@@ -55,6 +55,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
@@ -162,8 +164,15 @@ fun HomeScreen(
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
+
+                val backgroundImage = if (ThemeManager.isDarkTheme)
+                    painterResource(id = R.drawable.backgrounddark)
+                else
+                    painterResource(id = R.drawable.backgroundlighttheme)
+
+
                 Image(
-                    painter = painterResource(id = R.drawable.backgroundlighttheme),
+                    painter = backgroundImage,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -204,7 +213,8 @@ fun HomeScreen(
                             Text(
                                 text = "Su local:",
                                 fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = AppColors.texto
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             RestaurantCard(restaurant = myRestaurant) {
@@ -217,7 +227,9 @@ fun HomeScreen(
                         Text(
                             text = "Restaurantes",
                             fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = AppColors.texto
+
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                     }
@@ -267,7 +279,9 @@ fun GreetingSection(userName: String, restaurants: List<Restaurant>) {
             text = "Bienvenido, $userName",
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 10.dp, start = 12.dp)
+            modifier = Modifier.padding(bottom = 10.dp, start = 12.dp),
+            color = AppColors.texto
+
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -367,17 +381,17 @@ fun FilterSection(
             modifier = Modifier.fillMaxWidth()
         ) {
             val buttonColors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF588B8B)
+                containerColor = AppColors.secondary
             )
 
             Button(onClick = { onFilterSelected("Desayuno") }, colors = buttonColors) {
-                Text("Desayuno", color = Color.White)
+                Text("Desayuno", color = AppColors.text)
             }
             Button(onClick = { onFilterSelected("Almuerzo") }, colors = buttonColors) {
-                Text("Almuerzo", color = Color.White)
+                Text("Almuerzo", color = AppColors.text)
             }
             Button(onClick = { onFilterSelected("Cena") }, colors = buttonColors) {
-                Text("Cena", color = Color.White)
+                Text("Cena", color = AppColors.text)
             }
         }
 
@@ -387,7 +401,7 @@ fun FilterSection(
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = { onReset() },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF588B8B))
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.accent)
             ) {
                 Text("Restablecer", color = Color.White)
             }
@@ -401,7 +415,7 @@ fun AddRestaurantCard(onClick: () -> Unit) {
             .fillMaxWidth()
             .height(150.dp)
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF7C83C5))
+        colors = CardDefaults.cardColors(containerColor = AppColors.accent),
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -410,7 +424,7 @@ fun AddRestaurantCard(onClick: () -> Unit) {
             Icon(
                 imageVector = Icons.Default.AddCircleOutline,
                 contentDescription = "Agregar nuevo restaurante",
-                tint = Color.White,
+                tint = AppColors.texto,
                 modifier = Modifier.size(60.dp)
             )
         }

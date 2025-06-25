@@ -14,12 +14,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.Screens
+import com.frontend.buhoeats.ui.theme.AppColors
 
 @Composable
 
 fun BottomNavigationBar(navController : NavController) {
     NavigationBar(
-        containerColor = Color(0xFF3D405B)
+        containerColor = AppColors.primary
     ) {
         NavigationBarItem(
             selected = false,

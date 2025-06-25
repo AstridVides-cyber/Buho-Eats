@@ -23,6 +23,7 @@ import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.Map
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.TopBar
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import org.osmdroid.util.GeoPoint
 
@@ -35,6 +36,13 @@ fun MapScreen(
     val scrollState = rememberScrollState()
     val restaurants = restaurantViewModel.restaurantList
     val focusedLocation = remember { mutableStateOf<GeoPoint?>(null) }
+
+
+    val backgroundImage = if (ThemeManager.isDarkTheme)
+        painterResource(id = R.drawable.backgrounddark)
+    else
+        painterResource(id = R.drawable.backgroundlighttheme)
+
 
 
     Scaffold(
@@ -54,7 +62,7 @@ fun MapScreen(
                 .padding(innerPadding)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop

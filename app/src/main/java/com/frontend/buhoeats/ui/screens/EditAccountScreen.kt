@@ -43,6 +43,7 @@ import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
+import com.frontend.buhoeats.ui.theme.AppColors
 
 val montserratFontFamily = FontFamily(
     Font(R.font.montserrat_bold)
@@ -76,7 +77,7 @@ fun EditAccountScreen(navController: NavController,
         topBar = { TopBar(showBackIcon = true , onNavClick = onBack
         ) },
         bottomBar = { BottomNavigationBar(navController) },
-        containerColor = Color(0xFF3D405B)
+        containerColor = AppColors.primary
     ) { padding ->
         Column(
             modifier = Modifier
