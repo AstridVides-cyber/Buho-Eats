@@ -139,6 +139,11 @@ object Translations {
         "edit_image" to mapOf(Language.ES to "Editar Imagen", Language.EN to "Edit Image"),
         "edit_menu" to mapOf(Language.ES to "Editar Menú", Language.EN to "Edit Menu"),
         "edit_info" to mapOf(Language.ES to "Editar Información", Language.EN to "Edit Info"),
+        "no_favorites_message" to mapOf(
+            Language.ES to "No has añadido ningún restaurante a favoritos.",
+            Language.EN to "You haven't added any restaurants to favorites yet."
+        ),
+
 
 
 
