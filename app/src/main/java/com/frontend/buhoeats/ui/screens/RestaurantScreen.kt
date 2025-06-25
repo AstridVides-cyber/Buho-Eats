@@ -135,7 +135,8 @@
         val isAdminOfThisRestaurant = currentUser?.rol == "admin" && restaurant.admin == currentUser.id
         val isAdmin = currentUser?.rol == "admin" && restaurant.admin != currentUser.id
         val isSuperAdmin = currentUser?.rol == "superadmin"
-        val menuList = remember { mutableStateListOf<Dish>().apply { addAll(restaurant.menu) } }
+
+        val menuList = restaurant.menu
 
         var rating by rememberSaveable { mutableIntStateOf(0) }
         var comment by remember { mutableStateOf("") }
