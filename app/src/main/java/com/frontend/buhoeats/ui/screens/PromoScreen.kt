@@ -7,18 +7,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.widget.Toast
 import androidx.navigation.NavHostController
@@ -26,8 +21,6 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.*
-import com.frontend.buhoeats.ui.theme.AppColors
-import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.PromoViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.launch
@@ -57,11 +50,6 @@ fun PromoScreen(
         else -> promos
     }
 
-        val backgroundImage = if (ThemeManager.isDarkTheme)
-            painterResource(id = R.drawable.backgrounddark)
-        else
-            painterResource(id = R.drawable.backgroundlighttheme)
-
     LaunchedEffect(currentUser, allRestaurants) {
         promoViewModel.loadPromosForUser(currentUser)
     }
@@ -81,7 +69,6 @@ fun PromoScreen(
                     navController.navigate(Screens.PromoInfo.createRoute(newPromoId, isNew = true))
                 })
             }
-
         },
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
@@ -115,13 +102,6 @@ fun PromoScreen(
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {
-                    Text(
-                        text = "Promociones",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = AppColors.texto,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
                     promosToDisplay.forEach { promo ->
                         Box {
                             PromoCard(

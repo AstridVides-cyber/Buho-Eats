@@ -47,8 +47,6 @@ import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
-import com.frontend.buhoeats.ui.theme.AppColors
-import com.frontend.buhoeats.ui.theme.ThemeManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,14 +74,8 @@ fun EditRestaurantScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-
-            val backgroundImage = if (ThemeManager.isDarkTheme)
-                painterResource(R.drawable.backgrounddark)
-            else
-                painterResource(R.drawable.backgroundlighttheme)
-
             Image(
-                painter = backgroundImage,
+                painter = painterResource(id = R.drawable.backgroundlighttheme),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -101,11 +93,11 @@ fun EditRestaurantScreen(
                     Icon(
                         imageVector = Icons.Outlined.Photo,
                         contentDescription = "Editar Imagen",
-                        tint = AppColors.texto,
+                        tint = Color.Black,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Editar Imagen", fontSize = 22.sp, color = AppColors.texto)
+                    Text("Editar Imagen", fontSize = 22.sp, color = Color.Black)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
@@ -127,11 +119,10 @@ fun EditRestaurantScreen(
                     Icon(
                         imageVector = Icons.Outlined.MenuBook,
                         contentDescription = "Editar Menú",
-                        tint = AppColors.texto,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Editar Menú", fontSize = 22.sp, color = AppColors.texto)
+                    Text("Editar Menú", fontSize = 22.sp, color = Color.Black)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
@@ -153,11 +144,11 @@ fun EditRestaurantScreen(
                     Icon(
                         imageVector = Icons.Outlined.EditNote,
                         contentDescription = "Editar Información",
-                        tint = AppColors.texto,
+                        tint = Color.Black,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Editar Información", fontSize = 22.sp, color = AppColors.texto)
+                    Text("Editar Información", fontSize = 22.sp, color = Color.Black)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,

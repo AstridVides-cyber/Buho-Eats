@@ -29,8 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.frontend.buhoeats.ui.theme.AppColors
-import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
@@ -69,14 +67,8 @@ fun FavoriteScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-
-            val backgroundImage = if (ThemeManager.isDarkTheme)
-                painterResource(R.drawable.backgrounddark)
-            else
-                painterResource(R.drawable.backgroundlighttheme)
-
             Image(
-                painter = backgroundImage,
+                painter = painterResource(id = R.drawable.backgroundlighttheme),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -103,7 +95,6 @@ fun FavoriteScreen(
                             text = "Favoritos",
                             fontSize = 30.sp,
                             fontWeight = FontWeight.Bold,
-                            color = AppColors.texto,
                             modifier = Modifier.padding(vertical = 20.dp)
                         )
                     }

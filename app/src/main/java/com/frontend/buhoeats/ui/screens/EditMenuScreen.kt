@@ -54,8 +54,6 @@ import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.FormField
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
-import com.frontend.buhoeats.ui.theme.AppColors
-import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.ValidatorUtils.isOnlyNumbers
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import java.util.UUID
@@ -100,18 +98,13 @@ fun EditMenuScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-
-            val backgroundImage = if (ThemeManager.isDarkTheme)
-                painterResource(R.drawable.backgrounddark)
-            else
-                painterResource(R.drawable.backgroundlighttheme)
-
             Image(
-                painter = backgroundImage,
+                painter = painterResource(id = R.drawable.backgroundlighttheme),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -119,7 +112,7 @@ fun EditMenuScreen(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Editar Menú del día:", fontWeight = FontWeight.Bold, fontSize = 24.sp, color = AppColors.texto)
+                Text("Editar Menú del día:", fontWeight = FontWeight.Bold, fontSize = 24.sp)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -128,7 +121,7 @@ fun EditMenuScreen(
                         .height(200.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(AppColors.accent)
+                        .background(Color(0xFFB8C1EC))
                         .clickable { imagePickerLauncher.launch("image/*") },
                     contentAlignment = Alignment.Center
                 ) {

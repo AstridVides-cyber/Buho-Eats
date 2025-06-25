@@ -29,7 +29,6 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
-import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
@@ -61,12 +60,6 @@ fun RolAssign(
         RoleOption("Usuario", R.drawable.ususario)
     )
 
-    val backgroundImage = if (ThemeManager.isDarkTheme)
-        painterResource(id = R.drawable.backgrounddark)
-    else
-        painterResource(id = R.drawable.backgroundlighttheme)
-
-
     Scaffold(
         topBar = {
             TopBar(
@@ -82,7 +75,7 @@ fun RolAssign(
                 .padding(innerPadding)
         ) {
             Image(
-                painter = backgroundImage,
+                painter = painterResource(id = R.drawable.backgroundlighttheme),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -107,7 +100,7 @@ fun RolAssign(
 
                 Text(
                     "Correo:",
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = Color.Black,
                     fontSize = 18.sp,
                     style = TextStyle(fontFamily = montserratFontFamily),
                     modifier = Modifier
@@ -164,7 +157,7 @@ fun RolAssign(
 
                 Text(
                     "Tipo de Rol:",
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = Color.Black,
                     fontSize = 18.sp,
                     style = TextStyle(fontFamily = montserratFontFamily),
                     modifier = Modifier
@@ -176,7 +169,7 @@ fun RolAssign(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp)
-                        .border(1.dp, MaterialTheme.colorScheme.onBackground, RoundedCornerShape(16.dp))
+                        .border(1.dp, Color.Black, RoundedCornerShape(16.dp))
                         .background(Color(0xFFF3EDED), RoundedCornerShape(16.dp))
                         .clickable { showMenu = !showMenu }
                         .padding(16.dp)

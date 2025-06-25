@@ -31,8 +31,6 @@ import com.frontend.buhoeats.viewmodel.SearchViewModel
 import com.frontend.buhoeats.viewmodel.SearchViewModelFactory
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import androidx.compose.foundation.text.KeyboardActions
-import com.frontend.buhoeats.ui.theme.AppColors
-import com.frontend.buhoeats.ui.theme.ThemeManager
 import kotlinx.coroutines.launch
 
 @Composable
@@ -65,11 +63,6 @@ fun Search(
         }
     }
 
-    val backgroundImage = if (ThemeManager.isDarkTheme)
-        painterResource(id = R.drawable.backgrounddark)
-    else
-        painterResource(id = R.drawable.backgroundlighttheme)
-
     Scaffold(
         topBar = {
             TopBar(
@@ -87,7 +80,7 @@ fun Search(
                 .padding(innerPadding)
         ) {
             Image(
-                painter = backgroundImage,
+                painter = painterResource(id = R.drawable.backgroundlighttheme),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -101,19 +94,12 @@ fun Search(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    label = { Text("Buscar", color = AppColors.texto) },
-                    leadingIcon = {
-                        Icon(Icons.Default.Search, contentDescription = "Buscar", tint = AppColors.text)
-                    },
+                    label = { Text("Buscar") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
                     shape = RoundedCornerShape(50),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White.copy(alpha = 0.6f),
                         unfocusedContainerColor = Color.White.copy(alpha = 0.5f),
-                        cursorColor = AppColors.texto,
-                        focusedTextColor = AppColors.texto,
-                        unfocusedTextColor = AppColors.texto,
-                        focusedLabelColor = AppColors.texto,
-                        unfocusedLabelColor = AppColors.texto
+                        focusedContainerColor = Color.White.copy(alpha = 0.6f)
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -121,7 +107,7 @@ fun Search(
                     trailingIcon = {
                         if (searchQuery.text.isNotBlank()) {
                             IconButton(onClick = { searchQuery = TextFieldValue("") }) {
-                                Icon(Icons.Default.Close, contentDescription = "Limpiar", tint = AppColors.text)
+                                Icon(Icons.Default.Close, contentDescription = "Limpiar")
                             }
                         }
                     },
@@ -136,7 +122,6 @@ fun Search(
                         }
                     )
                 )
-
 
                 when {
                     searchQuery.text.isNotBlank() && searchResults.isNotEmpty() -> {
@@ -159,7 +144,7 @@ fun Search(
                     }
 
                     searchQuery.text.isNotBlank() && searchResults.isEmpty() -> {
-                        EmptyState(message = "No hay resultados para la búsqueda",)
+                        EmptyState(message = "No hay resultados para la búsqueda")
                     }
 
                     searchQuery.text.isBlank() && searchHistory.isNotEmpty() -> {

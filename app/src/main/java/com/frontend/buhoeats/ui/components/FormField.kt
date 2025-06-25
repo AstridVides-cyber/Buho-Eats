@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.frontend.buhoeats.ui.theme.AppColors
 
 @Composable
 fun FormField(
@@ -30,7 +29,7 @@ fun FormField(
         Text(
             label,
             fontWeight = FontWeight.SemiBold,
-            color = AppColors.texto,
+            color = Color.Black,
             fontSize = 16.sp,
             modifier = Modifier.padding(bottom = 4.dp)
         )
@@ -48,12 +47,6 @@ fun FormField(
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
-                disabledTextColor = Color.Black,
-                errorTextColor = Color.Black,
-                cursorColor = Color.Black,
-
                 focusedContainerColor = Color.White.copy(alpha = 0.95f),
                 unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
                 disabledContainerColor = Color.White.copy(alpha = 0.8f),

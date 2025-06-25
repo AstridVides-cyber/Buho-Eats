@@ -40,7 +40,6 @@ import com.frontend.buhoeats.ui.components.ProfileImage
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.ui.components.ValidationMessage
-import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
@@ -77,7 +76,7 @@ fun EditAccountScreen(navController: NavController,
         topBar = { TopBar(showBackIcon = true , onNavClick = onBack
         ) },
         bottomBar = { BottomNavigationBar(navController) },
-        containerColor = AppColors.primary
+        containerColor = Color(0xFF3D405B)
     ) { padding ->
         Column(
             modifier = Modifier
