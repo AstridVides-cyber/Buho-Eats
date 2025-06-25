@@ -171,7 +171,24 @@ object Translations {
         "add_restaurant" to mapOf(
             Language.ES to "Agregar nuevo restaurante",
             Language.EN to "Add new restaurant"
-        )
+        ),
+        "email_label" to mapOf(Language.ES to "Correo:", Language.EN to "Email:"),
+        "email_placeholder" to mapOf(Language.ES to "Ingrese su correo", Language.EN to "Enter your email"),
+        "password_label" to mapOf(Language.ES to "Contraseña:", Language.EN to "Password:"),
+        "password_placeholder" to mapOf(Language.ES to "Ingrese su contraseña", Language.EN to "Enter your password"),
+        "login_button" to mapOf(Language.ES to "Iniciar sesión", Language.EN to "Log in"),
+        "login_with_google" to mapOf(Language.ES to "Inicia Sesión con Google", Language.EN to "Sign in with Google"),
+        "no_account_question" to mapOf(Language.ES to "¿Todavía no tienes cuenta?", Language.EN to "Don't have an account yet?"),
+        "create_account" to mapOf(Language.ES to "Crear cuenta", Language.EN to "Create account"),
+        "error_email_required" to mapOf(Language.ES to "El correo no puede estar vacío", Language.EN to "Email cannot be empty"),
+        "error_email_invalid" to mapOf(Language.ES to "Correo inválido", Language.EN to "Invalid email"),
+        "error_password_required" to mapOf(Language.ES to "La contraseña no puede estar vacía", Language.EN to "Password cannot be empty"),
+        "error_credentials" to mapOf(Language.ES to "Correo o contraseña incorrectos", Language.EN to "Incorrect email or password"),
+        "login_success" to mapOf(Language.ES to "Sesión iniciada con éxito", Language.EN to "Login successful"),
+        "login_google_success" to mapOf(Language.ES to "Sesión iniciada con Google", Language.EN to "Logged in with Google"),
+        "user_not_found" to mapOf(Language.ES to "Usuario no encontrado, por favor regístrate", Language.EN to "User not found, please sign up"),
+        "google_signin_error" to mapOf(Language.ES to "Error en Google Sign-In", Language.EN to "Google Sign-In Error")
+
 
     )
 
