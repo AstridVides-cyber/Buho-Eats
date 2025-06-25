@@ -15,24 +15,24 @@ import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.theme.AppColors
-
+import com.frontend.buhoeats.utils.Translations
 @Composable
+fun BottomNavigationBar(navController: NavController) {
+    // 👇 Esto obliga a recomponer cuando cambia el idioma
+    val lang = Translations.currentLanguage
 
-fun BottomNavigationBar(navController : NavController) {
-    NavigationBar(
-        containerColor = AppColors.primary
-    ) {
+    NavigationBar(containerColor = AppColors.primary) {
         NavigationBarItem(
             selected = false,
             onClick = { navController.navigate(Screens.Home.route) },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.hogar),
-                    contentDescription = "Inicio",
+                    contentDescription = Translations.t("home"),
                     modifier = Modifier.size(24.dp)
                 )
             },
-            label = { Text("Inicio") },
+            label = { Text(Translations.t("home")) },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color(0xFF1B1D2A),
                 selectedTextColor = Color(0xFF1B1D2A),
@@ -44,15 +44,15 @@ fun BottomNavigationBar(navController : NavController) {
 
         NavigationBarItem(
             selected = false,
-            onClick = {navController.navigate(Screens.Promocion.route)  },
+            onClick = { navController.navigate(Screens.Promocion.route) },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.promociones),
-                    contentDescription = "Promociones",
+                    contentDescription = Translations.t("promotions"),
                     modifier = Modifier.size(24.dp)
                 )
             },
-            label = { Text("Promociones") },
+            label = { Text(Translations.t("promotions")) },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color(0xFF1B1D2A),
                 selectedTextColor = Color(0xFF1B1D2A),
@@ -64,15 +64,15 @@ fun BottomNavigationBar(navController : NavController) {
 
         NavigationBarItem(
             selected = false,
-            onClick = { navController.navigate(Screens.Map.route)},
+            onClick = { navController.navigate(Screens.Map.route) },
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.mapa),
-                    contentDescription = "Mapa",
+                    contentDescription = Translations.t("map"),
                     modifier = Modifier.size(24.dp)
                 )
             },
-            label = { Text("Mapa") },
+            label = { Text(Translations.t("map")) },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color(0xFF1B1D2A),
                 selectedTextColor = Color(0xFF1B1D2A),
@@ -88,11 +88,11 @@ fun BottomNavigationBar(navController : NavController) {
             icon = {
                 Image(
                     painter = painterResource(id = R.drawable.lupa),
-                    contentDescription = "Buscar",
+                    contentDescription = Translations.t("search"),
                     modifier = Modifier.size(24.dp)
                 )
             },
-            label = { Text("Buscar") },
+            label = { Text(Translations.t("search")) },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color(0xFF1B1D2A),
                 selectedTextColor = Color(0xFF1B1D2A),
@@ -102,5 +102,4 @@ fun BottomNavigationBar(navController : NavController) {
             )
         )
     }
-
 }
