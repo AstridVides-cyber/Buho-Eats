@@ -136,10 +136,13 @@ object Translations {
         "cancel" to mapOf(Language.ES to "Cancelar", Language.EN to "Cancel"),
         "confirm" to mapOf(Language.ES to "Confirmar", Language.EN to "Confirm"),
         "dish_added_success" to mapOf(Language.ES to "Plato agregado exitosamente", Language.EN to "Dish added successfully"),
+        "edit_image" to mapOf(Language.ES to "Editar Imagen", Language.EN to "Edit Image"),
+        "edit_menu" to mapOf(Language.ES to "Editar Menú", Language.EN to "Edit Menu"),
+        "edit_info" to mapOf(Language.ES to "Editar Información", Language.EN to "Edit Info"),
 
 
 
-    )
+        )
 
     fun t(key: String): String {
         return strings[key]?.get(currentLanguage) ?: key

@@ -2,29 +2,12 @@ package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.ImageSearch
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.MenuBook
-import androidx.compose.material.icons.filled.RestaurantMenu
-import androidx.compose.material.icons.outlined.AddPhotoAlternate
 import androidx.compose.material.icons.outlined.EditNote
-import androidx.compose.material.icons.outlined.FoodBank
-import androidx.compose.material.icons.outlined.InsertPhoto
 import androidx.compose.material.icons.outlined.MenuBook
 import androidx.compose.material.icons.outlined.Photo
-import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,18 +20,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.models.Restaurant
-import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.Translations
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +41,6 @@ fun EditRestaurantScreen(
     onEditInfo: () -> Unit = {},
     restaurant: Restaurant
 ) {
-
     val backgroundImage = if (ThemeManager.isDarkTheme)
         painterResource(id = R.drawable.backgrounddark)
     else
@@ -100,12 +80,12 @@ fun EditRestaurantScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Photo,
-                        contentDescription = "Editar Imagen",
+                        contentDescription = Translations.t("edit_image"),
                         tint = AppColors.texto,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Editar Imagen", fontSize = 22.sp, color = AppColors.texto)
+                    Text(Translations.t("edit_image"), fontSize = 22.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
@@ -126,11 +106,11 @@ fun EditRestaurantScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.MenuBook,
-                        contentDescription = "Editar Menú",
+                        contentDescription = Translations.t("edit_menu"),
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Editar Menú", fontSize = 22.sp, color = AppColors.texto)
+                    Text(Translations.t("edit_menu"), fontSize = 22.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
@@ -151,12 +131,12 @@ fun EditRestaurantScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.EditNote,
-                        contentDescription = "Editar Información",
+                        contentDescription = Translations.t("edit_info"),
                         tint = AppColors.texto,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Editar Información", fontSize = 22.sp, color = AppColors.texto)
+                    Text(Translations.t("edit_info"), fontSize = 22.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
@@ -165,10 +145,9 @@ fun EditRestaurantScreen(
                             .graphicsLayer { rotationY = 180f }
                             .size(28.dp)
                     )
-
                 }
-                Divider(thickness = 1.dp, color = Color.Gray.copy(alpha = 0.3f))
 
+                Divider(thickness = 1.dp, color = Color.Gray.copy(alpha = 0.3f))
             }
         }
     }
