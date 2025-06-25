@@ -193,6 +193,24 @@ object Translations {
         "edit_profile" to mapOf(Language.ES to "Editar perfil", Language.EN to "Edit profile"),
         "confirm" to mapOf(Language.ES to "Confirmar", Language.EN to "Confirm"),
         "cancel" to mapOf(Language.ES to "Cancelar", Language.EN to "Cancel"),
+        "promotion" to mapOf(Translations.Language.ES to "Promoción", Translations.Language.EN to "Promotion"),
+        "title" to mapOf(Translations.Language.ES to "Título:", Translations.Language.EN to "Title:"),
+        "before" to mapOf(Translations.Language.ES to "Antes:", Translations.Language.EN to "Before:"),
+        "now" to mapOf(Translations.Language.ES to "Ahora:", Translations.Language.EN to "Now:"),
+        "description" to mapOf(Translations.Language.ES to "Descripción:", Translations.Language.EN to "Description:"),
+        "rules" to mapOf(Translations.Language.ES to "Reglas:", Translations.Language.EN to "Rules:"),
+        "no_rules" to mapOf(Translations.Language.ES to "Sin reglas específicas", Translations.Language.EN to "No specific rules"),
+        "only_numbers_allowed" to mapOf(Translations.Language.ES to "Solo números permitidos", Translations.Language.EN to "Only numbers allowed"),
+        "fill_all_fields" to mapOf(Translations.Language.ES to "Por favor completa todos los campos", Translations.Language.EN to "Please complete all fields"),
+        "numbers_only_error" to mapOf(Translations.Language.ES to "Los precios solo deben contener números", Translations.Language.EN to "Prices must only contain numbers"),
+        "cancel" to mapOf(Translations.Language.ES to "Cancelar", Translations.Language.EN to "Cancel"),
+        "save" to mapOf(Translations.Language.ES to "Guardar", Translations.Language.EN to "Save"),
+        "promo_created" to mapOf(Translations.Language.ES to "Promoción creada exitosamente", Translations.Language.EN to "Promotion created successfully"),
+        "promo_saved" to mapOf(Translations.Language.ES to "Promoción guardada exitosamente", Translations.Language.EN to "Promotion saved successfully"),
+        "change_image" to mapOf(Translations.Language.ES to "Cambiar imagen", Translations.Language.EN to "Change image"),
+        "selected_image" to mapOf(Translations.Language.ES to "Imagen seleccionada", Translations.Language.EN to "Selected image"),
+        "current_image" to mapOf(Translations.Language.ES to "Imagen actual", Translations.Language.EN to "Current image"),
+
 
 
 
