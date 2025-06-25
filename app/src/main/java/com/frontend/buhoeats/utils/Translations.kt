@@ -118,7 +118,26 @@ object Translations {
         "local_location" to mapOf(
             Language.ES to "Ubicación del local",
             Language.EN to "Location"
-        )
+        ),
+        "edit_daily_menu" to mapOf(Language.ES to "Editar Menú del día:", Language.EN to "Edit Daily Menu"),
+        "dish_name" to mapOf(Language.ES to "Nombre del plato:", Language.EN to "Dish Name:"),
+        "dish_name_placeholder" to mapOf(Language.ES to "Ej. Pupusas revueltas", Language.EN to "e.g. Cheese Pupusas"),
+        "error_name_required" to mapOf(Language.ES to "El nombre no puede estar vacío", Language.EN to "Name cannot be empty"),
+
+        "description" to mapOf(Language.ES to "Descripción:", Language.EN to "Description:"),
+        "dish_description_placeholder" to mapOf(Language.ES to "Breve descripción del plato", Language.EN to "Brief dish description"),
+        "error_description_required" to mapOf(Language.ES to "La descripción no puede estar vacía", Language.EN to "Description cannot be empty"),
+
+        "price" to mapOf(Language.ES to "Precio:", Language.EN to "Price:"),
+        "price_placeholder" to mapOf(Language.ES to "Ej. 2.50", Language.EN to "e.g. 2.50"),
+        "error_price_required" to mapOf(Language.ES to "El precio no puede estar vacío.", Language.EN to "Price cannot be empty."),
+        "error_price_format" to mapOf(Language.ES to "El precio solo debe contener números", Language.EN to "Price must contain only numbers"),
+
+        "cancel" to mapOf(Language.ES to "Cancelar", Language.EN to "Cancel"),
+        "confirm" to mapOf(Language.ES to "Confirmar", Language.EN to "Confirm"),
+        "dish_added_success" to mapOf(Language.ES to "Plato agregado exitosamente", Language.EN to "Dish added successfully"),
+
+
 
     )
 
