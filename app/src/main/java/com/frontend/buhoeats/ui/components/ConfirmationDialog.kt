@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.frontend.buhoeats.ui.theme.AppColors
 
 @Composable
 fun ConfirmationDialog(
@@ -36,7 +37,7 @@ fun ConfirmationDialog(
             shape = RoundedCornerShape(14.dp),
             border = BorderStroke(1.5.dp, Color.Black),
             tonalElevation = 8.dp,
-            color = Color(0xFFF3EDED),
+            color = AppColors.globo,
             modifier = Modifier
                 .fillMaxWidth()
                 .size(200.dp)

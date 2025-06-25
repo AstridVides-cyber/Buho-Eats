@@ -12,6 +12,8 @@ object CustomLightColors {
     val text = Color(0xFFFFFFFF)
 
     val accent = Color(0xFF747BB8)
+
+    val globo = Color(0xFFFFFFFF)
 }
 
 object CustomDarkColors {
@@ -23,6 +25,8 @@ object CustomDarkColors {
 
 
     val accent = Color(0xFF6272FB)
+
+    val globo = Color(0xFFA3D9A5)
 }
 
 object AppColors {
@@ -43,5 +47,9 @@ object AppColors {
 
     val accent : Color
         @Composable get() = if (ThemeManager.isDarkTheme) CustomDarkColors.accent else CustomLightColors.accent
+
+    val globo : Color
+        @Composable get() = if (ThemeManager.isDarkTheme) CustomDarkColors.globo else CustomLightColors.globo
+
 
 }

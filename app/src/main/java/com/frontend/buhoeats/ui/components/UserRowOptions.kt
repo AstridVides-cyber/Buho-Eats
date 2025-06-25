@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import com.frontend.buhoeats.ui.theme.AppColors
 
 @Composable
 fun UserRowOptions(
@@ -49,7 +50,7 @@ fun UserRowOptions(
             .padding(6.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = AppColors.fondo)
     ) {
         Box(
             modifier = Modifier
