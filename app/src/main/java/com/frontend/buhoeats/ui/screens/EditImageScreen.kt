@@ -48,13 +48,13 @@ import com.frontend.buhoeats.models.User
 import android.widget.Toast
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 
 
 fun isAdminOfRestaurant(user: User?, restaurant: Restaurant): Boolean {
     return user?.rol == "admin" && restaurant.admin == user.id
 }
-
 @Composable
 fun EditImageScreen(
     navController: NavController,
@@ -111,11 +111,10 @@ fun EditImageScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "Editar Imagen del Restaurante",
+                    Translations.t("edit_restaurant_image"),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AppColors.texto,
-
+                    color = AppColors.texto
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -133,7 +132,7 @@ fun EditImageScreen(
                         selectedImageUri != null -> {
                             AsyncImage(
                                 model = selectedImageUri,
-                                contentDescription = "Imagen seleccionada",
+                                contentDescription = Translations.t("selected_image"),
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
@@ -142,7 +141,7 @@ fun EditImageScreen(
                         currentImageUrl.isNotBlank() -> {
                             AsyncImage(
                                 model = currentImageUrl,
-                                contentDescription = "Imagen actual del restaurante",
+                                contentDescription = Translations.t("current_image"),
                                 modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop
                             )
@@ -159,7 +158,7 @@ fun EditImageScreen(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.camera),
-                            contentDescription = "Cambiar imagen"
+                            contentDescription = Translations.t("change_image")
                         )
                     }
                 }
@@ -170,8 +169,7 @@ fun EditImageScreen(
                     onClick = {
                         val nuevaImagen = selectedImageUri?.toString() ?: currentImageUrl
                         restaurantViewModel.updateRestaurantImage(restaurant.id, nuevaImagen)
-                        Toast.makeText(context, "Imagen guardada correctamente", Toast.LENGTH_SHORT).show()
-
+                        Toast.makeText(context, Translations.t("image_saved_successfully"), Toast.LENGTH_SHORT).show()
                         navController.popBackStack()
                     },
                     enabled = selectedImageUri != null || currentImageUrl.isNotBlank(),
@@ -186,8 +184,10 @@ fun EditImageScreen(
                     ),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                 ) {
-                    Text("Guardar cambios",
-                        fontSize = 18.sp)
+                    Text(
+                        Translations.t("save_changes"),
+                        fontSize = 18.sp
+                    )
                 }
             }
         }

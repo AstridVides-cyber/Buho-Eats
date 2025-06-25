@@ -63,7 +63,32 @@ object Translations {
         "error_address_required" to mapOf(Language.ES to "La dirección no puede estar vacía", Language.EN to "Address cannot be empty"),
         "cancel" to mapOf(Language.ES to "Cancelar", Language.EN to "Cancel"),
         "confirm" to mapOf(Language.ES to "Confirmar", Language.EN to "Confirm"),
-        "info_updated_success" to mapOf(Language.ES to "Información editada exitosamente", Language.EN to "Information successfully updated")
+        "info_updated_success" to mapOf(Language.ES to "Información editada exitosamente", Language.EN to "Information successfully updated"),
+        "edit_restaurant_image" to mapOf(
+            Translations.Language.ES to "Editar Imagen del Restaurante",
+            Translations.Language.EN to "Edit Restaurant Image"
+        ),
+        "selected_image" to mapOf(
+            Translations.Language.ES to "Imagen seleccionada",
+            Translations.Language.EN to "Selected image"
+        ),
+        "current_image" to mapOf(
+            Translations.Language.ES to "Imagen actual del restaurante",
+            Translations.Language.EN to "Current restaurant image"
+        ),
+        "change_image" to mapOf(
+            Translations.Language.ES to "Cambiar imagen",
+            Translations.Language.EN to "Change image"
+        ),
+        "save_changes" to mapOf(
+            Translations.Language.ES to "Guardar cambios",
+            Translations.Language.EN to "Save changes"
+        ),
+        "image_saved_successfully" to mapOf(
+            Translations.Language.ES to "Imagen guardada correctamente",
+            Translations.Language.EN to "Image saved successfully"
+        )
+
 
 
 
