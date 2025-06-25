@@ -14,40 +14,92 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.Screens
-import com.frontend.buhoeats.ui.theme.AppColors
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
+
+fun BottomNavigationBar(navController : NavController) {
     NavigationBar(
-        containerColor = AppColors.primary // ← Se adapta automáticamente
+        containerColor = Color(0xFF3D405B)
     ) {
-        val items = listOf(
-            Triple(R.drawable.hogar, "Inicio", Screens.Home.route),
-            Triple(R.drawable.promociones, "Promociones", Screens.Promocion.route),
-            Triple(R.drawable.mapa, "Mapa", Screens.Map.route),
-            Triple(R.drawable.lupa, "Buscar", Screens.Search.route)
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate(Screens.Home.route) },
+            icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.hogar),
+                    contentDescription = "Inicio",
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            label = { Text("Inicio") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color(0xFF1B1D2A),
+                selectedTextColor = Color(0xFF1B1D2A),
+                indicatorColor = Color(0xFF2F3245),
+                unselectedIconColor = Color.White,
+                unselectedTextColor = Color.White
+            )
         )
 
-        items.forEach { (icon, label, route) ->
-            NavigationBarItem(
-                selected = false,
-                onClick = { navController.navigate(route) },
-                icon = {
-                    Image(
-                        painter = painterResource(id = icon),
-                        contentDescription = label,
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                label = { Text(label, color = Color.White) }, // texto adaptable
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = AppColors.secondary,
-                    selectedTextColor = Color.White,
-                    indicatorColor = AppColors.fondo,
-                    unselectedIconColor = AppColors.texto,
-                    unselectedTextColor = AppColors.texto
+        NavigationBarItem(
+            selected = false,
+            onClick = {navController.navigate(Screens.Promocion.route)  },
+            icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.promociones),
+                    contentDescription = "Promociones",
+                    modifier = Modifier.size(24.dp)
                 )
+            },
+            label = { Text("Promociones") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color(0xFF1B1D2A),
+                selectedTextColor = Color(0xFF1B1D2A),
+                indicatorColor = Color(0xFF2F3245),
+                unselectedIconColor = Color.White,
+                unselectedTextColor = Color.White
             )
-        }
+        )
+
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate(Screens.Map.route)},
+            icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.mapa),
+                    contentDescription = "Mapa",
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            label = { Text("Mapa") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color(0xFF1B1D2A),
+                selectedTextColor = Color(0xFF1B1D2A),
+                indicatorColor = Color(0xFF2F3245),
+                unselectedIconColor = Color.White,
+                unselectedTextColor = Color.White
+            )
+        )
+
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate(Screens.Search.route) },
+            icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.lupa),
+                    contentDescription = "Buscar",
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            label = { Text("Buscar") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color(0xFF1B1D2A),
+                selectedTextColor = Color(0xFF1B1D2A),
+                indicatorColor = Color(0xFF2F3245),
+                unselectedIconColor = Color.White,
+                unselectedTextColor = Color.White
+            )
+        )
     }
+
 }

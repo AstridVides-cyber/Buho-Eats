@@ -28,7 +28,6 @@ sealed class Screens(val route: String) {
         fun createRoute(id: String) = "imagerestaurant/$id"
     }
     object EditMenu : Screens("editmenu")
-
     object RolAssign: Screens ("rolassign")
     object EditLocal : Screens("editlocal/{restaurantId}?isNew={isNew}") {
         fun createRoute(restaurantId: String, isNew: Boolean): String {

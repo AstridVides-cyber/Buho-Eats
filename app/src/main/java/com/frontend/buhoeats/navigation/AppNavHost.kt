@@ -165,6 +165,7 @@ fun AppNavHost(navController: NavHostController) {
             val currentUser = userSessionViewModel.currentUser.value
             val restaurant = restaurantViewModel.restaurantList
                 .find { it.admin == currentUser?.id }
+
             if (restaurant != null) {
                 EditRestaurantScreen(
                     navController = navController,

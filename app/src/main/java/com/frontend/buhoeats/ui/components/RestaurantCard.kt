@@ -33,17 +33,15 @@ import com.frontend.buhoeats.models.ContactInfo
 import com.frontend.buhoeats.models.Dish
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.MaterialTheme
 import com.frontend.buhoeats.models.Comment
 import com.frontend.buhoeats.models.Rating
 import com.frontend.buhoeats.models.User
-import com.frontend.buhoeats.ui.theme.AppColors
 
 @Composable
 fun ContactCard(contactInfo: ContactInfo) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = AppColors.secondary,
+            containerColor = Color(0xFF588B8B),
             contentColor = Color.White
         ),
         modifier = Modifier
@@ -52,33 +50,33 @@ fun ContactCard(contactInfo: ContactInfo) {
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Email, contentDescription = "Correo",  tint = MaterialTheme.colorScheme.surface)
+                Icon(Icons.Default.Email, contentDescription = "Correo", tint = Color.White)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Correo: ${contactInfo.email}", color = MaterialTheme.colorScheme.surface)
+                Text("Correo: ${contactInfo.email}")
             }
 
             Spacer(modifier = Modifier.height(6.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Phone, contentDescription = "Teléfono",  tint = MaterialTheme.colorScheme.surface)
+                Icon(Icons.Default.Phone, contentDescription = "Teléfono", tint = Color.White)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Teléfono: ${contactInfo.phone}", color = MaterialTheme.colorScheme.surface)
+                Text("Teléfono: ${contactInfo.phone}")
             }
 
             Spacer(modifier = Modifier.height(6.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.AccessTime, contentDescription = "Horario",  tint = MaterialTheme.colorScheme.surface)
+                Icon(Icons.Default.AccessTime, contentDescription = "Horario", tint = Color.White)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Horario: ${contactInfo.hours}", color = MaterialTheme.colorScheme.surface)
+                Text("Horario: ${contactInfo.hours}")
             }
 
             Spacer(modifier = Modifier.height(6.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.LocationOn, contentDescription = "Dirección",  tint = MaterialTheme.colorScheme.surface)
+                Icon(Icons.Default.LocationOn, contentDescription = "Dirección", tint = Color.White)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Dirección: ${contactInfo.address}", color = MaterialTheme.colorScheme.surface)
+                Text("Dirección: ${contactInfo.address}")
             }
         }
     }
@@ -120,7 +118,7 @@ fun DishCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomStart)
-                    .background(AppColors.secondary.copy(alpha = 0.9f))
+                    .background(Color(0xFF588B8B).copy(alpha = 0.9f))
                     .padding(12.dp)
             ) {
                 Row(
@@ -129,20 +127,20 @@ fun DishCard(
                 ) {
                     Text(
                         dish.name,
-                        color = AppColors.text,
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
                     Text(
                         "$${dish.price}",
-                        color = AppColors.text,
+                        color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
                     )
                 }
                 Text(
                     dish.description,
-                    color = AppColors.text,
+                    color = Color.White,
                     fontSize = 14.sp
                 )
             }

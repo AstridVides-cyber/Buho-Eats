@@ -51,7 +51,6 @@ import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.CustomTextField
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.ui.components.ValidationMessage
-import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import java.util.UUID
@@ -77,7 +76,7 @@ fun SignUp(navController: NavController,
     val context = LocalContext.current
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = AppColors.primary
+        color = Color(0xFF3D405B)
     ) {
         Column(
             modifier = Modifier
