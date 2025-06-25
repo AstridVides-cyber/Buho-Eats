@@ -339,7 +339,7 @@ fun Login(
             Button(
                 onClick = { navControl.navigate(Screens.SignUp.route) },
                 modifier = Modifier
-                    .width(if (isEnglish) 240.dp else 200.dp)
+                    .width(if (isEnglish) 280.dp else 200.dp)
                     .height(56.dp)
                     .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp)),
                 shape = RoundedCornerShape(8.dp),
