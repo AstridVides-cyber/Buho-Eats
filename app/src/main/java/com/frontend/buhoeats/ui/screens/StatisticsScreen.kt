@@ -40,6 +40,8 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
 import android.widget.Toast
 
@@ -54,6 +56,11 @@ fun StatisticsScreen(
     var showDialog by remember { mutableStateOf(false) }
     var userToBlock by remember { mutableStateOf<User?>(null) }
     val context = LocalContext.current
+
+    val backgroundImage = if (ThemeManager.isDarkTheme)
+        painterResource(id = R.drawable.backgrounddark)
+    else
+        painterResource(id = R.drawable.backgroundlighttheme)
 
     Scaffold(
         topBar = {
@@ -72,7 +79,7 @@ fun StatisticsScreen(
                 .padding(innerPadding)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -105,24 +112,24 @@ fun StatisticsScreen(
                         val user = InMemoryUserDataSource.getUsers().find { it.id == comment.userId }
                         val rating = currentRestaurant.ratings.find { it.userId == comment.userId }
 
-                        Card(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                                .fillMaxWidth(),
-                            elevation = CardDefaults.cardElevation(4.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White)
-                        ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.AccountCircle,
-                                        contentDescription = "Usuario",
-                                        tint = Color.Black,
-                                        modifier = Modifier.size(30.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-
-                                    val displayName = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
+                    Card(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .fillMaxWidth(),
+                        elevation = CardDefaults.cardElevation(4.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Outlined.AccountCircle,
+                                    contentDescription = "Usuario",
+                                    tint = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                
+                                   val displayName = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
 
                                     Text(
                                         text = displayName,
@@ -141,8 +148,8 @@ fun StatisticsScreen(
 
                                 Spacer(modifier = Modifier.width(8.dp))
 
-                                Text(text = comment.comment, fontSize = 16.sp, color = Color.DarkGray)
-                                Spacer(modifier = Modifier.height(8.dp))
+                            Text(text = comment.comment, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Spacer(modifier = Modifier.height(8.dp))
 
                                 rating?.let {
                                     Row {

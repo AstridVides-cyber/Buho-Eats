@@ -30,6 +30,8 @@ import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.components.DisabledProfileField
 import com.frontend.buhoeats.ui.components.StaticProfileImage
 import com.frontend.buhoeats.ui.components.TopBar
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -42,6 +44,11 @@ fun ProfileScreen(
     val scrollState = rememberScrollState()
     val user = userSessionViewModel.currentUser.value
     var showLogoutDialog by remember { mutableStateOf(false) }
+
+    val backgroundImage = if (ThemeManager.isDarkTheme)
+        painterResource(id = R.drawable.backgrounddark)
+    else
+        painterResource(id = R.drawable.backgroundlighttheme)
 
     if (user == null) {
         LaunchedEffect(Unit) {
@@ -77,20 +84,21 @@ fun ProfileScreen(
             Column {
                 Button(
                     onClick = { showLogoutDialog = true },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF588B8B)),
+                    colors = ButtonDefaults.buttonColors(containerColor = AppColors.secondary),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(75.dp),
                     shape = RoundedCornerShape(0.dp)
                 ) {
-                    Icon(Icons.Filled.Logout, contentDescription = null, tint = Color.White, modifier = Modifier.size(35.dp))
+                    Icon(Icons.Filled.Logout, contentDescription = null, tint = AppColors.text, modifier = Modifier.size(35.dp))
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text("Cerrar Sesión", color = Color.White, fontSize = 25.sp)
+                    Text("Cerrar Sesión", color = AppColors.text, fontSize = 25.sp)
                     Spacer(modifier = Modifier.width(10.dp))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = "back",
-                        modifier = Modifier.graphicsLayer { rotationZ = 180f }.size(32.dp)
+                        modifier = Modifier.graphicsLayer { rotationZ = 180f }.size(32.dp),
+                        tint = AppColors.text
                     )
                 }
                 BottomNavigationBar(navController)
@@ -103,7 +111,7 @@ fun ProfileScreen(
                 .padding(innerPadding)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.backgroundlighttheme),
+                painter = backgroundImage,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop

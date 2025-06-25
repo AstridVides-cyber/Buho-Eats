@@ -41,12 +41,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.utils.ValidatorUtils.isOnlyNumbers
-
-
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
-
 
 @OptIn(ExperimentalComposeUiApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -86,7 +85,10 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
             selectedImageUri = uri
         }
 
-
+        val backgroundImage = if (ThemeManager.isDarkTheme)
+            painterResource(id = R.drawable.backgrounddark)
+        else
+            painterResource(id = R.drawable.backgroundlighttheme)
 
         Scaffold(
             topBar = {
@@ -110,7 +112,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                     .padding(paddingValues)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.backgroundlighttheme),
+                    painter = backgroundImage,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -122,10 +124,10 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {
-                    Text("Promoción", fontSize = 26.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black)
+                    Text("Promoción", fontSize = 26.sp, fontWeight = FontWeight.ExtraBold, color = AppColors.texto)
 
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(restaurantName, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    Text(restaurantName, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = AppColors.texto)
                     Spacer(modifier = Modifier.height(12.dp))
                     Box(
                         modifier = Modifier
@@ -167,7 +169,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                                 modifier = Modifier
                                     .offset(x = (-8).dp, y = (-8).dp)
                                     .size(48.dp)
-                                    .background(Color.White, CircleShape)
+                                    .background(AppColors.text, CircleShape)
                                     .border(1.dp, Color.Gray, CircleShape)
                             ) {
                                 Image(
@@ -181,17 +183,21 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                     Spacer(modifier = Modifier.height(8.dp))
 
                 if (isEditing) {
-                    Text("Titulo:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                    Text("Titulo:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = AppColors.texto)
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
-                        focusedContainerColor = Color.White.copy(alpha = 0.95f)))
+                            unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
+                            focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
+                        )
+                    )
                 } else {
-                    Text(name, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    Text(name, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = AppColors.texto)
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -202,7 +208,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                 ) {
                     if (isEditing) {
                         Column(Modifier.weight(1f)) {
-                            Text("Antes:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                            Text("Antes:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = AppColors.texto)
                             OutlinedTextField(
                                 value = promprice,
                                 onValueChange = {
@@ -214,6 +220,10 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                                 colors = OutlinedTextFieldDefaults.colors(
                                     unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
                                     focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                                    focusedTextColor = Color.Black,
+                                    unfocusedTextColor = Color.Black
+                                )
+                            )
                                     errorContainerColor = Color.White.copy(alpha = 0.8f)
                                 ),
                                 isError = promPriceError,
@@ -223,7 +233,7 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                             }
                         }
                         Column(Modifier.weight(1f)) {
-                            Text("Ahora:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                            Text("Ahora:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = AppColors.texto)
                             OutlinedTextField(value = price,
                                 onValueChange = {
                                     price = it
@@ -234,6 +244,10 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                                 colors = OutlinedTextFieldDefaults.colors(
                                     unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
                                     focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                                    focusedTextColor = Color.Black,
+                                    unfocusedTextColor = Color.Black
+                                )
+                            )
                                     errorContainerColor = Color.White.copy(alpha = 0.8f)
                                 ),
                                 isError = currentPriceError,
@@ -251,21 +265,25 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (isEditing) {
-                    Text("Descripción:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                    Text("Descripción:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = AppColors.texto)
                     OutlinedTextField(value = description,
                         onValueChange = { description = it },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
-                            focusedContainerColor = Color.White.copy(alpha = 0.95f)
-                        ))
+                            focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
+                        )
+                    )
+
                 } else {
-                    Text(description, fontSize = 16.sp, color = Color.Black)
+                    Text(description, fontSize = 16.sp, color = AppColors.texto)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("Reglas:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+                Text("Reglas:", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = AppColors.texto)
                 Spacer(modifier = Modifier.height(4.dp))
 
                 if (isEditing) {
@@ -275,10 +293,13 @@ import com.frontend.buhoeats.viewmodel.UserSessionViewModel
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
-                            focusedContainerColor = Color.White.copy(alpha = 0.95f)
-                        ))
+                            focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
+                        )
+                    )
                 } else {
-                    Text(text = if (reglas.isNotBlank()) reglas else "Sin reglas específicas", fontSize = 15.sp, color = Color.Black)
+                    Text(text = if (reglas.isNotBlank()) reglas else "Sin reglas específicas", fontSize = 15.sp, color = AppColors.texto)
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))

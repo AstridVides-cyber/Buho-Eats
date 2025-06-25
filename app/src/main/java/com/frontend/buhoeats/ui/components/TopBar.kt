@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.frontend.buhoeats.R
+import com.frontend.buhoeats.ui.theme.AppColors
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,11 +41,11 @@ fun TopBar(
     onNavClick: (() -> Unit)? = null
 ) {
     TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF3D405B)
-        ),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.primary),
         title = {
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(top = 5.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -65,15 +66,15 @@ fun TopBar(
         },
         navigationIcon = {
             if (showMenuIcon || showBackIcon) {
-                IconButton(onClick = { onNavClick?.invoke() } ,
-                    modifier = Modifier.padding(top = 4.dp)) {
+                IconButton(
+                    onClick = { onNavClick?.invoke() },
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
                     Icon(
                         imageVector = if (showBackIcon) Icons.Default.ArrowBackIosNew else Icons.Default.Menu,
-                        contentDescription = if (showBackIcon) "Atras" else "Menu",
+                        contentDescription = if (showBackIcon) "Atrás" else "Menú",
                         tint = Color.White,
                         modifier = Modifier.size(28.dp)
-
-
                     )
                 }
             }
