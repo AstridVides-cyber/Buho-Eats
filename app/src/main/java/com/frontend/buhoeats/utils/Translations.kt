@@ -210,6 +210,12 @@ object Translations {
         "change_image" to mapOf(Translations.Language.ES to "Cambiar imagen", Translations.Language.EN to "Change image"),
         "selected_image" to mapOf(Translations.Language.ES to "Imagen seleccionada", Translations.Language.EN to "Selected image"),
         "current_image" to mapOf(Translations.Language.ES to "Imagen actual", Translations.Language.EN to "Current image"),
+        "loading_promotions" to mapOf(Translations.Language.ES to "Cargando promociones...", Translations.Language.EN to "Loading promotions..."),
+        "no_promotions_yet" to mapOf(Translations.Language.ES to "Tu restaurante aún no tiene promociones.", Translations.Language.EN to "Your restaurant has no promotions yet."),
+        "no_promotions_available" to mapOf(Translations.Language.ES to "No hay promociones disponibles en este momento.", Translations.Language.EN to "No promotions available at the moment."),
+        "promotions_title" to mapOf(Translations.Language.ES to "Promociones", Translations.Language.EN to "Promotions"),
+        "promotion_deleted" to mapOf(Translations.Language.ES to "Promoción eliminada", Translations.Language.EN to "Promotion deleted"),
+
 
 
 
