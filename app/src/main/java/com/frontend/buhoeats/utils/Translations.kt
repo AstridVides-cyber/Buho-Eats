@@ -187,10 +187,16 @@ object Translations {
         "login_success" to mapOf(Language.ES to "Sesión iniciada con éxito", Language.EN to "Login successful"),
         "login_google_success" to mapOf(Language.ES to "Sesión iniciada con Google", Language.EN to "Logged in with Google"),
         "user_not_found" to mapOf(Language.ES to "Usuario no encontrado, por favor regístrate", Language.EN to "User not found, please sign up"),
-        "google_signin_error" to mapOf(Language.ES to "Error en Google Sign-In", Language.EN to "Google Sign-In Error")
+        "google_signin_error" to mapOf(Language.ES to "Error en Google Sign-In", Language.EN to "Google Sign-In Error"),
+        "logout" to mapOf(Language.ES to "Cerrar Sesión", Language.EN to "Log Out"),
+        "logout_confirmation" to mapOf(Language.ES to "¿Estás seguro que deseas cerrar sesión?", Language.EN to "Are you sure you want to log out?"),
+        "edit_profile" to mapOf(Language.ES to "Editar perfil", Language.EN to "Edit profile"),
+        "confirm" to mapOf(Language.ES to "Confirmar", Language.EN to "Confirm"),
+        "cancel" to mapOf(Language.ES to "Cancelar", Language.EN to "Cancel"),
 
 
-    )
+
+        )
 
     fun t(key: String): String {
         return strings[key]?.get(currentLanguage) ?: key
