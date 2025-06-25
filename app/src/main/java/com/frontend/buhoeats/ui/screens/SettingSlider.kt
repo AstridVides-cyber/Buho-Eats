@@ -2,23 +2,15 @@ package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.foundation.clickable
-import androidx.compose.material.icons.outlined.BarChart
-import androidx.compose.material.icons.outlined.Block
-import androidx.compose.material.icons.outlined.DarkMode
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.GTranslate
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.SupervisorAccount
-import androidx.compose.material.icons.outlined.WbSunny
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -32,8 +24,8 @@ import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
-
-
+import com.frontend.buhoeats.utils.Translations
+import com.frontend.buhoeats.utils.Translations.Language
 
 @Composable
 fun SettingSlider(
@@ -45,9 +37,9 @@ fun SettingSlider(
     Box(modifier = Modifier.fillMaxSize().background(AppColors.fondo)) {
 
         val backgroundImage = if (ThemeManager.isDarkTheme)
-        painterResource(R.drawable.backgrounddark)
+            painterResource(R.drawable.backgrounddark)
         else
-        painterResource(R.drawable.backgroundlighttheme)
+            painterResource(R.drawable.backgroundlighttheme)
 
         Image(
             painter = backgroundImage,
@@ -57,6 +49,7 @@ fun SettingSlider(
         )
         Column(modifier = Modifier.fillMaxSize()) {
 
+            // Cuenta
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(15.dp)
@@ -64,16 +57,16 @@ fun SettingSlider(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Person,
-                    contentDescription = "Mi cuenta",
+                    contentDescription = Translations.t("my_account"),
                     tint = AppColors.texto,
                     modifier = Modifier.size(45.dp)
                 )
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Mi cuenta", fontSize = 25.sp, color = AppColors.texto)
+                Text(Translations.t("my_account"), fontSize = 25.sp, color = AppColors.texto)
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = Icons.Default.ArrowBackIosNew,
-                    contentDescription = "Cuenta",
+                    contentDescription = Translations.t("my_account"),
                     modifier = Modifier
                         .graphicsLayer { rotationY = 180f }
                         .padding(10.dp)
@@ -81,8 +74,14 @@ fun SettingSlider(
                 )
             }
 
+            // Modo
             var expandedTheme by remember { mutableStateOf(false) }
-            var selectedTheme by remember { mutableStateOf(if (ThemeManager.isDarkTheme) "Oscuro" else "Claro") }
+            var selectedTheme by remember {
+                mutableStateOf(
+                    if (ThemeManager.isDarkTheme) Translations.t("dark")
+                    else Translations.t("light")
+                )
+            }
 
             Column {
                 Row(
@@ -93,20 +92,21 @@ fun SettingSlider(
                         .clickable { expandedTheme = !expandedTheme }
                 ) {
                     val themeIcon =
-                        if (selectedTheme == "Claro") Icons.Outlined.WbSunny else Icons.Outlined.DarkMode
+                        if (selectedTheme == Translations.t("light")) Icons.Outlined.WbSunny
+                        else Icons.Outlined.DarkMode
 
                     Icon(
                         imageVector = themeIcon,
-                        contentDescription = "Modo",
+                        contentDescription = Translations.t("mode"),
                         tint = AppColors.texto,
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Modo $selectedTheme", fontSize = 25.sp, color = AppColors.texto)
+                    Text("${Translations.t("mode")} $selectedTheme", fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = "Expandir tema",
+                        contentDescription = Translations.t("mode"),
                         tint = AppColors.texto,
                         modifier = Modifier
                             .graphicsLayer { rotationZ = -90f }
@@ -118,26 +118,20 @@ fun SettingSlider(
                 DropdownMenu(
                     expanded = expandedTheme,
                     onDismissRequest = { expandedTheme = false },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 15.dp)
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)
                 ) {
                     DropdownMenuItem(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Outlined.WbSunny,
-                                    contentDescription = "sol",
-                                    modifier = Modifier.size(30.dp)
-                                )
+                                Icon(Icons.Outlined.WbSunny, contentDescription = null, modifier = Modifier.size(30.dp))
                                 Spacer(modifier = Modifier.width(12.dp))
-                                Text("Claro", fontSize = 22.sp, color = AppColors.texto)
+                                Text(Translations.t("light"), fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
-                                RadioButton(selected = selectedTheme == "Claro", onClick = null)
+                                RadioButton(selected = selectedTheme == Translations.t("light"), onClick = null)
                             }
                         },
                         onClick = {
-                            selectedTheme = "Claro"
+                            selectedTheme = Translations.t("light")
                             ThemeManager.toggleTheme(false)
                             expandedTheme = false
                         }
@@ -145,27 +139,22 @@ fun SettingSlider(
                     DropdownMenuItem(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Outlined.DarkMode,"Oscuro",
-                                    modifier = Modifier.size(30.dp)
-                                )
+                                Icon(Icons.Outlined.DarkMode, contentDescription = null, modifier = Modifier.size(30.dp))
                                 Spacer(modifier = Modifier.width(12.dp))
-                                Text("Oscuro", fontSize = 22.sp, color = AppColors.texto)
+                                Text(Translations.t("dark"), fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
                                 RadioButton(
-                                    selected = selectedTheme == "Oscuro",
+                                    selected = selectedTheme == Translations.t("dark"),
                                     onClick = null,
                                     colors = RadioButtonDefaults.colors(
                                         selectedColor = AppColors.secondary,
-                                        unselectedColor = AppColors.texto,
-                                        disabledSelectedColor = AppColors.secondary,
-                                        disabledUnselectedColor = AppColors.texto
+                                        unselectedColor = AppColors.texto
                                     )
                                 )
                             }
                         },
                         onClick = {
-                            selectedTheme = "Oscuro"
+                            selectedTheme = Translations.t("dark")
                             ThemeManager.toggleTheme(true)
                             expandedTheme = false
                         }
@@ -173,8 +162,13 @@ fun SettingSlider(
                 }
             }
 
+            // Idioma
             var expandedLang by remember { mutableStateOf(false) }
-            var selectedLang by remember { mutableStateOf("Español") }
+            var selectedLang by remember {
+                mutableStateOf(
+                    if (Translations.currentLanguage == Language.ES) "Español" else "Inglés"
+                )
+            }
 
             Column {
                 Row(
@@ -184,32 +178,22 @@ fun SettingSlider(
                         .fillMaxWidth()
                         .clickable { expandedLang = true }
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.GTranslate,
-                        contentDescription = "Idioma",
-                        tint = AppColors.texto,
-                        modifier = Modifier.size(45.dp)
-                    )
+                    Icon(Icons.Outlined.GTranslate, contentDescription = Translations.t("language"), tint = AppColors.texto, modifier = Modifier.size(45.dp))
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Idioma", fontSize = 25.sp, color = AppColors.texto)
+                    Text(Translations.t("language"), fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = "Expandir idioma",
+                        Icons.Default.ArrowBackIosNew,
+                        contentDescription = Translations.t("language"),
                         tint = AppColors.texto,
-                        modifier = Modifier
-                            .graphicsLayer { rotationZ = -90f }
-                            .padding(10.dp)
-                            .size(30.dp)
+                        modifier = Modifier.graphicsLayer { rotationZ = -90f }.padding(10.dp).size(30.dp)
                     )
                 }
 
                 DropdownMenu(
                     expanded = expandedLang,
                     onDismissRequest = { expandedLang = false },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 15.dp)
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)
                 ) {
                     DropdownMenuItem(
                         text = {
@@ -217,21 +201,12 @@ fun SettingSlider(
                                 Spacer(modifier = Modifier.size(45.dp))
                                 Text("Español", fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
-                                RadioButton(
-                                    selected = selectedLang == "Español",
-                                    onClick = null,
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = AppColors.secondary,
-                                        unselectedColor = AppColors.texto,
-                                        disabledSelectedColor = AppColors.secondary,
-                                        disabledUnselectedColor = AppColors.texto
-                                    )
-
-                                )
+                                RadioButton(selected = selectedLang == "Español", onClick = null)
                             }
                         },
                         onClick = {
                             selectedLang = "Español"
+                            Translations.currentLanguage = Language.ES
                             expandedLang = false
                         }
                     )
@@ -241,20 +216,12 @@ fun SettingSlider(
                                 Spacer(modifier = Modifier.size(45.dp))
                                 Text("Inglés", fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
-                                RadioButton(
-                                    selected = selectedLang == "Inglés",
-                                    onClick = null,
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = AppColors.secondary,
-                                        unselectedColor = AppColors.texto,
-                                        disabledSelectedColor = AppColors.secondary,
-                                        disabledUnselectedColor = AppColors.texto
-                                    )
-                                )
+                                RadioButton(selected = selectedLang == "Inglés", onClick = null)
                             }
                         },
                         onClick = {
                             selectedLang = "Inglés"
+                            Translations.currentLanguage = Language.EN
                             expandedLang = false
                         }
                     )
@@ -264,138 +231,67 @@ fun SettingSlider(
             if (currentUser.rol == "usuario") {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .clickable {
-                            navController.navigate(Screens.Favorites.route)
-                        }
+                    modifier = Modifier.padding(15.dp).clickable {
+                        navController.navigate(Screens.Favorites.route)
+                    }
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Favoritos",
-                        tint = AppColors.texto,
-                        modifier = Modifier.size(45.dp)
-                    )
+                    Icon(Icons.Outlined.FavoriteBorder, contentDescription = Translations.t("favorites"), tint = AppColors.texto, modifier = Modifier.size(45.dp))
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Favoritos", fontSize = 25.sp, color = AppColors.texto)
+                    Text(Translations.t("favorites"), fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = "Cuenta",
-                        tint = AppColors.texto,
-                        modifier = Modifier
-                            .graphicsLayer { rotationY = 180f }
-                            .padding(10.dp)
-                            .size(30.dp)
-                    )
+                    Icon(Icons.Default.ArrowBackIosNew, contentDescription = null, tint = AppColors.texto, modifier = Modifier.graphicsLayer { rotationY = 180f }.padding(10.dp).size(30.dp))
                 }
             }
 
             if (currentUser.rol == "admin" && restaurant != null) {
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .clickable {
-                            navController.navigate(Screens.Statistics.route)
-                        }
+                    modifier = Modifier.padding(15.dp).clickable {
+                        navController.navigate(Screens.Statistics.route)
+                    }
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.BarChart,
-                        contentDescription = "Estadísticas",
-                        tint = AppColors.texto,
-                        modifier = Modifier.size(45.dp)
-                    )
+                    Icon(Icons.Outlined.BarChart, contentDescription = Translations.t("statistics"), tint = AppColors.texto, modifier = Modifier.size(45.dp))
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Ver estadísticas", fontSize = 25.sp, color = AppColors.texto)
+                    Text(Translations.t("statistics"), fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = "Estadísticas",
-                        tint = AppColors.texto,
-                        modifier = Modifier
-                            .graphicsLayer { rotationY = 180f }
-                            .padding(10.dp)
-                            .size(30.dp)
-                    )
+                    Icon(Icons.Default.ArrowBackIosNew, contentDescription = null, tint = AppColors.texto, modifier = Modifier.graphicsLayer { rotationY = 180f }.padding(10.dp).size(30.dp))
                 }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .clickable {
-                            navController.navigate(
-                                Screens.BlockedUser.createRoute(restaurant.id.toString())
-                            )
-                        }
+                    modifier = Modifier.padding(15.dp).clickable {
+                        navController.navigate(Screens.BlockedUser.createRoute(restaurant.id.toString()))
+                    }
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Block,
-                        contentDescription = "Clientes bloqueados",
-                        tint = AppColors.texto,
-                        modifier = Modifier.size(45.dp)
-                    )
+                    Icon(Icons.Outlined.Block, contentDescription = Translations.t("blocked_users"), tint = AppColors.texto, modifier = Modifier.size(45.dp))
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Clientes bloqueados", fontSize = 25.sp, color = AppColors.texto)
+                    Text(Translations.t("blocked_users"), fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        tint = AppColors.texto,
-                        contentDescription = "Clientes bloqueados",
-                        modifier = Modifier
-                            .graphicsLayer { rotationY = 180f }
-                            .padding(10.dp)
-                            .size(30.dp)
-                    )
+                    Icon(Icons.Default.ArrowBackIosNew, contentDescription = null, tint = AppColors.texto, modifier = Modifier.graphicsLayer { rotationY = 180f }.padding(10.dp).size(30.dp))
                 }
             }
 
-            if(currentUser.rol == "superadmin")
-            {
+            if (currentUser.rol == "superadmin") {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .clickable {
-                            navController.navigate(Screens.RolAssign.route)
-                        }
+                    modifier = Modifier.padding(15.dp).clickable {
+                        navController.navigate(Screens.RolAssign.route)
+                    }
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.SupervisorAccount,
-                        contentDescription = "Roles de usuarios",
-                        tint = AppColors.texto,
-                        modifier = Modifier.size(45.dp)
-                    )
+                    Icon(Icons.Outlined.SupervisorAccount, contentDescription = Translations.t("assign_roles"), tint = AppColors.texto, modifier = Modifier.size(45.dp))
                     Spacer(modifier = Modifier.width(12.dp))
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Asignar roles a un usuario",
+                            text = Translations.t("assign_roles"),
                             fontSize = 25.sp,
                             color = AppColors.texto,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        contentDescription = "Roles de usuarios",
-                        tint = AppColors.texto,
-                        modifier = Modifier
-                            .graphicsLayer { rotationY = 180f }
-                            .padding(10.dp)
-                            .size(30.dp)
-                    )
+                    Icon(Icons.Default.ArrowBackIosNew, contentDescription = null, tint = AppColors.texto, modifier = Modifier.graphicsLayer { rotationY = 180f }.padding(10.dp).size(30.dp))
                 }
             }
-
         }
     }
 }
-
-
-
-
