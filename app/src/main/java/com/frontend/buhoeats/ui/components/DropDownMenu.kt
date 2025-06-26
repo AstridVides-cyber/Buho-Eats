@@ -71,7 +71,10 @@ fun DropdownFormField(
                     errorBorderColor = Color(0xFF588B8B),
 
                     errorLabelColor = Color.Unspecified,
-                    errorCursorColor = Color.Black
+                    errorCursorColor = Color.Black ,
+
+                    focusedTextColor = Color.Gray,
+                    unfocusedTextColor = Color.Gray,
                 )
             )
 

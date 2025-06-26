@@ -98,7 +98,7 @@ fun BlockedUsersScreen(
                                 Translations.t("no_blocked_users"),
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = AppColors.texto
+                                color = Color.Gray
                             )
                         }
                     } else {
