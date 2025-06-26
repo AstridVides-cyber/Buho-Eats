@@ -54,6 +54,7 @@
     import com.frontend.buhoeats.ui.components.EditFloatingButton
     import com.frontend.buhoeats.ui.components.ValidationMessage
     import com.frontend.buhoeats.ui.theme.ThemeManager
+    import com.frontend.buhoeats.utils.Translations
     import com.frontend.buhoeats.viewmodel.FavoritesViewModel
     import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
     import com.frontend.buhoeats.viewmodel.RestaurantViewModel
@@ -157,7 +158,7 @@
 
         val context = LocalContext.current
         val user = InMemoryUserDataSource.getUsers().find { it.id == currentUser?.id }
-        user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
+        user?.let { "${it.name} ${it.lastName}" } ?: Translations.t("unknown_user")
 
         Column(
             modifier = modifier
@@ -183,7 +184,7 @@
                     }) {
                         Icon(
                             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = if (isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
+                            contentDescription = if (isFavorite) Translations.t("favoritesRemove") else Translations.t("favoritesAdd"),
                             tint = if (isFavorite) Color.Red else Color.Gray,
                             modifier = Modifier.size(40.dp)
                         )
@@ -214,7 +215,7 @@
             Spacer(modifier = Modifier.padding(10.dp))
 
             Text(
-                "Menú del día",
+                Translations.t("dailyMenu"),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -246,7 +247,7 @@
                             ) {
                                 if (existingRating == null) {
                                     Text(
-                                        text = "Califica la app",
+                                        text = Translations.t("rateApp"),
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Medium
                                     )
@@ -257,7 +258,7 @@
 
                                     Spacer(modifier = Modifier.height(10.dp))
                                 }
-                                Text("Escribe tu opinión:", fontSize = 16.sp, color = Color.Black, modifier = Modifier.padding(bottom = 10.dp))
+                                Text(Translations.t("writeOpinion"), fontSize = 16.sp, color = Color.Black, modifier = Modifier.padding(bottom = 10.dp))
                                 OutlinedTextField(
                                     value = comment,
                                     onValueChange = { comment = it },
@@ -273,14 +274,14 @@
 
                                 if (showRatingErrorMessage) {
                                     ValidationMessage(
-                                        message = "Por favor, selecciona una calificación (estrellas) antes de publicar.",
+                                        message = Translations.t("selectRatingError"),
                                         modifier = Modifier.padding(bottom = 8.dp)
                                     )
                                 }
 
                                 if (showCommentErrorMessage) {
                                     ValidationMessage(
-                                        message = "Por favor, escribe tu opinión antes de publicar.",
+                                        message = Translations.t("emptyCommentError"),
                                         modifier = Modifier.padding(bottom = 8.dp)
                                     )
                                 }
@@ -332,14 +333,14 @@
                                         .align(Alignment.End)
                                         .padding(5.dp)
                                 ) {
-                                    Text("Publicar")
+                                    Text(Translations.t("submitReview"))
                                 }
 
                                 Spacer(modifier = Modifier.size(10.dp))
 
                                 if (existingRating != null) {
                                     Text(
-                                        text = "Ya calificaste este restaurante con ${existingRating.rating} estrellas.",
+                                        text = Translations.t("alreadyRated").format(existingRating.rating),
                                         fontWeight = FontWeight.SemiBold,
                                         fontSize = 16.sp,
                                         modifier = Modifier.padding(8.dp)
@@ -350,7 +351,7 @@
 
                         } else {
                             Text(
-                                text = "Has sido bloqueado de este restaurante y no puedes dejar opiniones.",
+                                text = Translations.t("blockedMessage"),
                                 color = Color.Red,
                                 fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier
@@ -369,7 +370,7 @@
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "Calificaciones y opiniones",
+                        Translations.t("ratingsAndComments"),
                         fontWeight = FontWeight.Medium,
                         fontSize = 18.sp
                     )
@@ -391,13 +392,13 @@
             }
             if (showDialog && dishToDelete != null) {
                 ConfirmationDialog(
-                    message = "¿Estás seguro que deseas eliminar el plato?",
+                    message = Translations.t("deleteDishConfirmation"),
                     onConfirm = {
                         dishToDelete?.let { dish ->
                             restaurantViewModel.removeDishFromRestaurant(restaurant.id, dish.id)
                             val updatedRestaurant = InMemoryUserDataSource.getRestaurantById(restaurant.id)
                             updatedRestaurant?.let { onUpdate(it) }
-                            Toast.makeText(context, "Plato eliminado correctamente", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, Translations.t("deleteDishSuccess"), Toast.LENGTH_SHORT).show()
                         }
                         showDialog = false
                         dishToDelete = null

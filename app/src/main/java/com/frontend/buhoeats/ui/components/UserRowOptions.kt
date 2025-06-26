@@ -33,13 +33,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.utils.Translations
 
 @Composable
 fun UserRowOptions(
     user: User,
     onConfirmAction: () -> Unit,
     modifier: Modifier = Modifier,
-    confirmationMessage: String = "¿Estás seguro que deseas desbloquear a este usuario?",
+    confirmationMessage: String = Translations.t("confirmationMessage"),
     iconTint: Color = Color(0xFF4CAF50)
 ) {
     var showDialog by remember { mutableStateOf(false) }

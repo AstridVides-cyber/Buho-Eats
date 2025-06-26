@@ -166,9 +166,11 @@ fun SettingSlider(
             var expandedLang by remember { mutableStateOf(false) }
             var selectedLang by remember {
                 mutableStateOf(
-                    if (Translations.currentLanguage == Language.ES) "Español" else "Inglés"
+                    if (Translations.currentLanguage == Language.ES) Translations.t("language_spanish")
+                    else Translations.t("language_english")
                 )
             }
+
 
             Column {
                 Row(
@@ -199,13 +201,13 @@ fun SettingSlider(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Spacer(modifier = Modifier.size(45.dp))
-                                Text("Español", fontSize = 22.sp, color = AppColors.texto)
+                                Text(Translations.t("language_spanish"), fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
-                                RadioButton(selected = selectedLang == "Español", onClick = null)
+                                RadioButton(selected = selectedLang == Translations.t("language_spanish"), onClick = null)
                             }
                         },
                         onClick = {
-                            selectedLang = "Español"
+                            selectedLang = Translations.t("language_spanish")
                             Translations.currentLanguage = Language.ES
                             expandedLang = false
                         }
@@ -214,13 +216,13 @@ fun SettingSlider(
                         text = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Spacer(modifier = Modifier.size(45.dp))
-                                Text("Inglés", fontSize = 22.sp, color = AppColors.texto)
+                                Text(Translations.t("language_english"), fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
-                                RadioButton(selected = selectedLang == "Inglés", onClick = null)
+                                RadioButton(selected = selectedLang == Translations.t("language_english"), onClick = null)
                             }
                         },
                         onClick = {
-                            selectedLang = "Inglés"
+                            selectedLang = Translations.t("language_english")
                             Translations.currentLanguage = Language.EN
                             expandedLang = false
                         }

@@ -49,6 +49,7 @@ import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.CustomTextField
 import com.frontend.buhoeats.utils.ValidatorUtils
 import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import java.util.UUID
@@ -103,7 +104,7 @@ fun SignUp(navController: NavController,
                 )
                 Spacer(modifier = Modifier.width(24.dp))
                 Text(
-                    text = "Crear cuenta",
+                    text = Translations.t("create_account"),
                     fontSize = 32.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = Color.White
@@ -119,13 +120,13 @@ fun SignUp(navController: NavController,
             Spacer(modifier = Modifier.height(24.dp))
 
             CustomTextField(
-                label = "Nombre",
+                label = Translations.t("name"),
                 value = name,
                 onValueChange = {
                     name = ValidatorUtils.capitalizeWords(it)
                     if (nameError.isNotEmpty()) nameError = ""
                 },
-                placeholder = "Ingrese su nombre",
+                placeholder = Translations.t("name_placeholder"),
                 textColor = Color.Black,
                 containerColor = Color.White
             )
@@ -134,13 +135,13 @@ fun SignUp(navController: NavController,
             Spacer(modifier = Modifier.height(12.dp))
 
             CustomTextField(
-                label = "Apellido",
+                label = Translations.t("lastname"),
                 value = lastname,
                 onValueChange = {
                     lastname = ValidatorUtils.capitalizeWords(it)
                     if (lastnameError.isNotEmpty()) lastnameError = ""
                 },
-                placeholder = "Ingrese su apellido",
+                placeholder = Translations.t("lastname_placeholder"),
                 textColor = Color.Black,
                 containerColor = Color.White
             )
@@ -149,13 +150,13 @@ fun SignUp(navController: NavController,
             Spacer(modifier = Modifier.height(12.dp))
 
             CustomTextField(
-                label = "Correo",
+                label = Translations.t("email"),
                 value = email,
                 onValueChange = {
                     email = it
                     if (emailError.isNotEmpty()) emailError = ""
                 },
-                placeholder = "Ingrese su correo",
+                placeholder = Translations.t("email_placeholder"),
                 textColor = Color.Black,
                 containerColor = Color.White
             )
@@ -164,13 +165,13 @@ fun SignUp(navController: NavController,
             Spacer(modifier = Modifier.height(12.dp))
 
             CustomTextField(
-                label = "Contraseña",
+                label = Translations.t("password"),
                 value = password,
                 onValueChange = {
                     password = it
                     if (passwordError.isNotEmpty()) passwordError = ""
                 },
-                placeholder = "Ingrese su contraseña",
+                placeholder = Translations.t("password_placeholder"),
                 textColor = Color.Black,
                 containerColor = Color.White,
                 isPassword = true
@@ -180,13 +181,13 @@ fun SignUp(navController: NavController,
             Spacer(modifier = Modifier.height(12.dp))
 
             CustomTextField(
-                label = "Confirmar contraseña",
+                label = Translations.t("confirm_password"),
                 value = confirmPassword,
                 onValueChange = {
                     confirmPassword = it
                     if (confirmPasswordError.isNotEmpty()) confirmPasswordError = ""
                 },
-                placeholder = "Repita su contraseña",
+                placeholder = Translations.t("confirm_password_placeholder"),
                 textColor = Color.Black,
                 containerColor = Color.White,
                 isPassword = true
@@ -201,42 +202,42 @@ fun SignUp(navController: NavController,
                     var hasError = false
 
                     if (name.isBlank()) {
-                        nameError = "El nombre no debe estar vacío"
+                        nameError = Translations.t("error_name_required")
                         hasError = true
                     } else if (!ValidatorUtils.isOnlyLetters(name)) {
-                        nameError = "El nombre solo debe contener letras"
+                        nameError = Translations.t("error_name_letters")
                         hasError = true
                     }
 
                     if (lastname.isBlank()) {
-                        lastnameError = "El apellido no debe estar vacío"
+                        lastnameError = Translations.t("error_lastname_required")
                         hasError = true
                     } else if (!ValidatorUtils.isOnlyLetters(lastname)) {
-                        lastnameError = "El apellido solo debe contener letras"
+                        lastnameError = Translations.t("error_lastname_letters")
                         hasError = true
                     }
 
                     if (email.isBlank()) {
-                        emailError = "El correo no debe estar vacío"
+                        emailError = Translations.t("error_email_required")
                         hasError = true
                     } else if (!ValidatorUtils.isValidEmail(email)) {
-                        emailError = "Correo inválido"
+                        emailError = Translations.t("error_email_invalid")
                         hasError = true
                     }
 
                     if (password.isBlank()) {
-                        passwordError = "La contraseña no debe estar vacía"
+                        passwordError = Translations.t("error_password_required")
                         hasError = true
                     } else if (!ValidatorUtils.isSecurePassword(password)) {
-                        passwordError = "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo"
+                        passwordError = Translations.t("error_password_security")
                         hasError = true
                     }
 
                     if (confirmPassword.isBlank()) {
-                        confirmPasswordError = "Debe confirmar la contraseña"
+                        confirmPasswordError = Translations.t("confirm_password_required")
                         hasError = true
                     } else if (password != confirmPassword) {
-                        confirmPasswordError = "Las contraseñas no coinciden"
+                        confirmPasswordError = Translations.t("error_password_mismatch")
                         hasError = true
                     }
 
@@ -254,10 +255,10 @@ fun SignUp(navController: NavController,
                         val success = userSessionViewModel.registerUser(newUser)
 
                         if (success) {
-                            Toast.makeText(context, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, Translations.t("account_created_success"), Toast.LENGTH_SHORT).show()
                             navController.navigate(Screens.Login.route)
                         } else {
-                            Toast.makeText(context, "Este correo ya está en uso", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, Translations.t("email_in_use"), Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -269,7 +270,7 @@ fun SignUp(navController: NavController,
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C))
             ) {
-                Text("Registrarte", color = Color.White, fontSize = 20.sp)
+                Text(Translations.t("register"), color = Color.White, fontSize = 20.sp)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -297,13 +298,13 @@ fun SignUp(navController: NavController,
                     val existingUser = userSessionViewModel.getUserByEmail(email)
                     if (existingUser == null) {
                         userSessionViewModel.registerUser(newUser)
-                        Toast.makeText(context, "Cuenta Google registrada con éxito", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, Translations.t("google_register_success"), Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(context, "Ya existe una cuenta con este correo", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, Translations.t("account_exists"), Toast.LENGTH_SHORT).show()
                     }
                     navController.navigate(Screens.Login.route)
                 } else {
-                    Toast.makeText(context, "Error al iniciar sesión con Google", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, Translations.t("google_register_error"), Toast.LENGTH_SHORT).show()
                 }
             }
             Button(
@@ -330,7 +331,7 @@ fun SignUp(navController: NavController,
                             .size(32.dp)
                     )
                     Text(
-                        text = "Registrate con Google",
+                        text = Translations.t("register_with_google"),
                         color = Color.White,
                         fontSize = 16.sp
                     )
@@ -341,10 +342,10 @@ fun SignUp(navController: NavController,
 
 
             Row {
-                Text(text = "¿Ya tienes una cuenta? ",color = Color.White,
+                Text(text = Translations.t("already_have_account"),color = Color.White,
                     fontSize = 16.sp,fontFamily = montserratFontFamily)
                 Text(
-                    text = "Iniciar Sesión",
+                    text = Translations.t("login"),
                     color = Color(0xFF0084FF),
                     fontSize = 16.sp,
                     fontFamily = montserratFontFamily,

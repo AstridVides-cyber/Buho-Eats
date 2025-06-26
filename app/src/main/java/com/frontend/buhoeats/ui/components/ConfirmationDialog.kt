@@ -86,7 +86,7 @@ fun ConfirmationDialog(
                         ),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                     ) {
-                        Text(t("Confirmar"))
+                        Text(t("confirm"))
                     }
                 }
             }

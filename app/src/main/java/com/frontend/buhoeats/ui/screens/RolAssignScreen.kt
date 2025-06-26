@@ -30,6 +30,7 @@ import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
@@ -56,10 +57,11 @@ fun RolAssign(
 
 
     val roleOptions = listOf(
-        RoleOption("Super Administrador", R.drawable.super_admin),
-        RoleOption("Administrador de Local", R.drawable.admi_local),
-        RoleOption("Usuario", R.drawable.ususario)
+        RoleOption(Translations.t("role_superadmin"), R.drawable.super_admin),
+        RoleOption(Translations.t("role_admin"), R.drawable.admi_local),
+        RoleOption(Translations.t("role_user"), R.drawable.ususario)
     )
+
 
     val backgroundImage = if (ThemeManager.isDarkTheme)
     painterResource(id = R.drawable.backgrounddark)
@@ -95,7 +97,7 @@ fun RolAssign(
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "Asignar Roles",
+                    text = Translations.t("assign_roles_title"),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = montserratFontFamily,
@@ -105,7 +107,7 @@ fun RolAssign(
                 Spacer(modifier = Modifier.height(25.dp))
 
                 Text(
-                    "Correo:",
+                    Translations.t("email_label"),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 18.sp,
                     style = TextStyle(fontFamily = montserratFontFamily),
@@ -122,7 +124,7 @@ fun RolAssign(
                     },
                     placeholder = {
                         Text(
-                            "Ingrese el correo del usuario",
+                            Translations.t("email_placeholder"),
                             color = Color.Gray,
                             fontSize = 16.sp,
                             style = TextStyle(fontFamily = montserratFontFamily)
@@ -162,7 +164,7 @@ fun RolAssign(
                 Spacer(modifier = Modifier.height(25.dp))
 
                 Text(
-                    "Tipo de Rol:",
+                    Translations.t("role_type_label"),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 18.sp,
                     style = TextStyle(fontFamily = montserratFontFamily),
@@ -186,7 +188,7 @@ fun RolAssign(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = selectedRole?.label ?: "Seleccione un rol",
+                            text = selectedRole?.label ?: Translations.t("select_role"),
                             fontFamily = montserratFontFamily,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
@@ -238,7 +240,7 @@ fun RolAssign(
 
                 if (showValidationErrors && selectedRole == null) {
                     ValidationMessage(
-                        message = "Seleccione un rol",
+                        message = Translations.t("select_role_error"),
                         modifier = Modifier.padding(horizontal = 20.dp)
                     )
                 }
@@ -256,7 +258,7 @@ fun RolAssign(
                         showValidationErrors = true
 
                         emailError = if (!isEmailValid) {
-                            "Ingrese un correo válido"
+                            Translations.t("invalid_email")
                         } else {
                             ""
                         }
@@ -264,14 +266,14 @@ fun RolAssign(
                             val currentUser by userSessionViewModel.currentUser
 
                             if (currentUser?.rol != "superadmin") {
-                                emailError = "Solo los Super Administradores pueden asignar roles"
+                                emailError = Translations.t("only_superadmins_can_assign")
                                 return@Button
                             }
 
                             val success = userSessionViewModel.assignRoleToUser(email.toString(), roleValue.toString())
 
                             if (success) {
-                                Toast.makeText(context, "Rol asignado exitosamente", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, Translations.t("role_assigned_success"), Toast.LENGTH_SHORT).show()
                                 email = ""
                                 selectedRole = null
                                 showValidationErrors = false
@@ -279,7 +281,7 @@ fun RolAssign(
                                 navController.popBackStack()
 
                             } else {
-                                emailError = "No se encontró ningún usuario con ese correo"
+                                emailError = Translations.t("user_not_found")
                             }
                         }
                     },
@@ -291,7 +293,7 @@ fun RolAssign(
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Confirmar", fontFamily = montserratFontFamily, fontSize = 18.sp)
+                    Text(Translations.t("confirm"), fontFamily = montserratFontFamily, fontSize = 18.sp)
                 }
             }
         }

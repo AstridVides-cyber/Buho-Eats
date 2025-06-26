@@ -219,7 +219,7 @@ fun EditLocalScreen(
                     value = name,
                     onValueChange = { name = it; nameError = false },
                     isError = nameError,
-                    placeholderText = Translations.t("name_placeholder")
+                    placeholderText = Translations.t("name_r_placeholder")
                 )
                 if (nameError) ValidationMessage(Translations.t("name_required"))
 
