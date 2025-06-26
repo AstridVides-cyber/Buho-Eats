@@ -1,20 +1,19 @@
 package com.frontend.buhoeats.ui.screens
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -22,47 +21,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.shadow
-import com.frontend.buhoeats.ui.components.BottomNavigationBar
-import com.frontend.buhoeats.ui.components.CustomTextField
-import com.frontend.buhoeats.ui.components.ProfileImage
-import com.frontend.buhoeats.ui.components.TopBar
-import com.frontend.buhoeats.utils.ValidatorUtils
-import com.frontend.buhoeats.ui.components.ValidationMessage
-import com.frontend.buhoeats.viewmodel.UserSessionViewModel
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
+import com.frontend.buhoeats.ui.components.*
 import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.utils.Translations
+import com.frontend.buhoeats.utils.ValidatorUtils
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
-val montserratFontFamily = FontFamily(
-    Font(R.font.montserrat_bold)
-)
+val montserratFontFamily = FontFamily(Font(R.font.montserrat_bold))
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EditAccountScreen(navController: NavController,
-    onBack: () -> Unit = {}, userSessionViewModel: UserSessionViewModel
+fun EditAccountScreen(
+    navController: NavController,
+    onBack: () -> Unit = {},
+    userSessionViewModel: UserSessionViewModel
 ) {
-
     var name by remember { mutableStateOf(userSessionViewModel.currentUser.value?.name ?: "") }
     var lastname by remember { mutableStateOf(userSessionViewModel.currentUser.value?.lastName ?: "") }
     var email by remember { mutableStateOf(userSessionViewModel.currentUser.value?.email ?: "") }
     var newPassword by remember { mutableStateOf("") }
     var confirmNewPassword by remember { mutableStateOf("") }
-
-    var triedToSubmit by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    var attemptingPasswordChange by remember { mutableStateOf(false) }
 
     var nameError by remember { mutableStateOf("") }
     var lastnameError by remember { mutableStateOf("") }
@@ -70,12 +48,12 @@ fun EditAccountScreen(navController: NavController,
     var newPasswordError by remember { mutableStateOf("") }
     var confirmNewPasswordError by remember { mutableStateOf("") }
 
+    var attemptingPasswordChange by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     val isGoogleUser = userSessionViewModel.currentUser.value?.password.isNullOrEmpty()
 
-
     Scaffold(
-        topBar = { TopBar(showBackIcon = true , onNavClick = onBack
-        ) },
+        topBar = { TopBar(showBackIcon = true, onNavClick = onBack) },
         bottomBar = { BottomNavigationBar(navController) },
         containerColor = AppColors.primary
     ) { padding ->
@@ -87,9 +65,7 @@ fun EditAccountScreen(navController: NavController,
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
-        )
-
-        {
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -97,24 +73,21 @@ fun EditAccountScreen(navController: NavController,
                 horizontalArrangement = Arrangement.Start
             ) {
                 Text(
-                    text = "Mi cuenta",
+                    text = Translations.t("edit_account_title"),
                     fontFamily = montserratFontFamily,
                     color = Color.White,
                     fontSize = 27.sp,
                     fontWeight = FontWeight.ExtraBold
                 )
-
             }
-                Spacer(modifier = Modifier.width(14.dp))
+
+            Spacer(modifier = Modifier.width(14.dp))
 
             ProfileImage(
                 userImageUrl = userSessionViewModel.currentUser.value?.imageProfile ?: "",
                 onImageSelected = { newImageUrl ->
-                    val updatedUser = userSessionViewModel.currentUser.value?.copy(
-                        imageProfile = newImageUrl.toString()
-                    )
-                    if (updatedUser != null) {
-                        userSessionViewModel.updateCurrentUser(updatedUser)
+                    userSessionViewModel.currentUser.value?.copy(imageProfile = newImageUrl.toString())?.let {
+                        userSessionViewModel.updateCurrentUser(it)
                     }
                 }
             )
@@ -122,28 +95,28 @@ fun EditAccountScreen(navController: NavController,
             Spacer(modifier = Modifier.height(24.dp))
 
             CustomTextField(
-                label = "Nombre",
+                label = Translations.t("name"),
                 value = name,
                 onValueChange = {
                     name = it
-                    if (nameError.isNotEmpty()) nameError = ""
+                    nameError = ""
                 },
-                placeholder = "Ingrese su nombre",
+                placeholder = Translations.t("name_placeholder"),
                 textColor = Color.Black,
-                containerColor = Color.White,
+                containerColor = Color.White
             )
             if (nameError.isNotEmpty()) ValidationMessage(message = nameError)
 
             Spacer(modifier = Modifier.height(12.dp))
 
             CustomTextField(
-                label = "Apellido",
+                label = Translations.t("lastname"),
                 value = lastname,
                 onValueChange = {
                     lastname = it
-                    if (lastnameError.isNotEmpty()) lastnameError = ""
+                    lastnameError = ""
                 },
-                placeholder = "Ingrese su apellido",
+                placeholder = Translations.t("lastname_placeholder"),
                 textColor = Color.Black,
                 containerColor = Color.White
             )
@@ -152,13 +125,13 @@ fun EditAccountScreen(navController: NavController,
             Spacer(modifier = Modifier.height(12.dp))
 
             CustomTextField(
-                label = "Correo",
+                label = Translations.t("email"),
                 value = email,
                 onValueChange = {
                     email = it
-                    if (emailError.isNotEmpty()) emailError = ""
+                    emailError = ""
                 },
-                placeholder = "Ingrese su correo",
+                placeholder = Translations.t("email_placeholder"),
                 textColor = Color.Black,
                 containerColor = Color.White,
                 enabled = !isGoogleUser
@@ -168,31 +141,32 @@ fun EditAccountScreen(navController: NavController,
             Spacer(modifier = Modifier.height(12.dp))
 
             CustomTextField(
-                label = "Contraseña",
+                label = Translations.t("password"),
                 value = newPassword,
                 onValueChange = {
                     newPassword = it
-                    attemptingPasswordChange = it.isNotBlank() // El usuario está intentando cambiarla si escribe algo
-                    if (newPasswordError.isNotEmpty()) newPasswordError = ""
+                    attemptingPasswordChange = it.isNotBlank()
+                    newPasswordError = ""
                     if (confirmNewPasswordError.isNotEmpty() && newPassword == confirmNewPassword) confirmNewPasswordError = ""
                 },
-                placeholder = "Ingrese su contraseña",
+                placeholder = Translations.t("password_placeholder"),
                 textColor = Color.Black,
                 containerColor = Color.White,
                 isPassword = true,
                 enabled = !isGoogleUser
             )
             if (newPasswordError.isNotEmpty()) ValidationMessage(message = newPasswordError)
+
             Spacer(modifier = Modifier.height(12.dp))
 
             CustomTextField(
-                label = "Confirmar contraseña",
+                label = Translations.t("confirm_password"),
                 value = confirmNewPassword,
                 onValueChange = {
                     confirmNewPassword = it
-                    if (confirmNewPasswordError.isNotEmpty()) confirmNewPasswordError = ""
+                    confirmNewPasswordError = ""
                 },
-                placeholder = "Repita su contraseña",
+                placeholder = Translations.t("confirm_password_placeholder"),
                 textColor = Color.Black,
                 containerColor = Color.White,
                 isPassword = true,
@@ -207,9 +181,7 @@ fun EditAccountScreen(navController: NavController,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(
-                    onClick = {
-                        navController.popBackStack()
-                    },
+                    onClick = { navController.popBackStack() },
                     modifier = Modifier
                         .width(150.dp)
                         .height(50.dp)
@@ -219,65 +191,54 @@ fun EditAccountScreen(navController: NavController,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE63946)),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                 ) {
-                    Text("Cancelar", color = Color.White, fontSize = 18.sp)
+                    Text(Translations.t("cancel"), color = Color.White, fontSize = 18.sp)
                 }
+
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Button(
                     onClick = {
-                        triedToSubmit = true
                         var hasError = false
 
                         if (name.isBlank()) {
-                            nameError = "El nombre no debe estar vacío"
+                            nameError = Translations.t("error_name_required")
                             hasError = true
                         } else if (!ValidatorUtils.isOnlyLetters(name)) {
-                            nameError = "El nombre solo debe contener letras"
+                            nameError = Translations.t("error_name_letters")
                             hasError = true
                         }
 
                         if (lastname.isBlank()) {
-                            lastnameError = "El apellido no debe estar vacío"
+                            lastnameError = Translations.t("error_lastname_required")
                             hasError = true
                         } else if (!ValidatorUtils.isOnlyLetters(lastname)) {
-                            lastnameError = "El apellido solo debe contener letras"
+                            lastnameError = Translations.t("error_lastname_letters")
                             hasError = true
                         }
 
                         if (email.isBlank()) {
-                            emailError = "El correo no debe estar vacío"
+                            emailError = Translations.t("error_email_required")
                             hasError = true
                         } else if (!ValidatorUtils.isValidEmail(email)) {
-                            emailError = "Correo inválido"
+                            emailError = Translations.t("error_email_invalid")
                             hasError = true
                         }
 
                         if (newPassword.isNotBlank() || confirmNewPassword.isNotBlank() || attemptingPasswordChange) {
                             if (!ValidatorUtils.isSecurePassword(newPassword)) {
-                                newPasswordError = "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo"
-
+                                newPasswordError = Translations.t("error_password_security")
                                 hasError = true
-                            } else {
-                                newPasswordError = ""
                             }
-
                             if (newPassword != confirmNewPassword) {
-                                confirmNewPasswordError = "La contraseñas no coinciden"
+                                confirmNewPasswordError = Translations.t("error_password_mismatch")
                                 hasError = true
-                            } else {
-                                confirmNewPasswordError = ""
                             }
-                        } else {
-                            newPasswordError = ""
-                            confirmNewPasswordError = ""
                         }
 
                         if (!hasError) {
-                            val passwordToSave = if (newPassword.isNotBlank() && attemptingPasswordChange) {
-                                newPassword
-                            } else {
-                                userSessionViewModel.currentUser.value!!.password
-                            }
+                            val passwordToSave = if (newPassword.isNotBlank()) newPassword
+                            else userSessionViewModel.currentUser.value?.password.orEmpty()
+
                             val updatedUser = userSessionViewModel.currentUser.value?.copy(
                                 name = name,
                                 lastName = lastname,
@@ -285,15 +246,11 @@ fun EditAccountScreen(navController: NavController,
                                 password = passwordToSave
                             )
 
-                            if (updatedUser != null) {
-                                userSessionViewModel.updateCurrentUser(updatedUser)
+                            updatedUser?.let {
+                                userSessionViewModel.updateCurrentUser(it)
+                                Toast.makeText(context, Translations.t("user_updated"), Toast.LENGTH_LONG).show()
+                                navController.popBackStack()
                             }
-                            Toast.makeText(
-                                context,
-                                "Usuario actualizado correctamente",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            navController.popBackStack()
                         }
                     },
                     modifier = Modifier
@@ -305,11 +262,8 @@ fun EditAccountScreen(navController: NavController,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C)),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                 ) {
-                    Text("Confirmar", color = Color.White, fontSize = 18.sp)
+                    Text(Translations.t("confirm"), color = Color.White, fontSize = 18.sp)
                 }
-                Spacer(modifier = Modifier.height(12.dp))
-
-
             }
         }
     }

@@ -27,7 +27,7 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-
+import com.frontend.buhoeats.utils.Translations
 
 @OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("MissingPermission")
@@ -35,7 +35,8 @@ import org.osmdroid.views.overlay.Marker
 fun LocationPickerMap(
     lat: Double,
     lon: Double,
-    onLocationChange: (Double, Double) -> Unit
+    onLocationChange: (Double, Double) -> Unit,
+    label: String = Translations.t("select_location")
 ) {
     val context = LocalContext.current
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -64,11 +65,10 @@ fun LocationPickerMap(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "Selecciona la ubicación en el mapa",
+            text = label, // ← ahora dinámico
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
             color = AppColors.texto,
@@ -93,7 +93,7 @@ fun LocationPickerMap(
                         val marker = Marker(this).apply {
                             position = currentLocation
                             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                            title = "Ubicación del local"
+                            title = Translations.t("local_location")
                             isDraggable = true
                             setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
                                 override fun onMarkerDrag(marker: Marker?) {}

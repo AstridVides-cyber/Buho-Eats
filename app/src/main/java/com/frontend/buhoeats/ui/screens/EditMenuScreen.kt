@@ -9,32 +9,14 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,12 +32,10 @@ import coil.compose.AsyncImage
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.models.Dish
-import com.frontend.buhoeats.ui.components.BottomNavigationBar
-import com.frontend.buhoeats.ui.components.FormField
-import com.frontend.buhoeats.ui.components.TopBar
-import com.frontend.buhoeats.ui.components.ValidationMessage
+import com.frontend.buhoeats.ui.components.*
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.utils.ValidatorUtils.isOnlyNumbers
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import java.util.UUID
@@ -120,7 +100,12 @@ fun EditMenuScreen(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Editar Menú del día:", fontWeight = FontWeight.Bold, fontSize = 24.sp,color = AppColors.texto)
+                Text(
+                    Translations.t("edit_daily_menu"),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    color = AppColors.texto
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -156,30 +141,30 @@ fun EditMenuScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
-                    label = "Nombre del plato:",
+                    label = Translations.t("dish_name"),
                     value = name,
                     onValueChange = { name = it; nameError = false },
                     isError = nameError,
-                    placeholderText = "Ej. Pupusas revueltas"
+                    placeholderText = Translations.t("dish_name_placeholder")
                 )
-                if (nameError) ValidationMessage("El nombre no puede estar vacío")
+                if (nameError) ValidationMessage(Translations.t("error_name_required"))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
-                    label = "Descripción:",
+                    label = Translations.t("description"),
                     value = description,
                     onValueChange = { description = it; descriptionError = false },
                     isError = descriptionError,
                     isMultiline = true,
-                    placeholderText = "Breve descripción del plato"
+                    placeholderText = Translations.t("dish_description_placeholder")
                 )
-                if (descriptionError) ValidationMessage("La descripción no puede estar vacía")
+                if (descriptionError) ValidationMessage(Translations.t("error_description_required"))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
-                    label = "Precio:",
+                    label = Translations.t("price"),
                     value = price,
                     onValueChange = {
                         price = it
@@ -187,11 +172,10 @@ fun EditMenuScreen(
                         priceFormatError = !isOnlyNumbers(it)
                     },
                     isError = priceError || priceFormatError,
-                    placeholderText = "Ej. 2.50"
+                    placeholderText = Translations.t("price_placeholder")
                 )
-                if (priceError) ValidationMessage("El precio no puede estar vacío.")
-                else if (priceFormatError) ValidationMessage("El precio solo debe contener números")
-
+                if (priceError) ValidationMessage(Translations.t("error_price_required"))
+                else if (priceFormatError) ValidationMessage(Translations.t("error_price_format"))
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -209,7 +193,7 @@ fun EditMenuScreen(
                             .height(50.dp),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                     ) {
-                        Text("Cancelar", color = Color.White, fontSize = 16.sp)
+                        Text(Translations.t("cancel"), color = Color.White, fontSize = 16.sp)
                     }
 
                     Button(
@@ -233,7 +217,7 @@ fun EditMenuScreen(
                                     menu = restaurant.menu + newDish
                                 )
                                 InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
-                                Toast.makeText(context, "Plato agregado exitosamente", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, Translations.t("dish_added_success"), Toast.LENGTH_SHORT).show()
                                 navController.popBackStack()
                             }
                         },
@@ -245,7 +229,7 @@ fun EditMenuScreen(
                             .height(50.dp),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                     ) {
-                        Text("Confirmar", color = Color.White, fontSize = 16.sp)
+                        Text(Translations.t("confirm"), color = Color.White, fontSize = 16.sp)
                     }
                 }
             }

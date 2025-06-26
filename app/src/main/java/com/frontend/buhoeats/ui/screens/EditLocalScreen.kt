@@ -63,6 +63,8 @@ import com.frontend.buhoeats.ui.components.LocationPickerMap
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 
+import com.frontend.buhoeats.utils.Translations
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditLocalScreen(
@@ -77,27 +79,27 @@ fun EditLocalScreen(
     var description by remember { mutableStateOf(restaurant?.description ?: "") }
     var adminEmail by remember { mutableStateOf(restaurant?.admin?.let { restaurantViewModel.getUserEmailById(it) } ?: "") }
 
-
     var nameError by remember { mutableStateOf(false) }
     var descriptionError by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf(false) }
     var adminRoleError by remember { mutableStateOf(false) }
 
-
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var showConfirmationDialog by remember { mutableStateOf(false) }
-
 
     var latitud by remember { mutableStateOf(restaurant?.latitud ?: 0.0) }
     var longitud by remember { mutableStateOf(restaurant?.longitud ?: 0.0) }
     var locationError by remember { mutableStateOf(false) }
 
-    val categorias = listOf("Desayuno", "Almuerzo", "Cena")
+    val categorias = listOf(
+        Translations.t("breakfast"),
+        Translations.t("lunch"),
+        Translations.t("dinner")
+    )
     var categoria by remember { mutableStateOf(restaurant?.category ?: "") }
     var categoriaError by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-
     val allUsers by userSessionViewModel.users
 
     LaunchedEffect(Unit) {
@@ -111,12 +113,8 @@ fun EditLocalScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopBar(showBackIcon = true, onNavClick = onBackClick)
-        },
-        bottomBar = {
-            BottomNavigationBar(navController)
-        },
+        topBar = { TopBar(showBackIcon = true, onNavClick = onBackClick) },
+        bottomBar = { BottomNavigationBar(navController) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -125,8 +123,6 @@ fun EditLocalScreen(
                     emailError = !ValidatorUtils.isValidEmail(adminEmail)
                     categoriaError = categoria.isBlank()
                     locationError = latitud == 0.0 && longitud == 0.0
-
-
 
                     if (!nameError && !descriptionError && !emailError && !categoriaError && !locationError) {
                         showConfirmationDialog = true
@@ -137,7 +133,7 @@ fun EditLocalScreen(
                 modifier = Modifier.size(70.dp),
                 shape = CircleShape
             ) {
-                Icon(Icons.Default.Check, contentDescription = "Confirmar", modifier = Modifier.size(45.dp))
+                Icon(Icons.Default.Check, contentDescription = Translations.t("confirm"), modifier = Modifier.size(45.dp))
             }
         }
     ) { paddingValues ->
@@ -146,7 +142,6 @@ fun EditLocalScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-
             val backgroundImage = if (ThemeManager.isDarkTheme)
                 painterResource(id = R.drawable.backgrounddark)
             else
@@ -167,7 +162,7 @@ fun EditLocalScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = if (isNewLocal) "Agregar local" else "Editar local",
+                    text = if (isNewLocal) Translations.t("add_location") else Translations.t("edit_location"),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = AppColors.texto,
@@ -176,7 +171,7 @@ fun EditLocalScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Imagen del local
+                // Imagen
                 Box(
                     modifier = Modifier
                         .height(200.dp)
@@ -190,7 +185,7 @@ fun EditLocalScreen(
                     if (!imageToShow.isNullOrEmpty()) {
                         AsyncImage(
                             model = imageToShow,
-                            contentDescription = "Imagen del local",
+                            contentDescription = Translations.t("local_image"),
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
@@ -212,7 +207,7 @@ fun EditLocalScreen(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.camera),
-                            contentDescription = "Cambiar imagen"
+                            contentDescription = Translations.t("change_image")
                         )
                     }
                 }
@@ -220,31 +215,30 @@ fun EditLocalScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 FormField(
-                    label = "Nombre:",
+                    label = Translations.t("name"),
                     value = name,
                     onValueChange = { name = it; nameError = false },
                     isError = nameError,
-                    placeholderText = "Ej. Pupusería La Esperanza"
+                    placeholderText = Translations.t("name_r_placeholder")
                 )
-                if (nameError) ValidationMessage("El nombre no puede estar vacío")
+                if (nameError) ValidationMessage(Translations.t("name_required"))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
-                    label = "Descripción:",
+                    label = Translations.t("description"),
                     value = description,
                     onValueChange = { description = it; descriptionError = false },
                     isError = descriptionError,
                     isMultiline = true,
-                    placeholderText = "Breve descripción del local"
+                    placeholderText = Translations.t("description_placeholder")
                 )
-                if (descriptionError) ValidationMessage("La descripción no puede estar vacía")
-
+                if (descriptionError) ValidationMessage(Translations.t("description_required"))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 DropdownFormField(
-                    label = "Categoría:",
+                    label = Translations.t("category"),
                     options = categorias,
                     selectedOption = categoria,
                     onOptionSelected = {
@@ -253,20 +247,19 @@ fun EditLocalScreen(
                     },
                     isError = categoriaError,
                 )
-                if (categoriaError) ValidationMessage("Selecciona una categoría")
+                if (categoriaError) ValidationMessage(Translations.t("select_category"))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FormField(
-                    label = "Administrador:",
+                    label = Translations.t("admin_email"),
                     value = adminEmail,
                     onValueChange = { adminEmail = it; emailError = false },
                     isError = emailError,
-                    placeholderText = "Correo del administrador"
+                    placeholderText = Translations.t("admin_placeholder")
                 )
-                if (emailError) ValidationMessage("Correo no válido")
-                if (adminRoleError) ValidationMessage("El correo debe pertenecer a un administrador")
-
+                if (emailError) ValidationMessage(Translations.t("invalid_email"))
+                if (adminRoleError) ValidationMessage(Translations.t("invalid_admin_role"))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -279,13 +272,15 @@ fun EditLocalScreen(
                         locationError = false
                     }
                 )
-                if (locationError) ValidationMessage("Selecciona una ubicación válida")
-
-
+                if (locationError) ValidationMessage(Translations.t("invalid_location"))
             }
+
             if (showConfirmationDialog) {
                 ConfirmationDialog(
-                    message = if (isNewLocal) "¿Estás seguro que deseas agregar un nuevo local?" else "¿Deseas guardar los cambios en el local?",
+                    message = if (isNewLocal)
+                        Translations.t("confirm_add_local")
+                    else
+                        Translations.t("confirm_edit_local"),
                     onConfirm = {
                         val adminUser = allUsers.find {
                             it.email.trim().equals(adminEmail.trim(), ignoreCase = true) && it.rol == "admin"
@@ -312,7 +307,7 @@ fun EditLocalScreen(
 
                             if (isNewLocal) {
                                 restaurantViewModel.addRestaurant(updatedRestaurant)
-                                Toast.makeText(context, "Local creado exitosamente", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, Translations.t("location_created"), Toast.LENGTH_SHORT).show()
                             } else {
                                 restaurantViewModel.updateRestaurant(updatedRestaurant)
                             }
@@ -320,10 +315,10 @@ fun EditLocalScreen(
                             showConfirmationDialog = false
                             navController.popBackStack()
                         } else {
-                                emailError = true
-                                adminRoleError = true
-                                showConfirmationDialog = false
-                                return@ConfirmationDialog
+                            emailError = true
+                            adminRoleError = true
+                            showConfirmationDialog = false
+                            return@ConfirmationDialog
                         }
                     },
                     onDismiss = {
@@ -331,7 +326,6 @@ fun EditLocalScreen(
                     }
                 )
             }
-
         }
     }
 }

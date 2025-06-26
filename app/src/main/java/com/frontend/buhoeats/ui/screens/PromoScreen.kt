@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import java.util.UUID
+import com.frontend.buhoeats.utils.Translations
 
 @Composable
 fun PromoScreen(
@@ -55,9 +56,9 @@ fun PromoScreen(
     }
 
     val backgroundImage = if (ThemeManager.isDarkTheme)
-    painterResource(id = R.drawable.backgrounddark)
+        painterResource(id = R.drawable.backgrounddark)
     else
-    painterResource(id = R.drawable.backgroundlighttheme)
+        painterResource(id = R.drawable.backgroundlighttheme)
 
     LaunchedEffect(currentUser, allRestaurants) {
         promoViewModel.loadPromosForUser(currentUser)
@@ -95,13 +96,13 @@ fun PromoScreen(
 
             if (promos.isEmpty() && promosToDisplay.isNotEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Cargando promociones...")
+                    Text(Translations.t("loading_promotions"))
                 }
             } else if (promos.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        if (adminRestaurant != null) "Tu restaurante aún no tiene promociones."
-                        else "No hay promociones disponibles en este momento."
+                        if (adminRestaurant != null) Translations.t("no_promotions_yet")
+                        else Translations.t("no_promotions_available")
                     )
                 }
             } else {
@@ -112,7 +113,7 @@ fun PromoScreen(
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "Promociones",
+                        text = Translations.t("promotions_title"),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = AppColors.texto,
@@ -132,7 +133,11 @@ fun PromoScreen(
                                     onClick = {
                                         promoViewModel.deletePromo(promo, currentUser)
                                         scope.launch {
-                                            Toast.makeText(context, "Promoción eliminada", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(
+                                                context,
+                                                Translations.t("promotion_deleted"),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                     },
                                     modifier = Modifier

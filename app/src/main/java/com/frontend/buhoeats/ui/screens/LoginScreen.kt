@@ -41,10 +41,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.frontend.buhoeats.auth.getGoogleSignInClient
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.utils.Translations
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -71,16 +71,16 @@ fun Login(
             val user = userSessionViewModel.getUserByEmail(email)
             if (user != null) {
                 userSessionViewModel.login(user)
-                Toast.makeText(context, "Sesión iniciada con Google", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, Translations.t("login_google_success"), Toast.LENGTH_SHORT).show()
                 navControl.navigate(Screens.Home.route) {
                     popUpTo(Screens.Login.route) { inclusive = true }
                 }
             } else {
                 navControl.navigate(Screens.SignUp.route)
-                Toast.makeText(context, "Usuario no encontrado, por favor regístrate", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, Translations.t("user_not_found"), Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-            Toast.makeText(context, "Error en Google Sign-In", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, Translations.t("google_signin_error"), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -89,8 +89,8 @@ fun Login(
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = AppColors.primary
-        ) {
-            Column(
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(32.dp)
@@ -113,6 +113,7 @@ fun Login(
                 )
             )
             Spacer(modifier = Modifier.height(6.dp))
+
             Image(
                 painter = painterResource(id = R.drawable.buho),
                 contentDescription = "Logo Búho Eats",
@@ -120,12 +121,9 @@ fun Login(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
-            ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Correo:",
+                    text = Translations.t("email_label"),
                     style = TextStyle(
                         fontFamily = montserratFontFamily,
                         color = Color.White,
@@ -133,6 +131,7 @@ fun Login(
                     )
                 )
             }
+
             TextField(
                 value = email,
                 onValueChange = {
@@ -141,7 +140,7 @@ fun Login(
                 },
                 placeholder = {
                     Text(
-                        "Ingrese su correo",
+                        Translations.t("email_placeholder"),
                         color = Color.Gray,
                         fontSize = 16.sp,
                         style = TextStyle(fontFamily = montserratFontFamily)
@@ -173,12 +172,9 @@ fun Login(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
-            ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Contraseña:",
+                    text = Translations.t("password_label"),
                     style = TextStyle(
                         fontFamily = montserratFontFamily,
                         color = Color.White,
@@ -195,7 +191,7 @@ fun Login(
                 },
                 placeholder = {
                     Text(
-                        "Ingrese su contraseña",
+                        Translations.t("password_placeholder"),
                         color = Color.Gray,
                         fontSize = 16.sp,
                         style = TextStyle(fontFamily = montserratFontFamily)
@@ -228,21 +224,20 @@ fun Login(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-
             Button(
                 onClick = {
                     var hasError = false
 
                     if (email.isBlank()) {
-                        emailError = "El correo no puede estar vacío"
+                        emailError = Translations.t("error_email_required")
                         hasError = true
                     } else if (!isValidEmail(email)) {
-                        emailError = "Correo inválido"
+                        emailError = Translations.t("error_email_invalid")
                         hasError = true
                     }
 
                     if (password.isBlank()) {
-                        passwordError = "La contraseña no puede estar vacía"
+                        passwordError = Translations.t("error_password_required")
                         hasError = true
                     }
 
@@ -259,12 +254,12 @@ fun Login(
 
                             if (user != null) {
                                 userSessionViewModel.login(user)
-                                Toast.makeText(context, "Sesión iniciada con éxito", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, Translations.t("login_success"), Toast.LENGTH_SHORT).show()
                                 navControl.navigate(Screens.Home.route) {
                                     popUpTo(Screens.Login.route) { inclusive = true }
                                 }
                             } else {
-                                passwordError = "Correo o contraseña incorrectos"
+                                passwordError = Translations.t("error_credentials")
                             }
                         }
                     }
@@ -277,7 +272,7 @@ fun Login(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C)),
             ) {
                 Text(
-                    text = "Iniciar sesión",
+                    text = Translations.t("login_button"),
                     style = TextStyle(
                         fontFamily = montserratFontFamily,
                         fontSize = 20.sp,
@@ -288,12 +283,12 @@ fun Login(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-                if (isLoading) {
-                    CircularProgressIndicator(color = Color.White)
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
+            if (isLoading) {
+                CircularProgressIndicator(color = Color.White)
+                Spacer(modifier = Modifier.height(24.dp))
+            }
 
-                Button(
+            Button(
                 onClick = {
                     val signInClient = getGoogleSignInClient(context)
                     val signInIntent = signInClient.signInIntent
@@ -319,7 +314,7 @@ fun Login(
                             .size(32.dp)
                     )
                     Text(
-                        text = "Inicia Sesión con Google",
+                        text = Translations.t("login_with_google"),
                         color = Color.White,
                         fontSize = 16.sp
                     )
@@ -329,7 +324,7 @@ fun Login(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "¿Todavía no tienes cuenta?",
+                text = Translations.t("no_account_question"),
                 style = TextStyle(
                     fontFamily = montserratFontFamily,
                     color = Color.White,
@@ -339,24 +334,29 @@ fun Login(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            val isEnglish = Translations.currentLanguage == Translations.Language.EN
+
             Button(
                 onClick = { navControl.navigate(Screens.SignUp.route) },
                 modifier = Modifier
-                    .width(200.dp)
+                    .width(if (isEnglish) 280.dp else 200.dp)
                     .height(56.dp)
                     .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp)),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF06BB0C))
             ) {
                 Text(
-                    text = "Crear cuenta",
+                    text = Translations.t("create_account"),
                     style = TextStyle(
                         fontFamily = montserratFontFamily,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         color = Color.White
-                    )
+                    ),
+                    maxLines = 1,
+                    softWrap = false
                 )
             }
+
         }
     }
 }

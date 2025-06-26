@@ -24,6 +24,7 @@ import com.frontend.buhoeats.ui.components.Map
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import org.osmdroid.util.GeoPoint
 
@@ -76,7 +77,7 @@ fun MapScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Restaurantes",
+                    text = Translations.t("restaurants_title"),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier

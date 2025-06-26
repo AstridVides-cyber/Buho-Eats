@@ -44,6 +44,7 @@ import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
 import android.widget.Toast
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.Translations
 
 @Composable
 fun StatisticsScreen(
@@ -95,7 +96,7 @@ fun StatisticsScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "No hay reseñas aun en el restaurante",
+                        text = Translations.t("no_reviews"),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Gray,
@@ -129,7 +130,7 @@ fun StatisticsScreen(
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
 
-                                    val displayName = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido"
+                                    val displayName = user?.let { "${it.name} ${it.lastName}" } ?: Translations.t("unknown_user")
 
                                     Text(
                                         text = displayName,
@@ -170,7 +171,7 @@ fun StatisticsScreen(
             }
             if (showDialog && userToBlock != null) {
                 ConfirmationDialog(
-                    message = "¿Estás seguro que deseas bloquear a este usuario?",
+                    message = Translations.t("block_user_confirm"),
                     onConfirm = {
                         blockedUsersViewModel.blockUser(
                             user = userToBlock!!,
@@ -181,7 +182,7 @@ fun StatisticsScreen(
                             },
                             restaurantId = currentRestaurant.id
                         )
-                        Toast.makeText(context, "Usuario bloqueado exitosamente", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, Translations.t("user_blocked_success"), Toast.LENGTH_SHORT).show()
                         showDialog = false
                         userToBlock = null
                     },

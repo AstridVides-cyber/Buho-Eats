@@ -34,6 +34,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import kotlinx.coroutines.launch
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.Translations
 
 
 @Composable
@@ -102,8 +103,8 @@ fun Search(
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
-                    label = { Text("Buscar", color = AppColors.texto) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar", tint = AppColors.text) },
+                    label = { Text(Translations.t("search"), color = AppColors.texto) },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = Translations.t("search"), tint = AppColors.text) },
                     shape = RoundedCornerShape(50),
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedContainerColor = Color.White.copy(alpha = 0.5f),
@@ -120,7 +121,7 @@ fun Search(
                     trailingIcon = {
                         if (searchQuery.text.isNotBlank()) {
                             IconButton(onClick = { searchQuery = TextFieldValue("") }) {
-                                Icon(Icons.Default.Close, contentDescription = "Limpiar", tint = AppColors.text)
+                                Icon(Icons.Default.Close, contentDescription = Translations.t("clear"), tint = AppColors.text)
                             }
                         }
                     },
@@ -157,13 +158,13 @@ fun Search(
                     }
 
                     searchQuery.text.isNotBlank() && searchResults.isEmpty() -> {
-                        EmptyState(message = "No hay resultados para la búsqueda")
+                        EmptyState(message = Translations.t("no_results_found"))
                     }
 
                     searchQuery.text.isBlank() && searchHistory.isNotEmpty() -> {
                         Column {
                             Text(
-                                text = "Búsquedas recientes",
+                                text = Translations.t("recent_searches"),
                                 style = MaterialTheme.typography.titleMedium,
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
@@ -184,7 +185,7 @@ fun Search(
                     }
 
                     else -> {
-                        EmptyState(message = "Busca restaurantes por nombre")
+                        EmptyState(message = Translations.t("search_hint"))
                     }
                 }
             }
@@ -218,12 +219,12 @@ private fun SearchResultItem(
         )
         if (onDelete != null) {
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Close, contentDescription = "Eliminar")
+                Icon(Icons.Default.Close, contentDescription = Translations.t("delete"))
             }
         } else {
             Icon(
                 imageVector = Icons.Default.ArrowForward,
-                contentDescription = "Ir",
+                contentDescription = Translations.t("go"),
                 modifier = Modifier.padding(start = 12.dp)
             )
         }

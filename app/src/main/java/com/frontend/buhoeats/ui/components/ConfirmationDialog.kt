@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.utils.Translations.t
 
 @Composable
 fun ConfirmationDialog(
@@ -74,8 +75,7 @@ fun ConfirmationDialog(
                         ),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                     ) {
-                        Text("Cancelar")
-                    }
+                        Text(t("cancel"))                    }
                     Spacer(modifier = Modifier.size(6.dp))
                     Button(
                         shape = RoundedCornerShape(12.dp),
@@ -86,7 +86,7 @@ fun ConfirmationDialog(
                         ),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                     ) {
-                        Text("Confirmar")
+                        Text(t("confirm"))
                     }
                 }
             }

@@ -38,6 +38,7 @@ import com.frontend.buhoeats.models.Comment
 import com.frontend.buhoeats.models.Rating
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.utils.Translations
 
 @Composable
 fun ContactCard(contactInfo: ContactInfo) {
@@ -54,7 +55,7 @@ fun ContactCard(contactInfo: ContactInfo) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Email, contentDescription = "Correo", tint = MaterialTheme.colorScheme.surface)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Correo: ${contactInfo.email}", color = MaterialTheme.colorScheme.surface)
+                Text("${Translations.t("contact_email")}: ${contactInfo.email}", color = MaterialTheme.colorScheme.surface)
             }
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -62,7 +63,7 @@ fun ContactCard(contactInfo: ContactInfo) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Phone, contentDescription = "Teléfono", tint = MaterialTheme.colorScheme.surface)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Teléfono: ${contactInfo.phone}", color = MaterialTheme.colorScheme.surface)
+                Text("${Translations.t("contact_phone")}: ${contactInfo.phone}", color = MaterialTheme.colorScheme.surface)
             }
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -70,7 +71,7 @@ fun ContactCard(contactInfo: ContactInfo) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.AccessTime, contentDescription = "Horario", tint = MaterialTheme.colorScheme.surface)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Horario: ${contactInfo.hours}", color = MaterialTheme.colorScheme.surface)
+                Text("${Translations.t("contact_hours")} ${contactInfo.hours}", color = MaterialTheme.colorScheme.surface)
             }
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -78,7 +79,7 @@ fun ContactCard(contactInfo: ContactInfo) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.LocationOn, contentDescription = "Dirección", tint = MaterialTheme.colorScheme.surface)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Dirección: ${contactInfo.address}", color = MaterialTheme.colorScheme.surface)
+                Text("${Translations.t("contact_address")}: ${contactInfo.address}", color = MaterialTheme.colorScheme.surface)
             }
         }
     }
@@ -157,7 +158,7 @@ fun Opinion(user: User?, comment: Comment, rating: Rating?) {
         Spacer(modifier = Modifier.width(10.dp))
 
         Column {
-            Text(text = user?.let { "${it.name} ${it.lastName}" } ?: "Usuario desconocido", fontWeight = FontWeight.Bold)
+            Text(text = user?.let { "${it.name} ${it.lastName}" } ?: Translations.t("unknown_user"), fontWeight = FontWeight.Bold)
             Text(text = comment.comment)
 
             rating?.let {
@@ -186,7 +187,7 @@ fun RatingBar(rating: Int, onRatingChanged: (Int) -> Unit) {
             ) {
                 Icon(
                     imageVector = Icons.Filled.Star,
-                    contentDescription = "Estrella $i",
+                    contentDescription = "${Translations.t("star_description")} $i",
                     tint = if (i <= rating) Color(0xFFFFC107) else Color.Gray,
                     modifier = Modifier.size(30.dp)
 

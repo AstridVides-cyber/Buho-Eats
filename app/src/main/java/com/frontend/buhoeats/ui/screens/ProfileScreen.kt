@@ -33,6 +33,10 @@ import com.frontend.buhoeats.ui.components.TopBar
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+
+import com.frontend.buhoeats.utils.Translations.t
+// Asegúrate de tener este import para usar Translations.t()
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProfileScreen(
@@ -45,12 +49,10 @@ fun ProfileScreen(
     val user = userSessionViewModel.currentUser.value
     var showLogoutDialog by remember { mutableStateOf(false) }
 
-
     val backgroundImage = if (ThemeManager.isDarkTheme)
         painterResource(id = R.drawable.backgrounddark)
     else
         painterResource(id = R.drawable.backgroundlighttheme)
-
 
     if (user == null) {
         LaunchedEffect(Unit) {
@@ -63,7 +65,7 @@ fun ProfileScreen(
 
     if (showLogoutDialog) {
         ConfirmationDialog(
-            message = "¿Estás seguro que deseas cerrar sesión?",
+            message = t("logout_confirmation"),
             onConfirm = {
                 showLogoutDialog = false
                 userSessionViewModel.logout()
@@ -94,7 +96,7 @@ fun ProfileScreen(
                 ) {
                     Icon(Icons.Filled.Logout, contentDescription = null, tint = AppColors.text, modifier = Modifier.size(35.dp))
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text("Cerrar Sesión", color = AppColors.text, fontSize = 25.sp)
+                    Text(t("logout"), color = AppColors.text, fontSize = 25.sp)
                     Spacer(modifier = Modifier.width(10.dp))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
@@ -128,7 +130,7 @@ fun ProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Mi cuenta",
+                    text = t("my_account"),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -140,11 +142,11 @@ fun ProfileScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                DisabledProfileField("Nombre:", user.name)
+                DisabledProfileField(t("name"), user.name)
                 Spacer(modifier = Modifier.height(10.dp))
-                DisabledProfileField("Apellido:", user.lastName)
+                DisabledProfileField(t("lastname"), user.lastName)
                 Spacer(modifier = Modifier.height(10.dp))
-                DisabledProfileField("Correo:", user.email)
+                DisabledProfileField(t("email"), user.email)
 
                 Spacer(modifier = Modifier.height(15.dp))
 
@@ -157,7 +159,7 @@ fun ProfileScreen(
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                 ) {
-                    Text("Editar perfil", color = Color.White, fontSize = 17.sp)
+                    Text(t("edit_profile"), color = Color.White, fontSize = 17.sp)
                 }
             }
         }

@@ -26,6 +26,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import com.frontend.buhoeats.models.Restaurant
+import com.frontend.buhoeats.utils.Translations
 
 @OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("MissingPermission")
@@ -72,10 +73,10 @@ fun Map(
     ) {
         when {
             !permissionState.status.isGranted -> {
-                Text("Solicitando permiso de ubicación...")
+                Text(Translations.t("location_permission_request"))
             }
             currentLocation == null -> {
-                Text("Cargando ubicación...")
+                Text(Translations.t("location_loading"))
             }
             else -> {
                 AndroidView(
@@ -102,7 +103,7 @@ fun Map(
 
                             overlays.add(Marker(this).apply {
                                 position = defaultPoint
-                                title = "Tú estás aquí"
+                                title = Translations.t("you_are_here")
                             })
 
                             mapViewState.value = this

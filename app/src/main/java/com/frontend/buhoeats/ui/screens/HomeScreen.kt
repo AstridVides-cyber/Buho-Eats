@@ -57,13 +57,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.Translations
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 import kotlin.math.absoluteValue
-
-
-
+import com.frontend.buhoeats.utils.Translations.t
 @Composable
 fun HomeScreen(
     onRestaurantClick: (String) -> Unit,
@@ -101,7 +100,6 @@ fun HomeScreen(
 
         isAdminFilter && typeFilter
     }
-
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -148,28 +146,25 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         horizontalAlignment = Alignment.End
                     ) {
-
                         if (!isDeleting) {
                             EditFloatingButton(onClick = { isEditing = !isEditing })
                         }
                         if (!isEditing) {
                             DeleteFloatingButton(onClick = { isDeleting = !isDeleting })
-                        }                    }
+                        }
+                    }
                 }
             }
-
         ) { innerPadding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-
                 val backgroundImage = if (ThemeManager.isDarkTheme)
                     painterResource(id = R.drawable.backgrounddark)
                 else
                     painterResource(id = R.drawable.backgroundlighttheme)
-
 
                 Image(
                     painter = backgroundImage,
@@ -177,9 +172,10 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
+
                 if (showDialog && restaurantToDelete != null) {
                     ConfirmationDialog(
-                        message = "¿Seguro que deseas eliminar el local?",
+                        message = t("confirm_delete_restaurant"),
                         onConfirm = {
                             restaurantViewModel.deleteRestaurant(restaurantToDelete!!.id)
                             showDialog = false
@@ -211,7 +207,7 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                         if (isAdmin && myRestaurant != null) {
                             Text(
-                                text = "Su local:",
+                                text = t("your_location"),
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = AppColors.texto
@@ -225,11 +221,10 @@ fun HomeScreen(
 
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
-                            text = "Restaurantes",
+                            text = t("restaurants_title"),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = AppColors.texto
-
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                     }
@@ -276,12 +271,11 @@ fun HomeScreen(
 fun GreetingSection(userName: String, restaurants: List<Restaurant>) {
     Column {
         Text(
-            text = "Bienvenido, $userName",
+            text = "${t("welcome_user")} $userName",
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 10.dp, start = 12.dp),
             color = AppColors.texto
-
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -310,6 +304,7 @@ fun GreetingSection(userName: String, restaurants: List<Restaurant>) {
                     }
                 }
             }
+
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
@@ -342,7 +337,7 @@ fun GreetingSection(userName: String, restaurants: List<Restaurant>) {
                                 fraction = 1f - pageOffset.coerceIn(0f, 1f)
                             )
                         }
-                        .fillMaxSize(),
+                        .fillMaxSize()
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
@@ -362,20 +357,23 @@ fun GreetingSection(userName: String, restaurants: List<Restaurant>) {
                     .height(230.dp)
             ) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    Text("No hay imágenes de restaurantes disponibles.")
+                    Text(t("no_restaurant_images"))
                 }
             }
         }
     }
 }
+
 @Composable
 fun FilterSection(
     onFilterSelected: (String) -> Unit,
     onReset: () -> Unit,
     resultCount: Int
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
@@ -384,26 +382,26 @@ fun FilterSection(
                 containerColor = AppColors.secondary
             )
 
-            Button(onClick = { onFilterSelected("Desayuno") }, colors = buttonColors) {
-                Text("Desayuno", color = AppColors.text)
+            Button(onClick = { onFilterSelected(t("breakfast")) }, colors = buttonColors) {
+                Text(t("breakfast"), color = AppColors.text)
             }
-            Button(onClick = { onFilterSelected("Almuerzo") }, colors = buttonColors) {
-                Text("Almuerzo", color = AppColors.text)
+            Button(onClick = { onFilterSelected(t("lunch")) }, colors = buttonColors) {
+                Text(t("lunch"), color = AppColors.text)
             }
-            Button(onClick = { onFilterSelected("Cena") }, colors = buttonColors) {
-                Text("Cena", color = AppColors.text)
+            Button(onClick = { onFilterSelected(t("dinner")) }, colors = buttonColors) {
+                Text(t("dinner"), color = AppColors.text)
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "Resultados: $resultCount", fontSize = 16.sp)
+            Text(text = "${t("results")} $resultCount", fontSize = 16.sp)
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = { onReset() },
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.accent)
             ) {
-                Text("Restablecer", color = Color.White)
+                Text(t("reset"), color = Color.White)
             }
         }
     }
@@ -421,13 +419,20 @@ fun AddRestaurantCard(onClick: () -> Unit) {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.AddCircleOutline,
-                contentDescription = "Agregar nuevo restaurante",
-                tint = AppColors.texto,
-                modifier = Modifier.size(60.dp)
-            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(
+                    imageVector = Icons.Default.AddCircleOutline,
+                    contentDescription = Translations.t("add_restaurant"),
+                    tint = AppColors.texto,
+                    modifier = Modifier.size(60.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = Translations.t("add_restaurant"),
+                    color = AppColors.texto,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
 }
-
