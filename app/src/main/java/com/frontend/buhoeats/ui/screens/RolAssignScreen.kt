@@ -32,15 +32,13 @@ import com.frontend.buhoeats.ui.components.ValidationMessage
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+data class RoleOption(val value: String, val label: String, @DrawableRes val imageRes: Int)
 
-data class RoleOption(val label: String, @DrawableRes val imageRes: Int)
-
-fun getRoleValue(label: String): String = when (label) {
-    "Super Administrador" -> "superadmin"
-    "Administrador de Local" -> "admin"
-    "Usuario" -> "usuario"
-    else -> "usuario"
-}
+val roleOptions = listOf(
+    RoleOption("superadmin", Translations.t("role_superadmin"), R.drawable.super_admin),
+    RoleOption("admin", Translations.t("role_admin"), R.drawable.admi_local),
+    RoleOption("usuario", Translations.t("role_user"), R.drawable.ususario)
+)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -54,14 +52,6 @@ fun RolAssign(
     var showMenu by remember { mutableStateOf(false) }
     var selectedRole by remember { mutableStateOf<RoleOption?>(null) }
     var showValidationErrors by remember { mutableStateOf(false) }
-
-
-    val roleOptions = listOf(
-        RoleOption(Translations.t("role_superadmin"), R.drawable.super_admin),
-        RoleOption(Translations.t("role_admin"), R.drawable.admi_local),
-        RoleOption(Translations.t("role_user"), R.drawable.ususario)
-    )
-
 
     val backgroundImage = if (ThemeManager.isDarkTheme)
     painterResource(id = R.drawable.backgrounddark)
@@ -253,7 +243,7 @@ fun RolAssign(
 
                 Button(
                     onClick = {
-                        val roleValue = getRoleValue(selectedRole?.label ?: "")
+                        val roleValue = selectedRole?.value ?: ""
 
                         showValidationErrors = true
 
@@ -270,7 +260,7 @@ fun RolAssign(
                                 return@Button
                             }
 
-                            val success = userSessionViewModel.assignRoleToUser(email.toString(), roleValue.toString())
+                            val success = userSessionViewModel.assignRoleToUser(email, roleValue)
 
                             if (success) {
                                 Toast.makeText(context, Translations.t("role_assigned_success"), Toast.LENGTH_SHORT).show()

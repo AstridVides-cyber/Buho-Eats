@@ -382,13 +382,13 @@ fun FilterSection(
                 containerColor = AppColors.secondary
             )
 
-            Button(onClick = { onFilterSelected(t("breakfast")) }, colors = buttonColors) {
+            Button(onClick = { onFilterSelected("Desayuno") }, colors = buttonColors) {
                 Text(t("breakfast"), color = AppColors.text)
             }
-            Button(onClick = { onFilterSelected(t("lunch")) }, colors = buttonColors) {
+            Button(onClick = { onFilterSelected("Almuerzo") }, colors = buttonColors) {
                 Text(t("lunch"), color = AppColors.text)
             }
-            Button(onClick = { onFilterSelected(t("dinner")) }, colors = buttonColors) {
+            Button(onClick = { onFilterSelected("Cena") }, colors = buttonColors) {
                 Text(t("dinner"), color = AppColors.text)
             }
         }

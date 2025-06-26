@@ -91,12 +91,16 @@ fun EditLocalScreen(
     var longitud by remember { mutableStateOf(restaurant?.longitud ?: 0.0) }
     var locationError by remember { mutableStateOf(false) }
 
-    val categorias = listOf(
-        Translations.t("breakfast"),
-        Translations.t("lunch"),
-        Translations.t("dinner")
+    val categoryMap = mapOf(
+        Translations.t("breakfast") to "Desayuno",
+        Translations.t("lunch") to "Almuerzo",
+        Translations.t("dinner") to "Cena"
     )
-    var categoria by remember { mutableStateOf(restaurant?.category ?: "") }
+    val categorias = categoryMap.keys.toList()
+
+    var categoriaTraducida by remember { mutableStateOf(
+        categoryMap.entries.find { it.value == restaurant?.category }?.key ?: ""
+    ) }
     var categoriaError by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -121,7 +125,7 @@ fun EditLocalScreen(
                     nameError = name.isBlank()
                     descriptionError = description.isBlank()
                     emailError = !ValidatorUtils.isValidEmail(adminEmail)
-                    categoriaError = categoria.isBlank()
+                    categoriaError = categoriaTraducida.isBlank()
                     locationError = latitud == 0.0 && longitud == 0.0
 
                     if (!nameError && !descriptionError && !emailError && !categoriaError && !locationError) {
@@ -240,9 +244,9 @@ fun EditLocalScreen(
                 DropdownFormField(
                     label = Translations.t("category"),
                     options = categorias,
-                    selectedOption = categoria,
+                    selectedOption = categoriaTraducida,
                     onOptionSelected = {
-                        categoria = it
+                        categoriaTraducida = it
                         categoriaError = false
                     },
                     isError = categoriaError,
@@ -286,6 +290,7 @@ fun EditLocalScreen(
                             it.email.trim().equals(adminEmail.trim(), ignoreCase = true) && it.rol == "admin"
                         }
                         if (adminUser != null) {
+                            val categoria = categoryMap[categoriaTraducida] ?: ""
                             val updatedRestaurant = Restaurant(
                                 id = restaurant?.id ?: restaurantViewModel.getNextRestaurantId().toString(),
                                 name = name,
