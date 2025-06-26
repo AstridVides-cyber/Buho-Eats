@@ -41,6 +41,7 @@ fun SettingSlider(
         else
             painterResource(R.drawable.backgroundlighttheme)
 
+
         Image(
             painter = backgroundImage,
             contentDescription = null,
@@ -76,12 +77,8 @@ fun SettingSlider(
 
             // Modo
             var expandedTheme by remember { mutableStateOf(false) }
-            var selectedTheme by remember {
-                mutableStateOf(
-                    if (ThemeManager.isDarkTheme) Translations.t("dark")
-                    else Translations.t("light")
-                )
-            }
+            var isDarkTheme by remember { mutableStateOf(ThemeManager.isDarkTheme) }
+
 
             Column {
                 Row(
@@ -92,7 +89,7 @@ fun SettingSlider(
                         .clickable { expandedTheme = !expandedTheme }
                 ) {
                     val themeIcon =
-                        if (selectedTheme == Translations.t("light")) Icons.Outlined.WbSunny
+                        if (!isDarkTheme) Icons.Outlined.WbSunny
                         else Icons.Outlined.DarkMode
 
                     Icon(
@@ -102,7 +99,12 @@ fun SettingSlider(
                         modifier = Modifier.size(45.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("${Translations.t("mode")} $selectedTheme", fontSize = 25.sp, color = AppColors.texto)
+                    val themeLabel = if (isDarkTheme) {
+                        Translations.t("dark_mode")
+                    } else {
+                        Translations.t("light_mode")
+                    }
+                    Text(themeLabel, fontSize = 25.sp, color = AppColors.texto)
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
                         imageVector = Icons.Default.ArrowBackIosNew,
@@ -127,11 +129,11 @@ fun SettingSlider(
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(Translations.t("light"), fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
-                                RadioButton(selected = selectedTheme == Translations.t("light"), onClick = null)
+                                RadioButton(selected = !isDarkTheme, onClick = null)
                             }
                         },
                         onClick = {
-                            selectedTheme = Translations.t("light")
+                            isDarkTheme = false
                             ThemeManager.toggleTheme(false)
                             expandedTheme = false
                         }
@@ -144,17 +146,13 @@ fun SettingSlider(
                                 Text(Translations.t("dark"), fontSize = 22.sp, color = AppColors.texto)
                                 Spacer(modifier = Modifier.weight(1f))
                                 RadioButton(
-                                    selected = selectedTheme == Translations.t("dark"),
-                                    onClick = null,
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = AppColors.secondary,
-                                        unselectedColor = AppColors.texto
-                                    )
+                                    selected = isDarkTheme,
+                                    onClick = null
                                 )
                             }
                         },
                         onClick = {
-                            selectedTheme = Translations.t("dark")
+                            isDarkTheme = true
                             ThemeManager.toggleTheme(true)
                             expandedTheme = false
                         }

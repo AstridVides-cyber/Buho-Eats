@@ -12,7 +12,6 @@ object Translations {
 
     private val strings = mapOf(
         "my_account" to mapOf(Language.ES to "Mi cuenta", Language.EN to "My Account"),
-        "mode" to mapOf(Language.ES to "Modo", Language.EN to "Mode"),
         "light" to mapOf(Language.ES to "Claro", Language.EN to "Light"),
         "dark" to mapOf(Language.ES to "Oscuro", Language.EN to "Dark"),
         "language" to mapOf(Language.ES to "Idioma", Language.EN to "Language"),
@@ -88,9 +87,9 @@ object Translations {
             Translations.Language.ES to "Imagen guardada correctamente",
             Translations.Language.EN to "Image saved successfully"
         ),
-        "add_location" to mapOf(Translations.Language.ES to "Agregar local", Translations.Language.EN to "Add location"),
-        "edit_location" to mapOf(Translations.Language.ES to "Editar local", Translations.Language.EN to "Edit location"),
-        "local_image" to mapOf(Translations.Language.ES to "Imagen del local", Translations.Language.EN to "Location image"),
+        "add_location" to mapOf(Translations.Language.ES to "Agregar local", Translations.Language.EN to "Add restaurant"),
+        "edit_location" to mapOf(Translations.Language.ES to "Editar local", Translations.Language.EN to "Edit restaurant"),
+        "local_image" to mapOf(Translations.Language.ES to "Imagen del local", Translations.Language.EN to "Restaurant image"),
         "change_image" to mapOf(Translations.Language.ES to "Cambiar imagen", Translations.Language.EN to "Change image"),
         "name" to mapOf(Translations.Language.ES to "Nombre", Translations.Language.EN to "Name"),
         "name_r_placeholder" to mapOf(Translations.Language.ES to "Ej. Pupusería La Esperanza", Translations.Language.EN to "e.g. La Esperanza Diner"),
@@ -105,9 +104,9 @@ object Translations {
         "invalid_email" to mapOf(Translations.Language.ES to "Correo no válido", Translations.Language.EN to "Invalid email"),
         "invalid_admin_role" to mapOf(Translations.Language.ES to "El correo debe pertenecer a un administrador", Translations.Language.EN to "Email must belong to an admin"),
         "invalid_location" to mapOf(Translations.Language.ES to "Selecciona una ubicación válida", Translations.Language.EN to "Select a valid location"),
-        "confirm_add_local" to mapOf(Translations.Language.ES to "¿Estás seguro que deseas agregar un nuevo local?", Translations.Language.EN to "Are you sure you want to add a new location?"),
-        "confirm_edit_local" to mapOf(Translations.Language.ES to "¿Deseas guardar los cambios en el local?", Translations.Language.EN to "Do you want to save the changes to the location?"),
-        "location_created" to mapOf(Translations.Language.ES to "Local creado exitosamente", Translations.Language.EN to "Location created successfully"),
+        "confirm_add_local" to mapOf(Translations.Language.ES to "¿Estás seguro que deseas agregar un nuevo local?", Translations.Language.EN to "Are you sure you want to add a new restaurant?"),
+        "confirm_edit_local" to mapOf(Translations.Language.ES to "¿Deseas guardar los cambios en el local?", Translations.Language.EN to "Do you want to save the changes to the restaurant?"),
+        "location_created" to mapOf(Translations.Language.ES to "Local creado exitosamente", Translations.Language.EN to "Restaurant created successfully"),
         "breakfast" to mapOf(Language.ES to "Desayuno", Language.EN to "Breakfast"),
         "lunch" to mapOf(Language.ES to "Almuerzo", Language.EN to "Lunch"),
         "dinner" to mapOf(Language.ES to "Cena", Language.EN to "Dinner"),
@@ -149,7 +148,7 @@ object Translations {
         ),
         "your_location" to mapOf(
             Language.ES to "Su local:",
-            Language.EN to "Your location:"
+            Language.EN to "Your restaurant:"
         ),
         "restaurants_title" to mapOf(
             Language.ES to "Restaurantes",
@@ -166,7 +165,7 @@ object Translations {
         "reset" to mapOf(Language.ES to "Restablecer", Language.EN to "Reset"),
         "confirm_delete_restaurant" to mapOf(
             Language.ES to "¿Seguro que deseas eliminar el local?",
-            Language.EN to "Are you sure you want to delete this location?"
+            Language.EN to "Are you sure you want to delete this restaurant?"
         ),
         "add_restaurant" to mapOf(
             Language.ES to "Agregar nuevo restaurante",
@@ -255,7 +254,7 @@ object Translations {
 
         "assign_roles_title" to mapOf(Language.ES to "Asignar Roles", Language.EN to "Assign Roles"),
         "email_label" to mapOf(Language.ES to "Correo:", Language.EN to "Email:"),
-        "email_placeholder" to mapOf(Language.ES to "Ingrese el correo del usuario", Language.EN to "Enter user's email"),
+        "email_placeholder_admin" to mapOf(Language.ES to "Ingrese el correo del usuario", Language.EN to "Enter user's email"),
         "role_type_label" to mapOf(Language.ES to "Tipo de Rol:", Language.EN to "Role Type:"),
         "select_role" to mapOf(Language.ES to "Seleccione un rol", Language.EN to "Select a role"),
         "select_role_error" to mapOf(Language.ES to "Seleccione un rol", Language.EN to "Please select a role"),
@@ -327,6 +326,14 @@ object Translations {
             Language.EN to "Are you sure you want to unblock this user?"
         ),
 
+        "light_mode" to mapOf(
+            Language.ES to "Modo claro",
+            Language.EN to "Light mode"
+        ),
+        "dark_mode" to mapOf(
+            Language.ES to "Modo oscuro",
+            Language.EN to "Dark mode"
+        ),
 
         "contact_email" to mapOf(
             Language.ES to "Correo",

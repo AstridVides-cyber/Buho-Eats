@@ -124,7 +124,7 @@ fun RolAssign(
                     },
                     placeholder = {
                         Text(
-                            Translations.t("email_placeholder"),
+                            Translations.t("email_placeholder_admin"),
                             color = Color.Gray,
                             fontSize = 16.sp,
                             style = TextStyle(fontFamily = montserratFontFamily)
