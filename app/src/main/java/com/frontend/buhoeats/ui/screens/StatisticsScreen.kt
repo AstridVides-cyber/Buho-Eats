@@ -42,6 +42,9 @@ import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
 import android.widget.Toast
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import coil.compose.AsyncImage
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.Translations
@@ -122,12 +125,26 @@ fun StatisticsScreen(
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.AccountCircle,
-                                        contentDescription = "Usuario",
-                                        tint = MaterialTheme.colorScheme.onSurface,
-                                        modifier = Modifier.size(30.dp)
-                                    )
+
+                                    if (!user?.imageProfile.isNullOrBlank()) {
+                                        AsyncImage(
+                                            model = user?.imageProfile,
+                                            contentDescription = "Foto de perfil",
+                                            modifier = Modifier
+                                                .size(30.dp)
+                                                .clip(CircleShape),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    } else {
+                                        Icon(
+                                            imageVector = Icons.Outlined.AccountCircle,
+                                            contentDescription = "Usuario",
+                                            tint = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier.size(30.dp)
+                                        )
+                                    }
+
+
                                     Spacer(modifier = Modifier.width(8.dp))
 
                                     val displayName = user?.let { "${it.name} ${it.lastName}" } ?: Translations.t("unknown_user")

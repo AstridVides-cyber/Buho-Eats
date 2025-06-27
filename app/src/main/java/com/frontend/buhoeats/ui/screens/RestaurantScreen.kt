@@ -376,7 +376,11 @@
                     )
                     Spacer(modifier = Modifier.size(15.dp))
 
-                    restaurant.comments.forEach { comment ->
+                    val visibleComments = restaurant.comments.filterNot { comment ->
+                        restaurant.blockedUsers.contains(comment.userId)
+                    }
+
+                    visibleComments.forEach { comment ->
                         val user = InMemoryUserDataSource.getUsers().find { it.id == comment.userId }
                         val userRating = restaurant.ratings.find { it.userId == comment.userId }
 

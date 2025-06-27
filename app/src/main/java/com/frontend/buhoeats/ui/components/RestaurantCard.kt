@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
@@ -34,6 +35,7 @@ import com.frontend.buhoeats.models.Dish
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.clip
 import com.frontend.buhoeats.models.Comment
 import com.frontend.buhoeats.models.Rating
 import com.frontend.buhoeats.models.User
@@ -154,7 +156,25 @@ fun DishCard(
 @Composable
 fun Opinion(user: User?, comment: Comment, rating: Rating?) {
     Row(modifier = Modifier.padding(vertical = 4.dp)) {
-        Icon(Icons.Filled.Person, contentDescription = "Persona")
+
+        if (!user?.imageProfile.isNullOrBlank()) {
+            AsyncImage(
+                model = user?.imageProfile,
+                contentDescription = "Foto de perfil",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Icon(
+                Icons.Filled.Person,
+                contentDescription = "Persona",
+                modifier = Modifier.size(40.dp)
+            )
+        }
+
+
         Spacer(modifier = Modifier.width(10.dp))
 
         Column {
