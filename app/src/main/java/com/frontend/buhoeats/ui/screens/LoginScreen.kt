@@ -30,7 +30,6 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidEmail
 import com.frontend.buhoeats.ui.components.ValidationMessage
-import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.CoroutineScope
@@ -247,7 +246,11 @@ fun Login(
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(2000)
 
-                            val user = InMemoryUserDataSource.getUsers().find {
+                            // Asegurarse de que los usuarios estén cargados
+                            if (userSessionViewModel.users.value.isEmpty()) {
+                                userSessionViewModel.loadUsers()
+                            }
+                            val user = userSessionViewModel.users.value.find {
                                 it.email == email && it.password == password
                             }
                             isLoading = false

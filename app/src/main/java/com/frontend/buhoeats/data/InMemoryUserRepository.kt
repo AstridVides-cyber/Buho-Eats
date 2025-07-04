@@ -43,5 +43,16 @@ class InMemoryUserRepository : UserRepository {
         }
         return false
     }
-}
 
+    override fun getUserById(userId: String): User? {
+        return InMemoryUserDataSource.getUserById(userId)
+    }
+
+    override fun blockUserFromRestaurant(userId: String, restaurantId: String) {
+        InMemoryUserDataSource.blockUserFromRestaurant(userId, restaurantId)
+    }
+
+    override fun unblockUserFromRestaurant(userId: String, restaurantId: String) {
+        InMemoryUserDataSource.unblockUserFromRestaurant(userId, restaurantId)
+    }
+}

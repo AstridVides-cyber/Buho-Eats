@@ -37,6 +37,7 @@ import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidPrice
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import java.util.UUID
 
@@ -44,10 +45,11 @@ import java.util.UUID
 @Composable
 fun EditMenuScreen(
     navController: NavController,
-    userSessionViewModel: UserSessionViewModel
+    userSessionViewModel: UserSessionViewModel,
+    restaurantViewModel: RestaurantViewModel
 ) {
     val currentUser = userSessionViewModel.currentUser.value
-    val restaurant = InMemoryUserDataSource.getRestaurants().find { it.admin == currentUser?.id }
+    val restaurant = restaurantViewModel.restaurantList.find { it.admin == currentUser?.id }
     val context = LocalContext.current
 
     if (currentUser?.rol != "admin" || restaurant == null) {
@@ -216,7 +218,7 @@ fun EditMenuScreen(
                                 val updatedRestaurant = restaurant.copy(
                                     menu = restaurant.menu + newDish
                                 )
-                                InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
+                                restaurantViewModel.updateRestaurant(updatedRestaurant)
                                 Toast.makeText(context, Translations.t("dish_added_success"), Toast.LENGTH_SHORT).show()
                                 navController.popBackStack()
                             }

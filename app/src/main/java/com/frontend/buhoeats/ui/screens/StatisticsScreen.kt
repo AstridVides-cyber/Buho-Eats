@@ -1,16 +1,13 @@
 package com.frontend.buhoeats.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -18,9 +15,6 @@ import androidx.navigation.NavController
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
-import androidx.compose.ui.Alignment
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -37,24 +31,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.InMemoryUserDataSource
-import com.frontend.buhoeats.models.User
-import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.viewmodel.BlockedUsersViewModel
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
+import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import android.widget.Toast
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import coil.compose.AsyncImage
-import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.models.User
+import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.Translations
+import androidx.compose.foundation.lazy.items
 
 @Composable
 fun StatisticsScreen(
     navController: NavController,
     restaurant: Restaurant,
     onBack: () -> Unit,
-    blockedUsersViewModel: BlockedUsersViewModel
+    blockedUsersViewModel: BlockedUsersViewModel,
+    restaurantViewModel: RestaurantViewModel,
+    userSessionViewModel: UserSessionViewModel
 ) {
     var currentRestaurant by remember { mutableStateOf(restaurant) }
     var showDialog by remember { mutableStateOf(false) }
@@ -62,9 +59,9 @@ fun StatisticsScreen(
     val context = LocalContext.current
 
     val backgroundImage = if (ThemeManager.isDarkTheme)
-    painterResource(id = R.drawable.backgrounddark)
+        painterResource(id = R.drawable.backgrounddark)
     else
-    painterResource(id = R.drawable.backgroundlighttheme)
+        painterResource(id = R.drawable.backgroundlighttheme)
 
     Scaffold(
         topBar = {
@@ -89,11 +86,10 @@ fun StatisticsScreen(
                 contentScale = ContentScale.Crop
             )
 
-            val nonBlockedComments = currentRestaurant.comments.filter { comment ->
-                !currentRestaurant.blockedUsers.contains(comment.userId)
-            }
+            // Ya no es necesario filtrar comentarios, se usan todos los comentarios actuales
+            val comments = currentRestaurant.comments
 
-            if (nonBlockedComments.isEmpty()) {
+            if (comments.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -112,8 +108,8 @@ fun StatisticsScreen(
                         .fillMaxSize()
                         .padding(bottom = 16.dp)
                 ) {
-                    items(nonBlockedComments) { comment ->
-                        val user = InMemoryUserDataSource.getUsers().find { it.id == comment.userId }
+                    items(comments) { comment ->
+                        val user = userSessionViewModel.users.value.find { it.id == comment.userId }
                         val rating = currentRestaurant.ratings.find { it.userId == comment.userId }
 
                         Card(
@@ -193,7 +189,7 @@ fun StatisticsScreen(
                         blockedUsersViewModel.blockUser(
                             user = userToBlock!!,
                             onUpdate = { updatedRestaurant ->
-                                InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
+                                restaurantViewModel.updateRestaurant(updatedRestaurant)
                                 currentRestaurant = updatedRestaurant
                                 blockedUsersViewModel.loadBlockedUsers(updatedRestaurant.id)
                             },

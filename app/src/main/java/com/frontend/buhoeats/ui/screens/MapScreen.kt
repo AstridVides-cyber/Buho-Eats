@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.Map
 import com.frontend.buhoeats.ui.components.RestaurantCard

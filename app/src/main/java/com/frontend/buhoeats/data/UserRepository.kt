@@ -8,5 +8,7 @@ interface UserRepository {
     fun registerUser(newUser: User): Boolean
     fun updateUser(user: User): Boolean
     fun assignRoleToUser(email: String, newRole: String): Boolean
+    fun getUserById(userId: String): User?
+    fun blockUserFromRestaurant(userId: String, restaurantId: String)
+    fun unblockUserFromRestaurant(userId: String, restaurantId: String)
 }
-

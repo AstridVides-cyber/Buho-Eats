@@ -127,6 +127,7 @@ fun AppNavHost(navController: NavHostController) {
                 },
                 navController = navController,
                 userSessionViewModel = userSessionViewModel,
+                restaurantViewModel = restaurantViewModel
             )
         }
         composable(Screens.Map.route) {
@@ -196,7 +197,9 @@ fun AppNavHost(navController: NavHostController) {
                         navController = navController,
                         restaurant = restaurant,
                         onBack = { navController.popBackStack() },
-                        blockedUsersViewModel = blockedUsersViewModel)
+                        blockedUsersViewModel = blockedUsersViewModel,
+                        userSessionViewModel = userSessionViewModel,
+                        restaurantViewModel = restaurantViewModel)
                 }
             }
         }

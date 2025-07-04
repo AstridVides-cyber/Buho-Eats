@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.RestaurantCard
 import com.frontend.buhoeats.ui.components.TopBar
@@ -27,6 +26,7 @@ import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.Translations.t
 import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
 @Composable
@@ -35,6 +35,7 @@ fun FavoriteScreen(
     onBack: () -> Unit = {},
     navController: NavController,
     userSessionViewModel: UserSessionViewModel,
+    restaurantViewModel: RestaurantViewModel,
     favoritesViewModel: FavoritesViewModel = viewModel(
         factory = FavoritesViewModelFactory(userSessionViewModel)
     )
@@ -43,7 +44,7 @@ fun FavoriteScreen(
     LaunchedEffect(Unit) {
         favoritesViewModel.refreshFavorites()
     }
-    val allRestaurants = InMemoryUserDataSource.getRestaurants()
+    val allRestaurants = restaurantViewModel.restaurantList
     val favoriteRestaurants = allRestaurants.filter { favoriteIds.contains(it.id) }
 
     val backgroundImage = if (ThemeManager.isDarkTheme)

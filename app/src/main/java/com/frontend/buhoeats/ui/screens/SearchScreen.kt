@@ -27,6 +27,7 @@ import com.frontend.buhoeats.R
 import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.ui.components.BottomNavigationBar
 import com.frontend.buhoeats.ui.components.TopBar
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.SearchViewModel
 import com.frontend.buhoeats.viewmodel.SearchViewModelFactory
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
@@ -42,7 +43,8 @@ fun Search(
     onBack: () -> Unit = {},
     onSearchResultClick: (String) -> Unit,
     navController: NavController,
-    userSessionViewModel: UserSessionViewModel
+    userSessionViewModel: UserSessionViewModel,
+    restaurantViewModel: RestaurantViewModel
 ) {
     val context = LocalContext.current
     val currentUser = userSessionViewModel.currentUser.value
@@ -59,7 +61,7 @@ fun Search(
     val searchHistory by searchViewModel.searchHistory.collectAsState()
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
-    val allRestaurants = InMemoryUserDataSource.getRestaurants()
+    val allRestaurants = restaurantViewModel.restaurantList
     val searchResults by remember(searchQuery, allRestaurants) {
         derivedStateOf {
             if (searchQuery.text.isBlank()) emptyList()

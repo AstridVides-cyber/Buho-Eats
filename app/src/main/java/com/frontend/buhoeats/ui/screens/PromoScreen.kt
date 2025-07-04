@@ -18,10 +18,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import android.widget.Toast
 import androidx.navigation.NavHostController
 import com.frontend.buhoeats.R
-import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.navigation.Screens
 import com.frontend.buhoeats.ui.components.*
 import com.frontend.buhoeats.viewmodel.PromoViewModel
+import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
@@ -37,10 +37,11 @@ import com.frontend.buhoeats.utils.Translations
 fun PromoScreen(
     navController: NavHostController,
     userSessionViewModel: UserSessionViewModel,
+    restaurantViewModel: RestaurantViewModel,
     promoViewModel: PromoViewModel = viewModel()
 ) {
     val currentUser by userSessionViewModel.currentUser
-    val allRestaurants = InMemoryUserDataSource.getRestaurants()
+    val allRestaurants = restaurantViewModel.restaurantList
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 

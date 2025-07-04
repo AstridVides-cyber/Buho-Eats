@@ -4,11 +4,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.frontend.buhoeats.data.DishRepository
 import com.frontend.buhoeats.data.InMemoryDishRepository
-import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.data.PromoRepository
 import com.frontend.buhoeats.data.InMemoryPromoRepository
 import com.frontend.buhoeats.data.RestaurantRepository
 import com.frontend.buhoeats.data.InMemoryRestaurantRepository
+import com.frontend.buhoeats.data.UserRepository
+import com.frontend.buhoeats.data.InMemoryUserRepository
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.User
@@ -79,45 +80,51 @@ class RestaurantViewModel(
     }
 }
 
-class BlockedUsersViewModel : ViewModel() {
+class BlockedUsersViewModel(
+    private val userRepository: UserRepository = InMemoryUserRepository(),
+    private val restaurantRepository: RestaurantRepository = InMemoryRestaurantRepository()
+) : ViewModel() {
     private val _blockedUsers = mutableStateListOf<User>()
     val blockedUsers: List<User> get() = _blockedUsers
 
     fun loadBlockedUsers(restaurantId: String) {
-        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
+        val restaurant = restaurantRepository.getRestaurantById(restaurantId)
         _blockedUsers.clear()
         restaurant?.let {
             _blockedUsers.addAll(
                 it.blockedUsers.mapNotNull { userId ->
-                    InMemoryUserDataSource.getUserById(userId)
+                    userRepository.getUserById(userId)
                 }
             )
         }
     }
 
     fun unblockUser(user: User, restaurantId: String, onUpdate: (Restaurant) -> Unit) {
-        InMemoryUserDataSource.unblockUserFromRestaurant(user.id, restaurantId)
+        userRepository.unblockUserFromRestaurant(user.id, restaurantId)
         _blockedUsers.remove(user)
-        InMemoryUserDataSource.getRestaurantById(restaurantId)?.let {
+        restaurantRepository.getRestaurantById(restaurantId)?.let {
             onUpdate(it)
             loadBlockedUsers(restaurantId)
         }
     }
 
     fun blockUser(user: User, restaurantId: String, onUpdate: (Restaurant) -> Unit) {
-        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
+        val restaurant = restaurantRepository.getRestaurantById(restaurantId)
         restaurant?.let {
-            InMemoryUserDataSource.blockUserFromRestaurant(user.id, restaurantId)
+            userRepository.blockUserFromRestaurant(user.id, restaurantId)
             _blockedUsers.add(user)
-            InMemoryUserDataSource.getRestaurantById(restaurantId)?.let { updatedRestaurant ->
+            restaurantRepository.getRestaurantById(restaurantId)?.let { updatedRestaurant ->
                 onUpdate(updatedRestaurant)
                 loadBlockedUsers(restaurantId)
             }
         }
     }
 }
+
 class PromoViewModel(
-    private val promoRepository: PromoRepository = InMemoryPromoRepository()
+    private val promoRepository: PromoRepository = InMemoryPromoRepository(),
+    private val userRepository: UserRepository = InMemoryUserRepository(),
+    private val restaurantRepository: RestaurantRepository = InMemoryRestaurantRepository()
 ) : ViewModel() {
     private val _promos = MutableStateFlow<List<Promo>>(emptyList())
     val promos: StateFlow<List<Promo>> = _promos
@@ -125,7 +132,7 @@ class PromoViewModel(
     fun loadPromosForUser(currentUser: User?) {
         val promosToDisplay = when (currentUser?.rol) {
             "admin" -> {
-                val restaurantId = InMemoryUserDataSource.getRestaurants()
+                val restaurantId = restaurantRepository.getRestaurants()
                     .firstOrNull { it.admin == currentUser.id }?.id
                 restaurantId?.let { promoRepository.getPromosForRestaurant(it) } ?: emptyList()
             }
