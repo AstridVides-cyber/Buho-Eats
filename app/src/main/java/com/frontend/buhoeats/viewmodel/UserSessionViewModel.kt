@@ -4,13 +4,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModelProvider
-import com.frontend.buhoeats.data.InMemoryUserDataSource
+import com.frontend.buhoeats.data.UserRepository
+import com.frontend.buhoeats.data.InMemoryUserRepository
 import com.frontend.buhoeats.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class UserSessionViewModel : ViewModel() {
+class UserSessionViewModel(
+    private val userRepository: UserRepository = InMemoryUserRepository()
+) : ViewModel() {
     private val _currentUser = mutableStateOf<User?>(null)
     val currentUser: State<User?> get() = _currentUser
 
@@ -24,52 +27,31 @@ class UserSessionViewModel : ViewModel() {
 
     fun updateCurrentUser(user: User) {
         _currentUser.value = user
-
-        val userList = InMemoryUserDataSource.getUsers().toMutableList()
-        val userIndex = InMemoryUserDataSource.getUsers().indexOfFirst { it.id == user.id }
-
-        if (userIndex != -1) {
-            userList[userIndex] = user
-            InMemoryUserDataSource.setUsers(userList)
-        }
+        userRepository.updateUser(user)
     }
+
     private val _users = mutableStateOf<List<User>>(emptyList())
     val users: State<List<User>> get() = _users
 
     fun loadUsers() {
-        _users.value = InMemoryUserDataSource.getUsers()
+        _users.value = userRepository.getUsers()
     }
 
     fun assignRoleToUser(email: String, newRole: String): Boolean {
+        val result = userRepository.assignRoleToUser(email, newRole)
         loadUsers()
-        val index = _users.value.indexOfFirst { it.email.trim().equals(email.trim(), ignoreCase = true) }
-        if (index != -1) {
-            val updatedUser = _users.value[index].copy(rol = newRole)
-            val updatedList = _users.value.toMutableList().apply { this[index] = updatedUser }
-            _users.value = updatedList
-            InMemoryUserDataSource.setUsers(updatedList)
-            return true
-        }
-        return false
+        return result
     }
 
-
     fun registerUser(newUser: User): Boolean {
-        val users = InMemoryUserDataSource.getUsers().toMutableList()
-
-        if (users.any { it.email.equals(newUser.email, ignoreCase = true) }) {
-            return false
-        }
-
-        users.add(newUser)
-        InMemoryUserDataSource.setUsers(users)
-        return true
+        val result = userRepository.registerUser(newUser)
+        loadUsers()
+        return result
     }
 
     fun getUserByEmail(email: String): User? {
-        return InMemoryUserDataSource.getUsers().find { it.email.equals(email, ignoreCase = true) }
+        return userRepository.getUserByEmail(email)
     }
-
 }
 
 class FavoritesViewModel(
@@ -120,4 +102,3 @@ class FavoritesViewModelFactory(
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
-

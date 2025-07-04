@@ -2,15 +2,23 @@ package com.frontend.buhoeats.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import com.frontend.buhoeats.data.DishRepository
+import com.frontend.buhoeats.data.InMemoryDishRepository
 import com.frontend.buhoeats.data.InMemoryUserDataSource
+import com.frontend.buhoeats.data.PromoRepository
+import com.frontend.buhoeats.data.InMemoryPromoRepository
+import com.frontend.buhoeats.data.RestaurantRepository
+import com.frontend.buhoeats.data.InMemoryRestaurantRepository
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class RestaurantViewModel : ViewModel() {
-
+class RestaurantViewModel(
+    private val dishRepository: DishRepository = InMemoryDishRepository(),
+    private val restaurantRepository: RestaurantRepository = InMemoryRestaurantRepository()
+) : ViewModel() {
     private val _restaurantList = mutableStateListOf<Restaurant>()
     val restaurantList: List<Restaurant> get() = _restaurantList
 
@@ -20,21 +28,21 @@ class RestaurantViewModel : ViewModel() {
 
     fun loadRestaurants() {
         _restaurantList.clear()
-        _restaurantList.addAll(InMemoryUserDataSource.getRestaurants())
+        _restaurantList.addAll(restaurantRepository.getRestaurants())
     }
 
     fun deleteRestaurant(restaurantId: String) {
-        InMemoryUserDataSource.deleteRestaurant(restaurantId)
+        restaurantRepository.deleteRestaurant(restaurantId)
         _restaurantList.removeIf { it.id == restaurantId }
     }
 
     fun addRestaurant(restaurant: Restaurant) {
-        InMemoryUserDataSource.addRestaurant(restaurant)
+        restaurantRepository.addRestaurant(restaurant)
         _restaurantList.add(restaurant)
     }
 
     fun updateRestaurant(updatedRestaurant: Restaurant) {
-        InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
+        restaurantRepository.updateRestaurant(updatedRestaurant)
         val index = _restaurantList.indexOfFirst { it.id == updatedRestaurant.id }
         if (index != -1) {
             _restaurantList[index] = updatedRestaurant
@@ -42,17 +50,17 @@ class RestaurantViewModel : ViewModel() {
     }
 
     fun getNextRestaurantId(): String {
-        return InMemoryUserDataSource.getNextRestaurantId()
+        return restaurantRepository.getNextRestaurantId()
     }
 
     fun getUserEmailById(userId: String): String {
-        return InMemoryUserDataSource.getUserEmailById(userId)
+        return restaurantRepository.getUserEmailById(userId)
     }
     fun updateRestaurantImage(restaurantId: String, newImageUrl: String) {
-        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
+        val restaurant = restaurantRepository.getRestaurantById(restaurantId)
         restaurant?.let {
             val updatedRestaurant = it.copy(imageUrl = newImageUrl)
-            InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
+            restaurantRepository.updateRestaurant(updatedRestaurant)
             val index = _restaurantList.indexOfFirst { r -> r.id == restaurantId }
             if (index != -1) {
                 _restaurantList[index] = updatedRestaurant
@@ -60,14 +68,12 @@ class RestaurantViewModel : ViewModel() {
         }
     }
     fun removeDishFromRestaurant(restaurantId: String, dishId: String) {
-        val restaurant = InMemoryUserDataSource.getRestaurantById(restaurantId)
+        dishRepository.removeDish(restaurantId, dishId)
+        val restaurant = restaurantRepository.getRestaurantById(restaurantId)
         restaurant?.let {
-            val updatedMenu = it.menu.filterNot { dish -> dish.id == dishId }
-            val updatedRestaurant = it.copy(menu = updatedMenu)
-            InMemoryUserDataSource.updateRestaurant(updatedRestaurant)
             val index = _restaurantList.indexOfFirst { r -> r.id == restaurantId }
             if (index != -1) {
-                _restaurantList[index] = updatedRestaurant
+                _restaurantList[index] = it
             }
         }
     }
@@ -110,35 +116,36 @@ class BlockedUsersViewModel : ViewModel() {
         }
     }
 }
-class PromoViewModel : ViewModel() {
+class PromoViewModel(
+    private val promoRepository: PromoRepository = InMemoryPromoRepository()
+) : ViewModel() {
     private val _promos = MutableStateFlow<List<Promo>>(emptyList())
     val promos: StateFlow<List<Promo>> = _promos
 
     fun loadPromosForUser(currentUser: User?) {
         val promosToDisplay = when (currentUser?.rol) {
             "admin" -> {
-                val restaurant = InMemoryUserDataSource.getRestaurants()
-                    .firstOrNull { it.admin == currentUser.id }
-                restaurant?.promos ?: emptyList()
+                val restaurantId = InMemoryUserDataSource.getRestaurants()
+                    .firstOrNull { it.admin == currentUser.id }?.id
+                restaurantId?.let { promoRepository.getPromosForRestaurant(it) } ?: emptyList()
             }
-            else -> InMemoryUserDataSource.getRestaurants().flatMap { it.promos }
+            else -> promoRepository.getAllPromos()
         }
         _promos.value = promosToDisplay
     }
 
-
     fun deletePromo(promo: Promo, user: User?) {
-        InMemoryUserDataSource.removePromo(promo)
+        promoRepository.removePromo(promo)
         loadPromosForUser(user)
     }
 
     fun updatePromo(updatedPromo: Promo, user: User?) {
-        InMemoryUserDataSource.updatePromo(updatedPromo)
+        promoRepository.updatePromo(updatedPromo)
         loadPromosForUser(user)
     }
 
     fun addPromo(promo: Promo, user: User?) {
-        InMemoryUserDataSource.addPromoToRestaurant(promo.restaurantId, promo)
+        promoRepository.addPromoToRestaurant(promo.restaurantId, promo)
         loadPromosForUser(user)
     }
 }
