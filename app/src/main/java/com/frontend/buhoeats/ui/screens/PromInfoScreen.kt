@@ -46,7 +46,8 @@ import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidPrice
-
+import com.frontend.buhoeats.utils.ImageConverter
+import androidx.compose.ui.graphics.asImageBitmap
 
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 
@@ -141,20 +142,87 @@ fun PromoInfoScreen(
                 ) {
                     when {
                         selectedImageUri != null -> {
-                            AsyncImage(
-                                model = selectedImageUri,
-                                contentDescription = Translations.t("selected_image"),
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
+                            // CAMBIO: Detectar tipo de imagen automáticamente para imagen seleccionada
+                            val imageToShow = selectedImageUri?.toString() ?: ""
+                            when {
+                                ImageConverter.isBase64(imageToShow) -> {
+                                    // Es Base64 - convertir a Bitmap
+                                    val bitmap = ImageConverter.base64ToBitmap(imageToShow)
+                                    if (bitmap != null) {
+                                        Image(
+                                            bitmap = bitmap.asImageBitmap(),
+                                            contentDescription = Translations.t("selected_image"),
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    } else {
+                                        // Fallback si falla la conversión
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .background(Color.LightGray)
+                                        )
+                                    }
+                                }
+                                imageToShow.isNotBlank() -> {
+                                    // Es URI/URL - usar AsyncImage como antes
+                                    AsyncImage(
+                                        model = selectedImageUri,
+                                        contentDescription = Translations.t("selected_image"),
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                                else -> {
+                                    // Sin imagen
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(Color.LightGray)
+                                    )
+                                }
+                            }
                         }
                         promo.imageUrl.isNotBlank() -> {
-                            AsyncImage(
-                                model = promo.imageUrl,
-                                contentDescription = Translations.t("current_image"),
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
+                            // CAMBIO: Detectar tipo de imagen automáticamente para imagen actual
+                            when {
+                                ImageConverter.isBase64(promo.imageUrl) -> {
+                                    // Es Base64 - convertir a Bitmap
+                                    val bitmap = ImageConverter.base64ToBitmap(promo.imageUrl)
+                                    if (bitmap != null) {
+                                        Image(
+                                            bitmap = bitmap.asImageBitmap(),
+                                            contentDescription = Translations.t("current_image"),
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    } else {
+                                        // Fallback si falla la conversión
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .background(Color.LightGray)
+                                        )
+                                    }
+                                }
+                                promo.imageUrl.isNotBlank() -> {
+                                    // Es URL - usar AsyncImage como antes
+                                    AsyncImage(
+                                        model = promo.imageUrl,
+                                        contentDescription = Translations.t("current_image"),
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                                else -> {
+                                    // Sin imagen
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(Color.LightGray)
+                                    )
+                                }
+                            }
                         }
                         else -> {
                             Box(
@@ -347,16 +415,20 @@ fun PromoInfoScreen(
                                     val formattedPromPrice = "%.2f".format(promprice.toDoubleOrNull() ?: 0.0)
                                     val formattedPrice = "%.2f".format(price.toDoubleOrNull() ?: 0.0)
 
+                                    // CAMBIO: Convertir imagen URI a Base64 si se seleccionó una nueva
+                                    val imageToSave = selectedImageUri?.let { uri ->
+                                        ImageConverter.uriToBase64(context, uri)
+                                    } ?: promo.imageUrl.ifBlank {
+                                        "https://images.unsplash.com/photo-1722639096462-dc586c185186"
+                                    }
+
                                     val nuevaPromo = Promo(
                                         id = promo.id,
                                         name = name,
                                         description = description,
                                         promprice = formattedPromPrice,
                                         price = formattedPrice,
-                                        imageUrl = selectedImageUri?.toString()
-                                            ?: promo.imageUrl.ifBlank {
-                                                "https://images.unsplash.com/photo-1722639096462-dc586c185186"
-                                            },
+                                        imageUrl = imageToSave,
                                         reglas = reglas,
                                         restaurantId = adminRestaurant?.id?.toString() ?: promo.restaurantId
                                     )

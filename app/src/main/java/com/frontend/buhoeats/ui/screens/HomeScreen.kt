@@ -58,6 +58,9 @@ import coil.request.ImageRequest
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.Translations
+import com.frontend.buhoeats.utils.ImageConverter
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.foundation.Image
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
@@ -339,15 +342,50 @@ fun GreetingSection(userName: String, restaurants: List<Restaurant>) {
                         }
                         .fillMaxSize()
                 ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(restaurant.imageUrl)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = restaurant.name,
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    // CAMBIO MÍNIMO: Detectar tipo de imagen automáticamente
+                    when {
+                        ImageConverter.isBase64(restaurant.imageUrl) -> {
+                            // Es Base64 - convertir a Bitmap
+                            val bitmap = ImageConverter.base64ToBitmap(restaurant.imageUrl)
+                            if (bitmap != null) {
+                                Image(
+                                    bitmap = bitmap.asImageBitmap(),
+                                    contentDescription = restaurant.name,
+                                    contentScale = ContentScale.FillWidth,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            } else {
+                                // Fallback si falla la conversión
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    Text("Error loading image")
+                                }
+                            }
+                        }
+                        restaurant.imageUrl.isNotBlank() -> {
+                            // Es URL - usar AsyncImage como antes
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(restaurant.imageUrl)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = restaurant.name,
+                                contentScale = ContentScale.FillWidth,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                        else -> {
+                            // Sin imagen
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text("No image")
+                            }
+                        }
+                    }
                 }
             }
         } else {

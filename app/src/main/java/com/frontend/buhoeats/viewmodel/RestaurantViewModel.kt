@@ -3,13 +3,10 @@ package com.frontend.buhoeats.viewmodel
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.frontend.buhoeats.data.DishRepository
-import com.frontend.buhoeats.data.InMemoryDishRepository
 import com.frontend.buhoeats.data.PromoRepository
-import com.frontend.buhoeats.data.InMemoryPromoRepository
 import com.frontend.buhoeats.data.RestaurantRepository
-import com.frontend.buhoeats.data.InMemoryRestaurantRepository
 import com.frontend.buhoeats.data.UserRepository
-import com.frontend.buhoeats.data.InMemoryUserRepository
+import com.frontend.buhoeats.data.config.RepositoryProvider
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.models.User
@@ -17,8 +14,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class RestaurantViewModel(
-    private val dishRepository: DishRepository = InMemoryDishRepository(),
-    private val restaurantRepository: RestaurantRepository = InMemoryRestaurantRepository()
+    private val dishRepository: DishRepository = RepositoryProvider.getDishRepository(),
+    private val restaurantRepository: RestaurantRepository = RepositoryProvider.getRestaurantRepository()
 ) : ViewModel() {
     private val _restaurantList = mutableStateListOf<Restaurant>()
     val restaurantList: List<Restaurant> get() = _restaurantList
@@ -81,8 +78,8 @@ class RestaurantViewModel(
 }
 
 class BlockedUsersViewModel(
-    private val userRepository: UserRepository = InMemoryUserRepository(),
-    private val restaurantRepository: RestaurantRepository = InMemoryRestaurantRepository()
+    private val userRepository: UserRepository = RepositoryProvider.getUserRepository(),
+    private val restaurantRepository: RestaurantRepository = RepositoryProvider.getRestaurantRepository()
 ) : ViewModel() {
     private val _blockedUsers = mutableStateListOf<User>()
     val blockedUsers: List<User> get() = _blockedUsers
@@ -122,9 +119,9 @@ class BlockedUsersViewModel(
 }
 
 class PromoViewModel(
-    private val promoRepository: PromoRepository = InMemoryPromoRepository(),
-    private val userRepository: UserRepository = InMemoryUserRepository(),
-    private val restaurantRepository: RestaurantRepository = InMemoryRestaurantRepository()
+    private val promoRepository: PromoRepository = RepositoryProvider.getPromoRepository(),
+    private val userRepository: UserRepository = RepositoryProvider.getUserRepository(),
+    private val restaurantRepository: RestaurantRepository = RepositoryProvider.getRestaurantRepository()
 ) : ViewModel() {
     private val _promos = MutableStateFlow<List<Promo>>(emptyList())
     val promos: StateFlow<List<Promo>> = _promos

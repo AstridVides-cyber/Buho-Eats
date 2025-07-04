@@ -1,13 +1,12 @@
 package com.frontend.buhoeats.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.material3.Icon
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,32 +14,39 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.IconButton
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.frontend.buhoeats.models.Comment
 import com.frontend.buhoeats.models.ContactInfo
 import com.frontend.buhoeats.models.Dish
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.draw.clip
-import com.frontend.buhoeats.models.Comment
 import com.frontend.buhoeats.models.Rating
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.utils.ImageConverter
 import com.frontend.buhoeats.utils.Translations
+import androidx.compose.ui.graphics.asImageBitmap
 
 @Composable
 fun ContactCard(contactInfo: ContactInfo) {
@@ -101,14 +107,57 @@ fun DishCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box {
-            AsyncImage(
-                model = dish.imageUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
-                contentScale = ContentScale.Crop
-            )
+            // CAMBIO: Detectar tipo de imagen automáticamente en DishCard
+            when {
+                ImageConverter.isBase64(dish.imageUrl) -> {
+                    // Es Base64 - convertir a Bitmap
+                    val bitmap = ImageConverter.base64ToBitmap(dish.imageUrl)
+                    if (bitmap != null) {
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        // Fallback si falla la conversión
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                                .background(Color.LightGray),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Error loading image")
+                        }
+                    }
+                }
+                dish.imageUrl.isNotBlank() -> {
+                    // Es URL - usar AsyncImage como antes
+                    AsyncImage(
+                        model = dish.imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                else -> {
+                    // Sin imagen
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                            .background(Color.LightGray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("No image")
+                    }
+                }
+            }
 
             if (showDelete) {
                 DeleteButton(
@@ -158,14 +207,51 @@ fun Opinion(user: User?, comment: Comment, rating: Rating?) {
     Row(modifier = Modifier.padding(vertical = 4.dp)) {
 
         if (!user?.imageProfile.isNullOrBlank()) {
-            AsyncImage(
-                model = user?.imageProfile,
-                contentDescription = "Foto de perfil",
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+            // CAMBIO: Detectar tipo de imagen automáticamente en Opinion
+            user?.imageProfile?.let { imageProfile ->
+                when {
+                    ImageConverter.isBase64(imageProfile) -> {
+                        // Es Base64 - convertir a Bitmap
+                        val bitmap = ImageConverter.base64ToBitmap(imageProfile)
+                        if (bitmap != null) {
+                            Image(
+                                bitmap = bitmap.asImageBitmap(),
+                                contentDescription = "Foto de perfil",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            // Fallback si falla la conversión
+                            Icon(
+                                Icons.Filled.Person,
+                                contentDescription = "Persona",
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    }
+                    imageProfile.isNotBlank() -> {
+                        // Es URL - usar AsyncImage como antes
+                        AsyncImage(
+                            model = imageProfile,
+                            contentDescription = "Foto de perfil",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    else -> {
+                        // Sin imagen
+                        Icon(
+                            Icons.Filled.Person,
+                            contentDescription = "Persona",
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                }
+            }
         } else {
             Icon(
                 Icons.Filled.Person,
@@ -210,11 +296,8 @@ fun RatingBar(rating: Int, onRatingChanged: (Int) -> Unit) {
                     contentDescription = "${Translations.t("star_description")} $i",
                     tint = if (i <= rating) Color(0xFFFFC107) else Color.Gray,
                     modifier = Modifier.size(30.dp)
-
                 )
             }
         }
     }
 }
-
-

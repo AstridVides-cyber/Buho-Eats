@@ -31,4 +31,3 @@ class InMemoryRestaurantRepository : RestaurantRepository {
         return InMemoryUserDataSource.getUserEmailById(userId)
     }
 }
-

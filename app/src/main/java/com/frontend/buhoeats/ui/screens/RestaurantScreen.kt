@@ -58,6 +58,8 @@ import com.frontend.buhoeats.viewmodel.FavoritesViewModel
 import com.frontend.buhoeats.viewmodel.FavoritesViewModelFactory
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import com.frontend.buhoeats.utils.ImageConverter
+import androidx.compose.ui.graphics.asImageBitmap
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -200,15 +202,59 @@ fun RestaurantContent(
                 .fillMaxWidth()
                 .height(180.dp)
         ) {
-            AsyncImage(
-                model = restaurant.imageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            )
+            // CAMBIO MÍNIMO: Detectar tipo de imagen automáticamente
+            when {
+                ImageConverter.isBase64(restaurant.imageUrl) -> {
+                    // Es Base64 - convertir a Bitmap
+                    val bitmap = ImageConverter.base64ToBitmap(restaurant.imageUrl)
+                    if (bitmap != null) {
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                        )
+                    } else {
+                        // Fallback si falla la conversión
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                        ) {
+                            Text("Error loading image")
+                        }
+                    }
+                }
+                restaurant.imageUrl.isNotBlank() -> {
+                    // Es URL - usar AsyncImage como antes
+                    AsyncImage(
+                        model = restaurant.imageUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                    )
+                }
+                else -> {
+                    // Sin imagen
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                    ) {
+                        Text("No image")
+                    }
+                }
+            }
         }
 
         ContactCard(contactInfo = restaurant.contactInfo)

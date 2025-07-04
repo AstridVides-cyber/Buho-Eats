@@ -35,10 +35,12 @@ import com.frontend.buhoeats.models.Dish
 import com.frontend.buhoeats.ui.components.*
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.ImageConverter
 import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.utils.ValidatorUtils.isValidPrice
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
+import androidx.compose.ui.graphics.asImageBitmap
 import java.util.UUID
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -130,12 +132,48 @@ fun EditMenuScreen(
                             )
                         }
                         else -> {
-                            AsyncImage(
-                                model = imageUri,
-                                contentDescription = "Imagen seleccionada",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
+                            // CAMBIO: Detectar tipo de imagen automáticamente y convertir a Base64
+                            val imageToShow = imageUri?.toString() ?: ""
+                            when {
+                                ImageConverter.isBase64(imageToShow) -> {
+                                    // Es Base64 - convertir a Bitmap
+                                    val bitmap = ImageConverter.base64ToBitmap(imageToShow)
+                                    if (bitmap != null) {
+                                        Image(
+                                            bitmap = bitmap.asImageBitmap(),
+                                            contentDescription = "Imagen seleccionada",
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    } else {
+                                        // Fallback si falla la conversión
+                                        Icon(
+                                            imageVector = Icons.Default.CameraAlt,
+                                            contentDescription = "Error cargando imagen",
+                                            tint = Color.White,
+                                            modifier = Modifier.size(48.dp)
+                                        )
+                                    }
+                                }
+                                imageToShow.isNotBlank() -> {
+                                    // Es URI/URL - usar AsyncImage como antes
+                                    AsyncImage(
+                                        model = imageUri,
+                                        contentDescription = "Imagen seleccionada",
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                                else -> {
+                                    // Sin imagen
+                                    Icon(
+                                        imageVector = Icons.Default.CameraAlt,
+                                        contentDescription = "Agregar imagen",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(48.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -208,11 +246,16 @@ fun EditMenuScreen(
                             if (!nameError && !descriptionError && !priceError && !priceFormatError) {
                                 val formattedPrice = "%.2f".format(price.toDoubleOrNull() ?: 0.0)
 
+                                // CAMBIO: Convertir imagen URI a Base64 si se seleccionó una
+                                val imageToSave = imageUri?.let { uri ->
+                                    ImageConverter.uriToBase64(context, uri)
+                                } ?: "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22"
+
                                 val newDish = Dish(
                                     id = UUID.randomUUID().toString(),
                                     name = name,
                                     description = description,
-                                    imageUrl = imageUri?.toString() ?: "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22",
+                                    imageUrl = imageToSave,
                                     price = formattedPrice
                                 )
                                 val updatedRestaurant = restaurant.copy(

@@ -85,8 +85,8 @@ fun EditAccountScreen(
 
             ProfileImage(
                 userImageUrl = userSessionViewModel.currentUser.value?.imageProfile ?: "",
-                onImageSelected = { newImageUrl ->
-                    userSessionViewModel.currentUser.value?.copy(imageProfile = newImageUrl.toString())?.let {
+                onImageSelected = { newImageBase64 -> // Ya no es Uri?, ahora es String (Base64)
+                    userSessionViewModel.currentUser.value?.copy(imageProfile = newImageBase64)?.let {
                         userSessionViewModel.updateCurrentUser(it)
                     }
                 }

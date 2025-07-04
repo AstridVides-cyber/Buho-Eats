@@ -23,4 +23,3 @@ class InMemoryPromoRepository : PromoRepository {
         InMemoryUserDataSource.updatePromo(updatedPromo)
     }
 }
-

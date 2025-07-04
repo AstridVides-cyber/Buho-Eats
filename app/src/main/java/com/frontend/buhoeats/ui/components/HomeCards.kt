@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.models.Restaurant
 import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.utils.ImageConverter
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.foundation.Image
 
 @Composable
 fun RestaurantCard(restaurant: Restaurant, onClick: () -> Unit) {
@@ -30,12 +33,51 @@ fun RestaurantCard(restaurant: Restaurant, onClick: () -> Unit) {
             .clickable { onClick() }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            AsyncImage(
-                model = restaurant.imageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
+            // CAMBIO: Detectar tipo de imagen automáticamente en HomeCards
+            when {
+                ImageConverter.isBase64(restaurant.imageUrl) -> {
+                    // Es Base64 - convertir a Bitmap
+                    val bitmap = ImageConverter.base64ToBitmap(restaurant.imageUrl)
+                    if (bitmap != null) {
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        // Fallback si falla la conversión
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.LightGray),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Error loading image")
+                        }
+                    }
+                }
+                restaurant.imageUrl.isNotBlank() -> {
+                    // Es URL - usar AsyncImage como antes
+                    AsyncImage(
+                        model = restaurant.imageUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                else -> {
+                    // Sin imagen
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("No image")
+                    }
+                }
+            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -248,7 +248,7 @@ fun SignUp(navController: NavController,
                             lastName = lastname,
                             email = email,
                             password = password,
-                            imageProfile = "",
+                            imageProfile = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png\n",
                             rol = "usuario"
                         )
 

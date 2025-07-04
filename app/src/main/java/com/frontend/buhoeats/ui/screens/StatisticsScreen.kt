@@ -41,6 +41,8 @@ import coil.compose.AsyncImage
 import com.frontend.buhoeats.models.User
 import com.frontend.buhoeats.ui.components.ConfirmationDialog
 import com.frontend.buhoeats.ui.theme.ThemeManager
+import com.frontend.buhoeats.utils.ImageConverter
+import androidx.compose.ui.graphics.asImageBitmap
 import com.frontend.buhoeats.utils.Translations
 import androidx.compose.foundation.lazy.items
 
@@ -123,14 +125,53 @@ fun StatisticsScreen(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
 
                                     if (!user?.imageProfile.isNullOrBlank()) {
-                                        AsyncImage(
-                                            model = user?.imageProfile,
-                                            contentDescription = "Foto de perfil",
-                                            modifier = Modifier
-                                                .size(30.dp)
-                                                .clip(CircleShape),
-                                            contentScale = ContentScale.Crop
-                                        )
+                                        // CAMBIO MÍNIMO: Detectar tipo de imagen automáticamente
+                                        user?.imageProfile?.let { imageProfile ->
+                                            when {
+                                                ImageConverter.isBase64(imageProfile) -> {
+                                                    // Es Base64 - convertir a Bitmap
+                                                    val bitmap = ImageConverter.base64ToBitmap(imageProfile)
+                                                    if (bitmap != null) {
+                                                        Image(
+                                                            bitmap = bitmap.asImageBitmap(),
+                                                            contentDescription = "Foto de perfil",
+                                                            modifier = Modifier
+                                                                .size(30.dp)
+                                                                .clip(CircleShape),
+                                                            contentScale = ContentScale.Crop
+                                                        )
+                                                    } else {
+                                                        // Fallback si falla la conversión
+                                                        Icon(
+                                                            imageVector = Icons.Outlined.AccountCircle,
+                                                            contentDescription = "Usuario",
+                                                            tint = MaterialTheme.colorScheme.onSurface,
+                                                            modifier = Modifier.size(30.dp)
+                                                        )
+                                                    }
+                                                }
+                                                imageProfile.isNotBlank() -> {
+                                                    // Es URL - usar AsyncImage como antes
+                                                    AsyncImage(
+                                                        model = imageProfile,
+                                                        contentDescription = "Foto de perfil",
+                                                        modifier = Modifier
+                                                            .size(30.dp)
+                                                            .clip(CircleShape),
+                                                        contentScale = ContentScale.Crop
+                                                    )
+                                                }
+                                                else -> {
+                                                    // Sin imagen
+                                                    Icon(
+                                                        imageVector = Icons.Outlined.AccountCircle,
+                                                        contentDescription = "Usuario",
+                                                        tint = MaterialTheme.colorScheme.onSurface,
+                                                        modifier = Modifier.size(30.dp)
+                                                    )
+                                                }
+                                            }
+                                        }
                                     } else {
                                         Icon(
                                             imageVector = Icons.Outlined.AccountCircle,

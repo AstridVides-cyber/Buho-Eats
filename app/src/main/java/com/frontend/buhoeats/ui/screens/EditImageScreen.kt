@@ -50,6 +50,8 @@ import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.Translations
 import com.frontend.buhoeats.viewmodel.RestaurantViewModel
+import com.frontend.buhoeats.utils.ImageConverter
+import androidx.compose.ui.graphics.asImageBitmap
 
 
 fun isAdminOfRestaurant(user: User?, restaurant: Restaurant): Boolean {
@@ -130,21 +132,92 @@ fun EditImageScreen(
                 ) {
                     when {
                         selectedImageUri != null -> {
-                            AsyncImage(
-                                model = selectedImageUri,
-                                contentDescription = Translations.t("selected_image"),
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
+                            // CAMBIO: Detectar tipo de imagen automáticamente para imagen seleccionada
+                            val imageToShow = selectedImageUri?.toString() ?: ""
+                            when {
+                                ImageConverter.isBase64(imageToShow) -> {
+                                    // Es Base64 - convertir a Bitmap
+                                    val bitmap = ImageConverter.base64ToBitmap(imageToShow)
+                                    if (bitmap != null) {
+                                        Image(
+                                            bitmap = bitmap.asImageBitmap(),
+                                            contentDescription = Translations.t("selected_image"),
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    } else {
+                                        // Fallback si falla la conversión
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text("Error loading image")
+                                        }
+                                    }
+                                }
+                                imageToShow.isNotBlank() -> {
+                                    // Es URI/URL - usar AsyncImage como antes
+                                    AsyncImage(
+                                        model = selectedImageUri,
+                                        contentDescription = Translations.t("selected_image"),
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                                else -> {
+                                    // Sin imagen
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text("No image")
+                                    }
+                                }
+                            }
                         }
 
                         currentImageUrl.isNotBlank() -> {
-                            AsyncImage(
-                                model = currentImageUrl,
-                                contentDescription = Translations.t("current_image"),
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop
-                            )
+                            // CAMBIO: Detectar tipo de imagen automáticamente para imagen actual
+                            when {
+                                ImageConverter.isBase64(currentImageUrl) -> {
+                                    // Es Base64 - convertir a Bitmap
+                                    val bitmap = ImageConverter.base64ToBitmap(currentImageUrl)
+                                    if (bitmap != null) {
+                                        Image(
+                                            bitmap = bitmap.asImageBitmap(),
+                                            contentDescription = Translations.t("current_image"),
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    } else {
+                                        // Fallback si falla la conversión
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text("Error loading image")
+                                        }
+                                    }
+                                }
+                                currentImageUrl.isNotBlank() -> {
+                                    // Es URL - usar AsyncImage como antes
+                                    AsyncImage(
+                                        model = currentImageUrl,
+                                        contentDescription = Translations.t("current_image"),
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                                else -> {
+                                    // Sin imagen
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text("No image")
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -167,7 +240,11 @@ fun EditImageScreen(
 
                 Button(
                     onClick = {
-                        val nuevaImagen = selectedImageUri?.toString() ?: currentImageUrl
+                        // CAMBIO: Convertir imagen URI a Base64 si se seleccionó una nueva
+                        val nuevaImagen = selectedImageUri?.let { uri ->
+                            ImageConverter.uriToBase64(context, uri)
+                        } ?: currentImageUrl
+
                         restaurantViewModel.updateRestaurantImage(restaurant.id, nuevaImagen)
                         Toast.makeText(context, Translations.t("image_saved_successfully"), Toast.LENGTH_SHORT).show()
                         navController.popBackStack()

@@ -27,6 +27,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.models.Promo
 import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.utils.ImageConverter
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.foundation.Image
 
 @Composable
 fun PromoCard(promo: Promo , onClick: () -> Unit) {
@@ -39,14 +42,57 @@ fun PromoCard(promo: Promo , onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box {
-            AsyncImage(
-                model = promo.imageUrl,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
-                contentScale = ContentScale.Crop
-            )
+            // CAMBIO: Detectar tipo de imagen automáticamente en PromoCard
+            when {
+                ImageConverter.isBase64(promo.imageUrl) -> {
+                    // Es Base64 - convertir a Bitmap
+                    val bitmap = ImageConverter.base64ToBitmap(promo.imageUrl)
+                    if (bitmap != null) {
+                        Image(
+                            bitmap = bitmap.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        // Fallback si falla la conversión
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                                .background(Color.LightGray),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Error loading image")
+                        }
+                    }
+                }
+                promo.imageUrl.isNotBlank() -> {
+                    // Es URL - usar AsyncImage como antes
+                    AsyncImage(
+                        model = promo.imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                else -> {
+                    // Sin imagen
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                            .background(Color.LightGray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("No image")
+                    }
+                }
+            }
 
             Column(
                 modifier = Modifier

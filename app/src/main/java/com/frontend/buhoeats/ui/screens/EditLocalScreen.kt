@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -64,6 +65,7 @@ import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 
 import com.frontend.buhoeats.utils.Translations
+import com.frontend.buhoeats.utils.ImageConverter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -110,10 +112,20 @@ fun EditLocalScreen(
         userSessionViewModel.loadUsers()
     }
 
+    // CAMBIO MÍNIMO: Agregar variable para almacenar imagen Base64
+    var restaurantImageBase64 by remember { mutableStateOf(restaurant?.imageUrl ?: "") }
+
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         selectedImageUri = uri
+        // CAMBIO MÍNIMO: Convertir URI a Base64 automáticamente
+        uri?.let {
+            val base64Image = ImageConverter.uriToBase64(context, it)
+            if (base64Image != null) {
+                restaurantImageBase64 = base64Image
+            }
+        }
     }
 
     Scaffold(
@@ -176,6 +188,7 @@ fun EditLocalScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Imagen
+                // CAMBIO MÍNIMO: Detectar tipo de imagen automáticamente
                 Box(
                     modifier = Modifier
                         .height(200.dp)
@@ -184,21 +197,42 @@ fun EditLocalScreen(
                         .border(2.dp, Color.Gray, RoundedCornerShape(16.dp)),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    val imageToShow = selectedImageUri?.toString() ?: restaurant?.imageUrl
-
-                    if (!imageToShow.isNullOrEmpty()) {
-                        AsyncImage(
-                            model = imageToShow,
-                            contentDescription = Translations.t("local_image"),
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
+                    // Determinar qué imagen mostrar: URI temporal, Base64 o URL original
+                    val imageToShow = if (selectedImageUri != null) {
+                        restaurantImageBase64 // Mostrar Base64 si se seleccionó nueva imagen
                     } else {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(AppColors.accent)
-                        )
+                        restaurant?.imageUrl ?: "" // Mostrar imagen original
+                    }
+
+                    when {
+                        ImageConverter.isBase64(imageToShow) -> {
+                            // Es Base64 - convertir a Bitmap
+                            val bitmap = ImageConverter.base64ToBitmap(imageToShow)
+                            if (bitmap != null) {
+                                androidx.compose.foundation.Image(
+                                    bitmap = bitmap.asImageBitmap(),
+                                    contentDescription = Translations.t("local_image"),
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else {
+                                // Fallback
+                                DefaultRestaurantImage()
+                            }
+                        }
+                        imageToShow.isNotEmpty() -> {
+                            // Es URL - usar AsyncImage como antes
+                            AsyncImage(
+                                model = imageToShow,
+                                contentDescription = Translations.t("local_image"),
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        else -> {
+                            // Sin imagen - mostrar default
+                            DefaultRestaurantImage()
+                        }
                     }
 
                     IconButton(
@@ -291,13 +325,16 @@ fun EditLocalScreen(
                         }
                         if (adminUser != null) {
                             val categoria = categoryMap[categoriaTraducida] ?: ""
+                            // CAMBIO MÍNIMO: Usar Base64 en lugar de URI para el backend
                             val updatedRestaurant = Restaurant(
                                 id = restaurant?.id ?: restaurantViewModel.getNextRestaurantId().toString(),
                                 name = name,
                                 description = description,
-                                imageUrl = selectedImageUri?.toString()
-                                    ?: restaurant?.imageUrl
-                                    ?: "https://images.unsplash.com/photo-1525610553991-2bede1a236e2",
+                                imageUrl = if (selectedImageUri != null) {
+                                    restaurantImageBase64 // Usar Base64 si se seleccionó nueva imagen
+                                } else {
+                                    restaurant?.imageUrl ?: "https://images.unsplash.com/photo-1525610553991-2bede1a236e2"
+                                },
                                 category = categoria,
                                 contactInfo = restaurant?.contactInfo ?: ContactInfo("", "", "", ""),
                                 ratings = restaurant?.ratings?.toMutableList() ?: mutableListOf(),
@@ -333,4 +370,13 @@ fun EditLocalScreen(
             }
         }
     }
+}
+
+@Composable
+private fun DefaultRestaurantImage() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppColors.accent)
+    )
 }

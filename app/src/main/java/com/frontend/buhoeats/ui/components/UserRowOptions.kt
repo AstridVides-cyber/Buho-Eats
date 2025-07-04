@@ -1,5 +1,6 @@
 package com.frontend.buhoeats.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,12 +29,15 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.frontend.buhoeats.R
 import com.frontend.buhoeats.models.User
-import androidx.compose.runtime.mutableStateOf
+import com.frontend.buhoeats.ui.theme.AppColors
+import com.frontend.buhoeats.utils.ImageConverter
+import com.frontend.buhoeats.utils.Translations
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import com.frontend.buhoeats.ui.theme.AppColors
-import com.frontend.buhoeats.utils.Translations
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
 
 @Composable
 fun UserRowOptions(
@@ -64,14 +68,55 @@ fun UserRowOptions(
                     .align(Alignment.CenterStart),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AsyncImage(
-                    model = user.imageProfile ?: R.drawable.defaulticon,
-                    contentDescription = "Foto de perfil",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(CircleShape)
-                )
+                // CAMBIO: Detectar tipo de imagen automáticamente en UserRowOptions
+                when {
+                    !user.imageProfile.isNullOrBlank() && ImageConverter.isBase64(user.imageProfile) -> {
+                        // Es Base64 - convertir a Bitmap
+                        val bitmap = ImageConverter.base64ToBitmap(user.imageProfile)
+                        if (bitmap != null) {
+                            Image(
+                                bitmap = bitmap.asImageBitmap(),
+                                contentDescription = "Foto de perfil",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clip(CircleShape)
+                            )
+                        } else {
+                            // Fallback si falla la conversión
+                            Image(
+                                painter = androidx.compose.ui.res.painterResource(R.drawable.defaulticon),
+                                contentDescription = "Foto de perfil",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clip(CircleShape)
+                            )
+                        }
+                    }
+                    !user.imageProfile.isNullOrBlank() -> {
+                        // Es URL - usar AsyncImage como antes
+                        AsyncImage(
+                            model = user.imageProfile,
+                            contentDescription = "Foto de perfil",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clip(CircleShape)
+                        )
+                    }
+                    else -> {
+                        // Sin imagen - usar default
+                        Image(
+                            painter = androidx.compose.ui.res.painterResource(R.drawable.defaulticon),
+                            contentDescription = "Foto de perfil",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clip(CircleShape)
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.width(12.dp))
 

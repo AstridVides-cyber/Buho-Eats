@@ -5,14 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModelProvider
 import com.frontend.buhoeats.data.UserRepository
-import com.frontend.buhoeats.data.InMemoryUserRepository
+import com.frontend.buhoeats.data.config.RepositoryProvider
 import com.frontend.buhoeats.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class UserSessionViewModel(
-    private val userRepository: UserRepository = InMemoryUserRepository()
+    private val userRepository: UserRepository = RepositoryProvider.getUserRepository()
 ) : ViewModel() {
     private val _currentUser = mutableStateOf<User?>(null)
     val currentUser: State<User?> get() = _currentUser
