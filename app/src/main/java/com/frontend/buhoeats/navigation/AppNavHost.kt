@@ -112,7 +112,8 @@ fun AppNavHost(navController: NavHostController) {
                     navController.popBackStack()
                 },
                 navController = navController,
-                userSessionViewModel = userSessionViewModel
+                userSessionViewModel = userSessionViewModel,
+                restaurantViewModel = restaurantViewModel
 
             )
         }
@@ -141,7 +142,8 @@ fun AppNavHost(navController: NavHostController) {
             PromoScreen(
                 navController = navController,
                 userSessionViewModel = userSessionViewModel,
-                promoViewModel = promoViewModel
+                promoViewModel = promoViewModel,
+                restaurantViewModel = restaurantViewModel
             )
         }
 
@@ -270,7 +272,8 @@ fun AppNavHost(navController: NavHostController) {
         composable(Screens.EditMenu.route) {
             EditMenuScreen(
                 navController = navController,
-                userSessionViewModel = userSessionViewModel
+                userSessionViewModel = userSessionViewModel,
+                restaurantViewModel = restaurantViewModel
             )
         }
         composable(
