@@ -36,7 +36,7 @@ import com.frontend.buhoeats.ui.components.*
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.Translations
-import com.frontend.buhoeats.utils.ValidatorUtils.isOnlyNumbers
+import com.frontend.buhoeats.utils.ValidatorUtils.isValidPrice
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
 import java.util.UUID
 
@@ -169,7 +169,7 @@ fun EditMenuScreen(
                     onValueChange = {
                         price = it
                         priceError = false
-                        priceFormatError = !isOnlyNumbers(it)
+                        priceFormatError = !isValidPrice(it)
                     },
                     isError = priceError || priceFormatError,
                     placeholderText = Translations.t("price_placeholder")
@@ -201,7 +201,7 @@ fun EditMenuScreen(
                             nameError = name.isBlank()
                             descriptionError = description.isBlank()
                             priceError = price.isBlank()
-                            priceFormatError = !isOnlyNumbers(price)
+                            priceFormatError = !isValidPrice(price)
 
                             if (!nameError && !descriptionError && !priceError && !priceFormatError) {
                                 val formattedPrice = "%.2f".format(price.toDoubleOrNull() ?: 0.0)

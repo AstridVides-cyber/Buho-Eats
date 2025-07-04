@@ -45,7 +45,7 @@ import com.frontend.buhoeats.data.InMemoryUserDataSource
 import com.frontend.buhoeats.ui.theme.AppColors
 import com.frontend.buhoeats.ui.theme.ThemeManager
 import com.frontend.buhoeats.utils.Translations
-import com.frontend.buhoeats.utils.ValidatorUtils.isOnlyNumbers
+import com.frontend.buhoeats.utils.ValidatorUtils.isValidPrice
 
 
 import com.frontend.buhoeats.viewmodel.UserSessionViewModel
@@ -215,7 +215,7 @@ fun PromoInfoScreen(
                                 value = promprice,
                                 onValueChange = {
                                     promprice = it
-                                    promPriceError = !isOnlyNumbers(it)
+                                    promPriceError = !isValidPrice(it)
                                 },
                                 shape = RoundedCornerShape(12.dp),
                                 modifier = Modifier.fillMaxWidth(),
@@ -238,7 +238,7 @@ fun PromoInfoScreen(
                                 value = price,
                                 onValueChange = {
                                     price = it
-                                    currentPriceError = !isOnlyNumbers(it)
+                                    currentPriceError = !isValidPrice(it)
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(12.dp),
